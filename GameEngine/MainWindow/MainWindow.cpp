@@ -2,14 +2,14 @@
 #include <stdexcept>
 
 
-MainWindow& MainWindow::instance(HINSTANCE _In_ hInstance, int _In_ nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
+MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
 {
     static MainWindow wnd{ hInstance, nCmdShow, window_name, init_width, init_height };
 
     return wnd;
 }
 
-MainWindow::MainWindow(HINSTANCE _In_ hInstance, int _In_ nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
+MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
 :
 H_INSTANCE{ hInstance },
 WND_TITLE{ window_name }
@@ -22,22 +22,22 @@ WND_TITLE{ window_name }
         0,
         0,
         hInstance,
-        LoadIcon(hInstance, IDI_APPLICATION),
-        LoadCursor(NULL, IDC_ARROW),
+        LoadIconW(hInstance, IDI_APPLICATION),
+        LoadCursorW(NULL, IDC_ARROW),
         (HBRUSH)(COLOR_WINDOW + 1),
         NULL,
         MainWindow::WND_CLASS_NAME,
-        LoadIcon(hInstance, IDI_APPLICATION)
+        LoadIconW(hInstance, IDI_APPLICATION)
     };
 
-    if (!RegisterClassEx(&wcex))
+    if (!RegisterClassExW(&wcex))
     {
         throw std::runtime_error{ "Failed to register class" };
     }
 
     HWND const hWnd
     {
-        CreateWindowEx(
+        CreateWindowExW(
             WS_EX_OVERLAPPEDWINDOW,
             MainWindow::WND_CLASS_NAME,
             WND_TITLE.c_str(),
@@ -52,7 +52,7 @@ WND_TITLE{ window_name }
     };
     if (!hWnd)
     {
-        UnregisterClass(MainWindow::WND_CLASS_NAME, hInstance);
+        UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
 
         throw std::runtime_error{ "Failed to create window" };
     }
@@ -63,11 +63,11 @@ WND_TITLE{ window_name }
 
 MainWindow::~MainWindow()
 {
-    UnregisterClass(MainWindow::WND_CLASS_NAME, H_INSTANCE);
+    UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
     PostQuitMessage(EXIT_SUCCESS);
 }
 
-LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
+LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
 {
     PAINTSTRUCT ps{ };
     HDC hdc{ };
