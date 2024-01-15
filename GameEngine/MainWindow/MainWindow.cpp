@@ -2,6 +2,13 @@
 #include <stdexcept>
 
 
+MainWindow& MainWindow::instance(HINSTANCE _In_ hInstance, int _In_ nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
+{
+    static MainWindow wnd{ hInstance, nCmdShow, window_name, init_width, init_height };
+
+    return wnd;
+}
+
 MainWindow::MainWindow(HINSTANCE _In_ hInstance, int _In_ nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
 :
 H_INSTANCE{ hInstance },
