@@ -11,8 +11,47 @@ MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring
 
 MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
 :
-H_INSTANCE{ hInstance },
-WND_TITLE{ window_name }
+H_INSTANCE{ hInstance   },
+WND_TITLE { window_name },
+H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, init_width, init_height)   }
+{
+    ShowWindow(H_WND, nCmdShow);
+    UpdateWindow(H_WND);
+}
+
+MainWindow::~MainWindow()
+{
+    UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
+    PostQuitMessage(EXIT_SUCCESS);
+}
+
+LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
+{
+    PAINTSTRUCT ps{ };
+    HDC hdc{ };
+
+    switch (message)
+    {
+    case WM_PAINT:
+        hdc = BeginPaint(hWnd, &ps);
+
+        EndPaint(hWnd, &ps);
+
+        break;
+
+    case WM_DESTROY:
+        PostQuitMessage(EXIT_SUCCESS);
+        break;
+
+    default:
+        return DefWindowProcW(hWnd, message, wParam, lParam);
+        break;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, size_t init_width, size_t init_height)
 {
     WNDCLASSEX const wcex
     {
@@ -40,7 +79,7 @@ WND_TITLE{ window_name }
         CreateWindowExW(
             WS_EX_OVERLAPPEDWINDOW,
             MainWindow::WND_CLASS_NAME,
-            WND_TITLE.c_str(),
+            window_name.c_str(),
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT,
             init_width, init_height,
@@ -52,45 +91,26 @@ WND_TITLE{ window_name }
     };
     if (!hWnd)
     {
-        UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
+        UnregisterClassW(MainWindow::WND_CLASS_NAME, hInstance);
 
         throw std::runtime_error{ "Failed to create window" };
     }
 
-    ShowWindow(hWnd, nCmdShow);
-    UpdateWindow(hWnd);
+    return hWnd;
 }
 
-MainWindow::~MainWindow()
+void MainWindow::process_messages_queue() noexcept
 {
-    UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
-    PostQuitMessage(EXIT_SUCCESS);
-}
-
-LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
-{
-    PAINTSTRUCT ps{ };
-    HDC hdc{ };
-    wchar_t const* greeting = L"Hello, Windows desktop!";
-
-    switch (message)
+    MSG msg{ };
+    while (PeekMessageW(&msg, H_WND, 0U, 0U, PM_REMOVE))
     {
-    case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
-        TextOutW(hdc, 5, 5, greeting, wcslen(greeting));
-
-        EndPaint(hWnd, &ps);
-
-        break;
-
-    case WM_DESTROY:
-        PostQuitMessage(EXIT_SUCCESS);
-        break;
-
-    default:
-        return DefWindowProcW(hWnd, message, wParam, lParam);
-        break;
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+        terminated = msg.message == WM_QUIT;
     }
+}
 
-    return EXIT_SUCCESS;
+bool MainWindow::is_terminated() const noexcept
+{
+    return terminated;
 }

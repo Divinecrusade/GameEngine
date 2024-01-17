@@ -7,4 +7,7 @@
 __interface IWindow
 {
 public:
+
+    virtual void process_messages_queue() = 0;
+    virtual bool is_terminated() const = 0;
 };
