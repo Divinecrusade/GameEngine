@@ -82,7 +82,7 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
             window_name.c_str(),
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT,
-            init_width, init_height,
+            static_cast<int>(init_width), static_cast<int>(init_height),
             NULL,
             NULL,
             hInstance,
