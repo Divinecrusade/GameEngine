@@ -35,5 +35,11 @@
     <ClCompile Include="MainWindow\MainWindow.cpp">
       <Filter>Исходные файлы\MainWindow</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

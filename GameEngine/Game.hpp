@@ -17,13 +17,13 @@ public:
 
     virtual ~Game() = default;
 
-    void Go();
+    void start();
 
 protected:
 
-    virtual void Process();
-    virtual void Update();
-    virtual void Render();
+    virtual void process();
+    virtual void update();
+    virtual void render();
 
 private:
 
