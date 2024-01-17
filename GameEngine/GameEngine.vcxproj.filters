@@ -13,5 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы заголовков\MainWindow">
+      <UniqueIdentifier>{a1894839-0be7-4294-9d58-50892e86c6b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\MainWindow">
+      <UniqueIdentifier>{596a64f7-85c4-4ef4-b87b-c10ee7050e54}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainWindow\MainWindow.hpp">
+      <Filter>Файлы заголовков\MainWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow\IWindow.hpp">
+      <Filter>Файлы заголовков\MainWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainWindow\MainWindow.cpp">
+      <Filter>Исходные файлы\MainWindow</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
