@@ -27,7 +27,6 @@ public:
         {
             TranslateMessage(&msg);
             DispatchMessageW(&msg);
-            terminated = msg.message == WM_QUIT;
         }
 
         return msg;

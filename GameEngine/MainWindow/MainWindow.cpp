@@ -21,38 +21,34 @@ H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, init_w
 
 MainWindow::~MainWindow()
 {
+    DestroyWindow(H_WND);
     UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
-    PostQuitMessage(EXIT_SUCCESS);
 }
 
 LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
 {
-    PAINTSTRUCT ps{ };
-    HDC hdc{ };
-
     switch (message)
     {
-    case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
-
-        EndPaint(hWnd, &ps);
-
-        break;
-
+    case WM_CLOSE:
     case WM_DESTROY:
+
         PostQuitMessage(EXIT_SUCCESS);
+
+        MainWindow::instance().terminated = true;
+
         break;
 
     default:
-        return DefWindowProcW(hWnd, message, wParam, lParam);
         break;
     }
 
-    return EXIT_SUCCESS;
+    return DefWindowProcW(hWnd, message, wParam, lParam);
 }
 
 HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, size_t init_width, size_t init_height)
 {
+    if (hInstance == NULL) hInstance = (HINSTANCE) GetModuleHandleW(NULL);
+
     WNDCLASSEX const wcex
     {
         sizeof(wcex),
@@ -63,7 +59,7 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
         hInstance,
         LoadIconW(hInstance, IDI_APPLICATION),
         LoadCursorW(NULL, IDC_ARROW),
-        (HBRUSH)(COLOR_WINDOW + 1),
+        (HBRUSH) GetStockObject(BLACK_BRUSH),
         NULL,
         MainWindow::WND_CLASS_NAME,
         LoadIconW(hInstance, IDI_APPLICATION)
@@ -71,7 +67,10 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
 
     if (!RegisterClassExW(&wcex))
     {
-        throw std::runtime_error{ "Failed to register class" };
+        DWORD const last_error{ GetLastError() };
+        // TODO: make exception, that obtain error code
+        if (last_error != ERROR_CLASS_ALREADY_EXISTS)
+          throw std::runtime_error{ "Failed to register class" };
     }
 
     HWND const hWnd
@@ -93,6 +92,7 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
     {
         UnregisterClassW(MainWindow::WND_CLASS_NAME, hInstance);
 
+        // TODO: make exception, that obtain error code
         throw std::runtime_error{ "Failed to create window" };
     }
 
@@ -106,7 +106,6 @@ void MainWindow::process_messages_queue() noexcept
     {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
-        terminated = msg.message == WM_QUIT;
     }
 }
 
