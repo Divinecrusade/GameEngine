@@ -24,6 +24,7 @@ public:
     
     virtual void process_messages_queue() noexcept override;
     virtual bool is_terminated() const noexcept override;
+    virtual HWND get_window_handler() const noexcept override;
 
     __forceinline MSG start_message_loop() noexcept
     {

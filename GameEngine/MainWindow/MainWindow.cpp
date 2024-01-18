@@ -118,6 +118,11 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
     return hWnd;
 }
 
+HWND MainWindow::get_window_handler() const noexcept
+{
+    return H_WND;
+}
+
 void MainWindow::process_messages_queue() noexcept
 {
     assert(!is_terminated());
