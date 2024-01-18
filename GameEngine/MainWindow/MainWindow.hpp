@@ -4,7 +4,7 @@
 #include <string>
 
 
-class MainWindow : public IWindow
+class MainWindow final : public IWindow
 {
 public:
 
