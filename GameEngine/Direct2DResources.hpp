@@ -6,10 +6,12 @@
 #include <d2d1helper.h>
 #include <dwrite.h>
 #include <wincodec.h>
+
 #include <cassert>
 #include <stdexcept>
-
+#include <memory>
 #include <type_traits>
+
 
 #ifndef HINST_THISCOMPONENT
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
@@ -34,25 +36,18 @@ __forceinline void safe_release(Interface*& realising_resource)
     }
 }
 
+
+class Direct2DFactory;
+
 class Direct2DResources final
 {
-
 public:
 
-    Direct2DResources(HWND hWnd);
+    Direct2DResources(ID2D1Factory& D2DFactory, D2D1_HWND_RENDER_TARGET_PROPERTIES const& render_target_props);
     ~Direct2DResources();
 
 private:
 
-    
-    //HRESULT render();
-
-    //void resize(UINT new_width, UINT new_height);
-
-//private:
-public:
-
-    ID2D1Factory* D2DFactory{ nullptr };
     ID2D1HwndRenderTarget* render_target{ nullptr };
     ID2D1SolidColorBrush* light_slate_gray{ nullptr };
 };
