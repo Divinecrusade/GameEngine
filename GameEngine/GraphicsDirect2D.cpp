@@ -71,10 +71,12 @@ void GraphicsDirect2D::end_frame()
 
 unsigned GraphicsDirect2D::get_screen_width() const noexcept
 {
-    return D2DFactory.get_render_area_size().right - D2DFactory.get_render_area_size().left;
+    RECT const area_size{ D2DFactory.get_render_area_size() };
+    return area_size.right - area_size.left;
 }
 
 unsigned GraphicsDirect2D::get_screen_height() const noexcept
 {
-    return D2DFactory.get_render_area_size().bottom - D2DFactory.get_render_area_size().top;
+    RECT const area_size{ D2DFactory.get_render_area_size() };
+    return area_size.bottom - area_size.top;
 }
