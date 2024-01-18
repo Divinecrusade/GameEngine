@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MainWindow/IWindow.hpp"
-#include "Direct2DResources.hpp"
+#include "Direct2DFactory.hpp"
 
 
 class Game
@@ -29,5 +29,6 @@ protected:
 private:
 
     IWindow& wnd;
-    Direct2DResources graphics;
+    Direct2DFactory graphics;
+    Direct2DResources graphics2;
 };

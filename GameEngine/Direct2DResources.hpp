@@ -43,11 +43,19 @@ class Direct2DResources final
 {
 public:
 
+    Direct2DResources() noexcept = default;
     Direct2DResources(ID2D1Factory& D2DFactory, D2D1_HWND_RENDER_TARGET_PROPERTIES const& render_target_props);
+    Direct2DResources(Direct2DResources&& resources) noexcept;
+    Direct2DResources& operator=(Direct2DResources const&) = delete;
+    Direct2DResources& operator=(Direct2DResources&& resources) noexcept;
+
     ~Direct2DResources();
 
 private:
 
+    void swap(Direct2DResources&& resources) noexcept;
+
+public:
     ID2D1HwndRenderTarget* render_target{ nullptr };
     ID2D1SolidColorBrush* light_slate_gray{ nullptr };
 };

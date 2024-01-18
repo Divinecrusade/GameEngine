@@ -3,7 +3,8 @@
 Game::Game(IWindow& window)
 :
 wnd{ window },
-graphics{ wnd.get_window_handler() }
+graphics{ wnd.get_window_handler() },
+graphics2{ }
 { }
 
 void Game::start()
@@ -12,11 +13,12 @@ void Game::start()
     {
         process();
         update();
-        graphics.render_target->BeginDraw();
-        graphics.render_target->SetTransform(D2D1::Matrix3x2F::Identity());
-        graphics.render_target->Clear(D2D1::ColorF(D2D1::ColorF::White));
+        graphics2 = graphics.get_resources();
+        graphics2.render_target->BeginDraw();
+        graphics2.render_target->SetTransform(D2D1::Matrix3x2F::Identity());
+        graphics2.render_target->Clear(D2D1::ColorF(D2D1::ColorF::White));
         render();
-        graphics.render_target->EndDraw();
+        graphics2.render_target->EndDraw();
     }
 }
 
@@ -31,26 +33,26 @@ void Game::update()
 
 void Game::render()
 {
-    auto const rtSize{ graphics.render_target->GetSize() };
+    auto const rtSize{ graphics2.render_target->GetSize() };
     int width = static_cast<int>(rtSize.width);
     int height = static_cast<int>(rtSize.height);
 
     for (int x = 0; x < width; x += 10)
     {
-        graphics.render_target->DrawLine(
+        graphics2.render_target->DrawLine(
             D2D1::Point2F(static_cast<FLOAT>(x), 0.0f),
             D2D1::Point2F(static_cast<FLOAT>(x), rtSize.height),
-            graphics.light_slate_gray,
+            graphics2.light_slate_gray,
             0.5f
         );
     }
 
     for (int y = 0; y < height; y += 10)
     {
-        graphics.render_target->DrawLine(
+        graphics2.render_target->DrawLine(
             D2D1::Point2F(0.0f, static_cast<FLOAT>(y)),
             D2D1::Point2F(rtSize.width, static_cast<FLOAT>(y)),
-            graphics.light_slate_gray,
+            graphics2.light_slate_gray,
             0.5f
         );
     }
@@ -62,5 +64,5 @@ void Game::render()
         rtSize.height / 2 + 50.0f
     );
 
-    graphics.render_target->FillRectangle(&rectangle, graphics.light_slate_gray);
+    graphics2.render_target->FillRectangle(&rectangle, graphics2.light_slate_gray);
 }

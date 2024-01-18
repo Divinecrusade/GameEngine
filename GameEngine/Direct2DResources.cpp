@@ -8,8 +8,26 @@ Direct2DResources::Direct2DResources(ID2D1Factory& D2DFactory, D2D1_HWND_RENDER_
     render_target->CreateSolidColorBrush(D2D1::ColorF{ D2D1::ColorF::LightSlateGray }, &light_slate_gray);
 }
 
+Direct2DResources::Direct2DResources(Direct2DResources&& resources) noexcept
+{
+    swap(std::move(resources));
+}
+
+Direct2DResources& Direct2DResources::operator=(Direct2DResources&& resources) noexcept
+{
+    swap(std::move(resources));
+
+    return *this;
+}
+
 Direct2DResources::~Direct2DResources()
 {
     safe_release(render_target);
     safe_release(light_slate_gray);
+}
+
+void Direct2DResources::swap(Direct2DResources&& resources) noexcept
+{
+    std::swap(this->render_target, resources.render_target);
+    std::swap(this->light_slate_gray, resources.light_slate_gray);
 }
