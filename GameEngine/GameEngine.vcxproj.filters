@@ -19,6 +19,9 @@
     <Filter Include="Исходные файлы\MainWindow">
       <UniqueIdentifier>{596a64f7-85c4-4ef4-b87b-c10ee7050e54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Interfaces">
+      <UniqueIdentifier>{91caf225-9e56-43a7-9fc0-b8c56ab53336}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow\MainWindow.hpp">
@@ -31,6 +34,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Direct2DResources.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphics2D.hpp">
+      <Filter>Файлы заголовков\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsDirect2D.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
