@@ -30,8 +30,22 @@ MainWindow::~MainWindow()
 
 LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
 {
+    static constexpr int MESSAGE_HANDLED{ 0 };
+
     switch (message)
     {
+    case WM_DISPLAYCHANGE:
+    
+        InvalidateRect(hWnd, NULL, FALSE);
+        
+        break;
+
+    case WM_PAINT:
+
+        ValidateRect(hWnd, NULL);
+
+        break;
+
     case WM_DESTROY:
 
         PostQuitMessage(EXIT_SUCCESS);
@@ -41,10 +55,11 @@ LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPAR
         break;
 
     default:
-        break;
+        
+        return DefWindowProcW(hWnd, message, wParam, lParam);
     }
 
-    return DefWindowProcW(hWnd, message, wParam, lParam);
+    return MESSAGE_HANDLED;
 }
 
 HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, int init_width, int init_height)
