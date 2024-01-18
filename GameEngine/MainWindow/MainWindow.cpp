@@ -1,26 +1,31 @@
 #include "MainWindow.hpp"
 #include <stdexcept>
+#include <cassert>
 
 
-MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
+MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, int init_width, int init_height)
 {
     static MainWindow wnd{ hInstance, nCmdShow, window_name, init_width, init_height };
 
     return wnd;
 }
 
-MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, size_t init_width, size_t init_height)
+MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, int init_width, int init_height)
 :
-H_INSTANCE{ hInstance   },
+H_INSTANCE{ hInstance == NULL ? (HINSTANCE)GetModuleHandleW(NULL) : hInstance },
 WND_TITLE { window_name },
 H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, init_width, init_height)   }
 {
+    assert(H_WND);
+
     ShowWindow(H_WND, nCmdShow);
     UpdateWindow(H_WND);
 }
 
 MainWindow::~MainWindow()
 {
+    assert(is_terminated());
+
     DestroyWindow(H_WND);
     UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
 }
@@ -45,9 +50,11 @@ LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPAR
     return DefWindowProcW(hWnd, message, wParam, lParam);
 }
 
-HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, size_t init_width, size_t init_height)
+HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, int init_width, int init_height)
 {
-    if (hInstance == NULL) hInstance = (HINSTANCE) GetModuleHandleW(NULL);
+    assert(hInstance != NULL);
+    assert(init_width > 0);
+    assert(init_height > 0);
 
     WNDCLASSEX const wcex
     {
@@ -81,7 +88,7 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
             window_name.c_str(),
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT,
-            static_cast<int>(init_width), static_cast<int>(init_height),
+            init_width, init_height,
             NULL,
             NULL,
             hInstance,
@@ -101,6 +108,8 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
 
 void MainWindow::process_messages_queue() noexcept
 {
+    assert(!is_terminated());
+
     MSG msg{ };
     while (PeekMessageW(&msg, H_WND, 0U, 0U, PM_REMOVE))
     {
