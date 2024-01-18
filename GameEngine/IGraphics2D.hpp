@@ -12,6 +12,9 @@ public:
     virtual void begin_frame() = 0;
     virtual void end_frame() = 0;
 
+    virtual unsigned get_screen_width() const = 0;
+    virtual unsigned get_screen_height() const = 0;
+
     virtual void set_pixel(unsigned x, unsigned y, Color c) = 0;
     virtual Color get_pixel(unsigned x, unsigned y) const = 0;
 

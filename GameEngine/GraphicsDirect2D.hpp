@@ -20,6 +20,9 @@ public:
     virtual void begin_frame() override;
     virtual void end_frame() override;
 
+    virtual unsigned get_screen_width() const noexcept override;
+    virtual unsigned get_screen_height() const noexcept override;
+
     virtual void set_pixel(unsigned x, unsigned y, Color c) override;
     virtual Color get_pixel(unsigned x, unsigned y) const override;
 

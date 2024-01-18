@@ -29,7 +29,7 @@ void Game::update()
 
 void Game::render()
 {
-    gfx.draw_line(0, 0, 120, 340, 4, D2D1::ColorF::AliceBlue);
+    gfx.draw_line(0, 0, gfx.get_screen_width(), gfx.get_screen_height(), 4, D2D1::ColorF::AliceBlue);
     gfx.draw_rectangle(100, 200, 300, 300, D2D1::ColorF::Green);
     gfx.fill_rectangle(120, 200, 240, 250, D2D1::ColorF::Cyan);
 }

@@ -26,7 +26,7 @@ void GraphicsDirect2D::draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned
     ID2D1SolidColorBrush* brush{ nullptr };
     D2DResources.get_renderer().CreateSolidColorBrush(c, &brush);
     D2DResources.get_renderer().DrawLine(D2D1_POINT_2F{static_cast<float>(x1), static_cast<float>(y1)},
-                                         D2D1_POINT_2F{ static_cast<float>(x2), static_cast<float>(y2)}, brush);
+                                         D2D1_POINT_2F{ static_cast<float>(x2), static_cast<float>(y2)}, brush, static_cast<float>(w));
     safe_release(brush);
 }
 
@@ -67,4 +67,14 @@ void GraphicsDirect2D::end_frame()
 
     composing_frame = false;
     D2DResources.get_renderer().EndDraw();
+}
+
+unsigned GraphicsDirect2D::get_screen_width() const noexcept
+{
+    return D2DFactory.get_render_area_size().right - D2DFactory.get_render_area_size().left;
+}
+
+unsigned GraphicsDirect2D::get_screen_height() const noexcept
+{
+    return D2DFactory.get_render_area_size().bottom - D2DFactory.get_render_area_size().top;
 }
