@@ -114,6 +114,15 @@ HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring co
         // TODO: make exception, that obtain error code
         throw std::runtime_error{ "Failed to create window" };
     }
+    unsigned const dpi { GetDpiForWindow(hWnd) };
+    SetWindowPos(
+        hWnd,
+        NULL,
+        NULL,
+        NULL,
+        init_width * dpi / USER_DEFAULT_SCREEN_DPI,
+        init_height * dpi / USER_DEFAULT_SCREEN_DPI,
+        SWP_NOMOVE);
 
     return hWnd;
 }
