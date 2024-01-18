@@ -13,10 +13,17 @@ Direct2DFactory::~Direct2DFactory()
     safe_release(D2DFactory);
 }
 
-Direct2DResources Direct2DFactory::get_resources() const
+RECT Direct2DFactory::get_render_area_size() const noexcept
 {
     RECT render_area{ };
     GetClientRect(attached_window, &render_area);
+
+    return render_area;
+}
+
+Direct2DResources Direct2DFactory::get_resources() const
+{
+    RECT const render_area{ get_render_area_size() };
     D2D1_SIZE_U const d2d1_size{ D2D1::SizeU(render_area.right - render_area.left, render_area.bottom - render_area.top) };
     auto const render_properties { D2D1::HwndRenderTargetProperties(attached_window, d2d1_size) };
 

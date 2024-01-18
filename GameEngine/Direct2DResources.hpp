@@ -51,11 +51,13 @@ public:
 
     ~Direct2DResources();
 
+    ID2D1HwndRenderTarget& get_renderer() const noexcept;
+
 private:
 
     void swap(Direct2DResources&& resources) noexcept;
 
-public:
-    ID2D1HwndRenderTarget* render_target{ nullptr };
-    ID2D1SolidColorBrush* light_slate_gray{ nullptr };
+private:
+
+    ID2D1HwndRenderTarget* render_target;
 };
