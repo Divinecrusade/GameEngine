@@ -24,8 +24,6 @@ H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, init_w
 
 MainWindow::~MainWindow()
 {
-    assert(is_terminated());
-
     DestroyWindow(H_WND);
     UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
 }
@@ -34,7 +32,6 @@ LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPAR
 {
     switch (message)
     {
-    case WM_CLOSE:
     case WM_DESTROY:
 
         PostQuitMessage(EXIT_SUCCESS);
