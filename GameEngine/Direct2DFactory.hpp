@@ -1,9 +1,81 @@
 #pragma once
 
-#include "Direct2DResources.hpp"
+#pragma comment(lib, "d2d1.lib")
+
+#include <d2d1.h>
+#include <wincodec.h>
+#include <stdexcept>
+#include <cassert>
+#include <unordered_map>
+#include <algorithm>
+
+
+#ifndef HINST_THISCOMPONENT
+EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+#define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
+#endif // !HINST_THISCOMPONENT
+
+
+union KeyColor
+{
+public:
+
+    KeyColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept;
+    KeyColor(KeyColor const& c) noexcept;
+    KeyColor(KeyColor&& c) noexcept;
+    KeyColor& operator=(KeyColor const& c) noexcept;
+    KeyColor& operator=(KeyColor&& c) noexcept;
+    ~KeyColor() = default;
+
+    uint32_t get_encoded() const noexcept;
+
+private:
+
+    uint8_t colors[4U];
+    uint32_t rgba{ 0U };
+};
+
+bool operator==(KeyColor const& lhs, KeyColor const& rhs);
+
+namespace std 
+{
+    template<> struct hash<KeyColor> 
+    {
+        size_t operator() (KeyColor const& arg) const 
+        {           
+            return hash<uint32_t>{}(arg.get_encoded());
+        }
+    };
+}
+
+
+template<class Interface>
+concept Releasable =
+    requires (Interface & instance)
+{
+    instance.Release();
+};
 
 class Direct2DFactory
 {
+private:
+
+    template<Releasable Interface>
+    __forceinline static void safe_release(Interface*& realising_resource)
+    {
+        if (realising_resource != nullptr)
+        {
+            realising_resource->Release();
+            realising_resource = nullptr;
+        }
+    }
+
+    __forceinline static D2D1::ColorF get_color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    {
+        static constexpr float MAX_COLOR_DEPTH{ 255.f };
+        return D2D1::ColorF{ r / MAX_COLOR_DEPTH, g / MAX_COLOR_DEPTH, b / MAX_COLOR_DEPTH, a / MAX_COLOR_DEPTH };
+    }
+
 public:
 
     Direct2DFactory() = delete;
@@ -17,10 +89,17 @@ public:
     ~Direct2DFactory();
 
     RECT get_render_area_size() const noexcept;
-    Direct2DResources get_resources() const;
+
+    ID2D1HwndRenderTarget& get_render_target();
+    ID2D1SolidColorBrush& get_brush(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+    void free_resources();
+
 
 private:
     
     HWND const attached_window;
-    ID2D1Factory* D2DFactory{ nullptr };
+    ID2D1Factory* d2d_factory{ nullptr };
+
+    ID2D1HwndRenderTarget* render_target{ nullptr };
+    std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
 };

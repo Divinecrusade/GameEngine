@@ -128,8 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Direct2DFactory.hpp" />
-    <ClInclude Include="Direct2DResources.hpp">
+    <ClInclude Include="Direct2DFactory.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Game.hpp" />
@@ -139,8 +138,7 @@
     <ClInclude Include="MainWindow\MainWindow.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Direct2DFactory.cpp" />
-    <ClCompile Include="Direct2DResources.cpp">
+    <ClCompile Include="Direct2DFactory.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Game.cpp" />

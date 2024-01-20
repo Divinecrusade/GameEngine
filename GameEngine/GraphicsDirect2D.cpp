@@ -2,63 +2,44 @@
 
 GraphicsDirect2D::GraphicsDirect2D(HWND hWnd)
 :
-D2DFactory{ hWnd },
-D2DResources{ }
+d2d_factory{ hWnd }
 { }
 
-// TODO
-void GraphicsDirect2D::set_pixel(unsigned x, unsigned y, Color c)
+void GraphicsDirect2D::draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, 
+                                 unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     assert(composing_frame);
+
+    d2d_factory.get_render_target().DrawLine(D2D1_POINT_2F{ static_cast<float>(x1), static_cast<float>(y1) },
+                                             D2D1_POINT_2F{ static_cast<float>(x2), static_cast<float>(y2) }, 
+                                             &d2d_factory.get_brush(r, g, b, a),
+                                             static_cast<float>(w));
 }
 
-//TODO
-Color GraphicsDirect2D::get_pixel(unsigned x, unsigned y) const
+void GraphicsDirect2D::fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, 
+                                      unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     assert(composing_frame);
-    return Color::Azure;
+
+    d2d_factory.get_render_target().FillRectangle(D2D1_RECT_F{ static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2) }, 
+                                                  &d2d_factory.get_brush(r, g, b, a));
 }
 
-void GraphicsDirect2D::draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, Color c)
+void GraphicsDirect2D::draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, 
+                                      unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     assert(composing_frame);
 
-    ID2D1SolidColorBrush* brush{ nullptr };
-    D2DResources.get_renderer().CreateSolidColorBrush(c, &brush);
-    D2DResources.get_renderer().DrawLine(D2D1_POINT_2F{static_cast<float>(x1), static_cast<float>(y1)},
-                                         D2D1_POINT_2F{ static_cast<float>(x2), static_cast<float>(y2)}, brush, static_cast<float>(w));
-    safe_release(brush);
-}
-
-void GraphicsDirect2D::fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Color c)
-{
-    assert(composing_frame);
-
-    ID2D1SolidColorBrush* brush{ nullptr };
-    D2DResources.get_renderer().CreateSolidColorBrush(c, &brush);
-    D2DResources.get_renderer().FillRectangle(D2D1_RECT_F{static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2)}, brush);
-
-    safe_release(brush);
-}
-
-void GraphicsDirect2D::draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Color c)
-{
-    assert(composing_frame);
-
-    ID2D1SolidColorBrush* brush{ nullptr };
-    D2DResources.get_renderer().CreateSolidColorBrush(c, &brush);
-    D2DResources.get_renderer().DrawRectangle(D2D1_RECT_F{ static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2) }, brush);
-
-    safe_release(brush);
+    d2d_factory.get_render_target().DrawRectangle(D2D1_RECT_F{ static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2) },
+                                                  &d2d_factory.get_brush(r, g, b, a));
 }
 
 void GraphicsDirect2D::begin_frame()
 {
     assert(!composing_frame);
 
-    D2DResources = { D2DFactory.get_resources() };
     composing_frame = true;
-    D2DResources.get_renderer().BeginDraw();
+    d2d_factory.get_render_target().BeginDraw();
 }
 
 void GraphicsDirect2D::end_frame()
@@ -66,17 +47,18 @@ void GraphicsDirect2D::end_frame()
     assert(composing_frame);
 
     composing_frame = false;
-    D2DResources.get_renderer().EndDraw();
+    d2d_factory.get_render_target().EndDraw();
+    d2d_factory.free_resources();
 }
 
 unsigned GraphicsDirect2D::get_screen_width() const noexcept
 {
-    RECT const area_size{ D2DFactory.get_render_area_size() };
+    RECT const area_size{ d2d_factory.get_render_area_size() };
     return area_size.right - area_size.left;
 }
 
 unsigned GraphicsDirect2D::get_screen_height() const noexcept
 {
-    RECT const area_size{ D2DFactory.get_render_area_size() };
+    RECT const area_size{ d2d_factory.get_render_area_size() };
     return area_size.bottom - area_size.top;
 }

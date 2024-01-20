@@ -22,6 +22,12 @@
     <Filter Include="Файлы заголовков\Interfaces">
       <UniqueIdentifier>{91caf225-9e56-43a7-9fc0-b8c56ab53336}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\Direct2D">
+      <UniqueIdentifier>{2fb5d66f-07ef-4cbf-855a-68ec4dde33e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Direct2D">
+      <UniqueIdentifier>{194d5bcc-eb9e-4534-bbea-764fa9263f11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow\MainWindow.hpp">
@@ -33,17 +39,14 @@
     <ClInclude Include="Game.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Direct2DResources.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="IGraphics2D.hpp">
       <Filter>Файлы заголовков\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsDirect2D.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Direct2DFactory.hpp">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Файлы заголовков\Direct2D</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsDirect2D.hpp">
+      <Filter>Файлы заголовков\Direct2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +59,11 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Direct2DResources.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Direct2DFactory.cpp">
+      <Filter>Исходные файлы\Direct2D</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsDirect2D.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Direct2DFactory.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\Direct2D</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

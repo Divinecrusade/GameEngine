@@ -23,18 +23,17 @@ public:
     virtual unsigned get_screen_width() const noexcept override;
     virtual unsigned get_screen_height() const noexcept override;
 
-    virtual void set_pixel(unsigned x, unsigned y, Color c) override;
-    virtual Color get_pixel(unsigned x, unsigned y) const override;
+    virtual void draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, 
+                           unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0U) override;
 
-    virtual void draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, Color c) override;
-
-    virtual void fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Color c) override;
-    virtual void draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Color c) override;
+    virtual void fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, 
+                                unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0U) override;
+    virtual void draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, 
+                                unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0U) override;
 
 private:
     
     bool composing_frame{ false };
 
-    Direct2DFactory D2DFactory;
-    Direct2DResources D2DResources;
+    Direct2DFactory d2d_factory;
 };
