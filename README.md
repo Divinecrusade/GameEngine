@@ -1,9 +1,9 @@
 # Game Engine
 
-## [EN] Brief | [РУС] Краткое описание
+## [EN] Brief | [ГђГ“Г‘] ГЉГ°Г ГІГЄГ®ГҐ Г®ГЇГЁГ±Г Г­ГЁГҐ
 
 [EN]
 A open-source C++ WinAPI project that supposed to be a object based simple game engine made from scratch. Graphical library is DirectX.
 
-[РУС]
-В рамках данного проекта реализуется простой C++ игровой движок на WinAPI и DirectX.
+[ГђГ“Г‘]
+Г‚ Г°Г Г¬ГЄГ Гµ Г¤Г Г­Г­Г®ГЈГ® ГЇГ°Г®ГҐГЄГІГ  Г°ГҐГ Г«ГЁГ§ГіГҐГІГ±Гї ГЇГ°Г®Г±ГІГ®Г© C++ ГЁГЈГ°Г®ГўГ®Г© Г¤ГўГЁГ¦Г®ГЄ Г­Г  WinAPI ГЁ DirectX.
