@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MainWindow/IWindow.hpp"
-#include "GraphicsDirect2D.hpp"
+#include "IGraphics2D.hpp"
 
 
 class Game
@@ -9,7 +9,7 @@ class Game
 public:
 
     Game() = delete;
-    Game(IWindow& window);
+    Game(IWindow& window, IGraphics2D& graphics);
     Game(Game const&) = delete;
     Game(Game&&) = delete;
 
@@ -29,5 +29,5 @@ protected:
 private:
 
     IWindow& wnd;
-    GraphicsDirect2D gfx;
+    IGraphics2D& gfx;
 };
