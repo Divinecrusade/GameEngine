@@ -48,6 +48,9 @@
     <ClInclude Include="GraphicsDirect2D.hpp">
       <Filter>Файлы заголовков\Direct2D</Filter>
     </ClInclude>
+    <ClInclude Include="KeyColor.hpp">
+      <Filter>Файлы заголовков\Direct2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">
@@ -63,6 +66,9 @@
       <Filter>Исходные файлы\Direct2D</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsDirect2D.cpp">
+      <Filter>Исходные файлы\Direct2D</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyColor.cpp">
       <Filter>Исходные файлы\Direct2D</Filter>
     </ClCompile>
   </ItemGroup>
