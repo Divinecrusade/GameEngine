@@ -20,66 +20,70 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 namespace std 
 {
-    template<> struct hash<KeyColor> 
+    template<> struct hash<GameEngine2D::KeyColor> 
     {
-        size_t operator() (KeyColor const& arg) const 
+        size_t operator() (GameEngine2D::KeyColor const& arg) const
         {           
             return hash<uint32_t>{}(arg.get_encoded());
         }
     };
 }
 
-template<class Interface>
-concept Releasable =
-    requires (Interface & instance)
-{
-    instance.Release();
-};
 
-class Direct2DFactory
+namespace GameEngine2D
 {
-private:
-
-    template<Releasable Interface>
-    __forceinline static void safe_release(Interface*& realising_resource)
+    template<class Interface>
+    concept Releasable =
+        requires (Interface & instance)
     {
-        if (realising_resource != nullptr)
+        instance.Release();
+    };
+
+    class Direct2DFactory
+    {
+    private:
+
+        template<Releasable Interface>
+        __forceinline static void safe_release(Interface*& realising_resource)
         {
-            realising_resource->Release();
-            realising_resource = nullptr;
+            if (realising_resource != nullptr)
+            {
+                realising_resource->Release();
+                realising_resource = nullptr;
+            }
         }
-    }
 
-    __forceinline static D2D1::ColorF get_color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-    {
-        static constexpr float MAX_COLOR_DEPTH{ 255.f };
-        return D2D1::ColorF{ r / MAX_COLOR_DEPTH, g / MAX_COLOR_DEPTH, b / MAX_COLOR_DEPTH, a / MAX_COLOR_DEPTH };
-    }
+        __forceinline static D2D1::ColorF get_color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+        {
+            static constexpr float MAX_COLOR_DEPTH{ 255.f };
+            return D2D1::ColorF{ r / MAX_COLOR_DEPTH, g / MAX_COLOR_DEPTH, b / MAX_COLOR_DEPTH, a / MAX_COLOR_DEPTH };
+        }
 
-public:
+    public:
 
-    Direct2DFactory() = delete;
-    Direct2DFactory(HWND attached_window);
-    Direct2DFactory(Direct2DFactory const&) = delete;
-    Direct2DFactory(Direct2DFactory&&) = delete;
+        Direct2DFactory() = delete;
+        Direct2DFactory(HWND attached_window);
+        Direct2DFactory(Direct2DFactory const&) = delete;
+        Direct2DFactory(Direct2DFactory&&) = delete;
 
-    Direct2DFactory& operator=(Direct2DFactory const&) = delete;
-    Direct2DFactory&& operator=(Direct2DFactory&&) = delete;
+        Direct2DFactory& operator=(Direct2DFactory const&) = delete;
+        Direct2DFactory&& operator=(Direct2DFactory&&) = delete;
 
-    ~Direct2DFactory();
+        ~Direct2DFactory();
 
-    RECT get_render_area_size() const noexcept;
+        RECT get_render_area_size() const noexcept;
 
-    ID2D1HwndRenderTarget& get_render_target();
-    ID2D1SolidColorBrush& get_brush(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-    void free_resources();
+        ID2D1HwndRenderTarget& get_render_target();
+        ID2D1SolidColorBrush& get_brush(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+        void free_resources();
 
 
-private:
+    private:
     
-    HWND const attached_window;
-    ID2D1Factory* d2d_factory{ nullptr };
+        HWND const attached_window;
+        ID2D1Factory* d2d_factory{ nullptr };
 
-    ID2D1HwndRenderTarget* render_target{ nullptr };
-    std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
-};
+        ID2D1HwndRenderTarget* render_target{ nullptr };
+        std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
+    };
+}

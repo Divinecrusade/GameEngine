@@ -4,30 +4,33 @@
 #include "IGraphics2D.hpp"
 
 
-class Game
+namespace GameEngine2D
 {
-public:
+    class Game
+    {
+    public:
 
-    Game() = delete;
-    Game(IWindow& window, IGraphics2D& graphics);
-    Game(Game const&) = delete;
-    Game(Game&&) = delete;
+        Game() = delete;
+        Game(Interfaces::IWindow& window, Interfaces::IGraphics2D& graphics);
+        Game(Game const&) = delete;
+        Game(Game&&) = delete;
 
-    Game& operator=(Game const&) = delete;
-    Game& operator=(Game&&) = delete;
+        Game& operator=(Game const&) = delete;
+        Game& operator=(Game&&) = delete;
 
-    virtual ~Game() = default;
+        virtual ~Game() = default;
 
-    void start();
+        void start();
 
-protected:
+    protected:
 
-    virtual void process();
-    virtual void update();
-    virtual void render();
+        virtual void process();
+        virtual void update();
+        virtual void render();
 
-private:
+    private:
 
-    IWindow& wnd;
-    IGraphics2D& gfx;
-};
+        Interfaces::IWindow& wnd;
+        Interfaces::IGraphics2D& gfx;
+    };
+}

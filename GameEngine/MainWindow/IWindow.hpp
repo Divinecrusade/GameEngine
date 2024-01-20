@@ -4,11 +4,17 @@
 #include <WinUser.h>
 
 
-__interface IWindow
+namespace GameEngine2D
 {
-public:
+    namespace Interfaces
+    {
+        __interface IWindow
+        {
+        public:
 
-    virtual void process_messages_queue() = 0;
-    virtual bool is_terminated() const = 0;
-    virtual HWND get_window_handler() const = 0;
-};
+            virtual void process_messages_queue() = 0;
+            virtual bool is_terminated() const = 0;
+            virtual HWND get_window_handler() const = 0;
+        };
+    }
+}

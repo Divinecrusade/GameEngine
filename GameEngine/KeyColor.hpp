@@ -2,23 +2,26 @@
 
 #include <cstdint>
 
-union KeyColor
+namespace GameEngine2D
 {
-public:
+    union KeyColor
+    {
+    public:
 
-    KeyColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept;
-    KeyColor(KeyColor const& c) noexcept;
-    KeyColor(KeyColor&& c) noexcept;
-    KeyColor& operator=(KeyColor const& c) noexcept;
-    KeyColor& operator=(KeyColor&& c) noexcept;
-    ~KeyColor() = default;
+        KeyColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept;
+        KeyColor(KeyColor const& c) noexcept;
+        KeyColor(KeyColor&& c) noexcept;
+        KeyColor& operator=(KeyColor const& c) noexcept;
+        KeyColor& operator=(KeyColor&& c) noexcept;
+        ~KeyColor() = default;
 
-    uint32_t get_encoded() const noexcept;
+        uint32_t get_encoded() const noexcept;
 
-private:
+    private:
 
-    uint8_t colors[4U];
-    uint32_t rgba{ 0U };
-};
+        uint8_t colors[4U];
+        uint32_t rgba{ 0U };
+    };
 
-bool operator==(KeyColor const& lhs, KeyColor const& rhs);
+    bool operator==(KeyColor const& lhs, KeyColor const& rhs);
+}

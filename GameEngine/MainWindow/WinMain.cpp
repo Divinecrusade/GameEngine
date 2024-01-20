@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 
+using namespace GameEngine2D;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
