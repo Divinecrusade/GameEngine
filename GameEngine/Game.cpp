@@ -32,4 +32,9 @@ namespace GameEngine2D
     void Game::render()
     {
     }
+
+    Interfaces::IWindow const& Game::get_wnd() const noexcept
+    {
+        return wnd;
+    }
 }

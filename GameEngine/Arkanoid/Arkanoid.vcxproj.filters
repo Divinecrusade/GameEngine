@@ -51,6 +51,9 @@
     <ClInclude Include="..\KeyColor.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Arkanoid.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainWindow\MainWindow.cpp">
@@ -69,6 +72,9 @@
       <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Arkanoid.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

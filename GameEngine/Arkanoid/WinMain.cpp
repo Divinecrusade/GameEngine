@@ -1,4 +1,4 @@
-#include "../Game.hpp"
+#include "Arkanoid.hpp"
 #include "../MainWindow/MainWindow.hpp"
 #include "../GraphicsDirect2D.hpp"
 
@@ -10,7 +10,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCm
 {
     MainWindow& m_wnd{ MainWindow::instance(hInstance, nCmdShow, L"Arkanoid") };
     GraphicsDirect2D graphics{ m_wnd.get_window_handler() };
-    Game theGame{ m_wnd, graphics };
+    Arkanoid theGame{ m_wnd, graphics };
     theGame.start();
 
     return EXIT_SUCCESS;

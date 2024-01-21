@@ -26,11 +26,16 @@ namespace GameEngine2D
 
         virtual void process();
         virtual void update();
-        virtual void render();
+        virtual void render();    
+        
+        Interfaces::IWindow const& get_wnd() const noexcept;
 
     private:
 
         Interfaces::IWindow& wnd;
+
+    protected:
+
         Interfaces::IGraphics2D& gfx;
     };
 }

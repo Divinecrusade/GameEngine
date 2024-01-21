@@ -506,6 +506,7 @@
     <ClInclude Include="..\MainWindow\IWindow.hpp" />
     <ClInclude Include="..\MainWindow\MainWindow.hpp" />
     <ClInclude Include="..\MainWindow\WinKey.hpp" />
+    <ClInclude Include="Arkanoid.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Direct2DFactory.cpp" />
@@ -513,6 +514,7 @@
     <ClCompile Include="..\GraphicsDirect2D.cpp" />
     <ClCompile Include="..\KeyColor.cpp" />
     <ClCompile Include="..\MainWindow\MainWindow.cpp" />
+    <ClCompile Include="Arkanoid.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
