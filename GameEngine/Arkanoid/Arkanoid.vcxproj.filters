@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков\Engine">
+      <UniqueIdentifier>{0c982e08-3c85-47b7-af16-825724209855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Engine">
+      <UniqueIdentifier>{d5f10376-da16-4ec4-9525-142ac58cd52b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Window">
+      <UniqueIdentifier>{0efba326-8334-4afa-938b-d0f251330db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Window">
+      <UniqueIdentifier>{864b011a-8a9b-40da-8e27-889a8d6be4a5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\MainWindow\IWindow.hpp">
+      <Filter>Файлы заголовков\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MainWindow\MainWindow.hpp">
+      <Filter>Файлы заголовков\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MainWindow\WinKey.hpp">
+      <Filter>Файлы заголовков\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Direct2DFactory.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Game.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GraphicsDirect2D.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IGraphics2D.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KeyColor.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\MainWindow\MainWindow.cpp">
+      <Filter>Исходные файлы\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Direct2DFactory.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Game.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GraphicsDirect2D.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\KeyColor.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
