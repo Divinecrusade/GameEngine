@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="MainWindow.hpp" />
+    <ClInclude Include="WinKey.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

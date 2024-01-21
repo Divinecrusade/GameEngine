@@ -26,7 +26,7 @@ namespace GameEngine2D
 
     MainWindow::~MainWindow()
     {
-        DestroyWindow(H_WND);
+        if (!terminated) DestroyWindow(H_WND);
         UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
     }
 
@@ -36,6 +36,47 @@ namespace GameEngine2D
 
         switch (message)
         {
+        case WM_KEYDOWN:
+        {
+            switch (wParam)
+            {
+                case VK_LBUTTON:
+                case VK_RBUTTON:
+                case VK_MBUTTON:
+                case VK_CANCEL:
+                case VK_CONTROL:
+                case VK_LCONTROL:
+                case VK_RCONTROL:
+                case VK_BACK:
+                case VK_TAB:
+                case VK_RETURN:
+                case VK_SHIFT:
+                case VK_LSHIFT:
+                case VK_RSHIFT:
+                case VK_MENU:
+                case VK_LMENU:
+                case VK_RMENU:
+                case VK_CAPITAL:
+                case VK_SPACE:
+                case VK_LEFT:
+                case VK_RIGHT:
+                case VK_DOWN:
+                case VK_UP:
+                    
+                    MainWindow::instance().pressed_non_fun_key = MainWindow::NON_FUNCTIONAL_KEY_NOT_PRESSED;
+                    MainWindow::instance().pressed_fun_key = static_cast<WinKey>(wParam);
+
+                    break;
+
+                default:
+                    
+                    MainWindow::instance().pressed_non_fun_key = wParam;
+                    MainWindow::instance().pressed_fun_key = WinKey::NOT_PRESSED;
+
+                    break;
+            }
+        }
+
         case WM_DISPLAYCHANGE:
     
             InvalidateRect(hWnd, NULL, FALSE);
@@ -132,6 +173,20 @@ namespace GameEngine2D
     HWND MainWindow::get_window_handler() const noexcept
     {
         return H_WND;
+    }
+
+    WinKey MainWindow::get_pressed_functional_key() const noexcept
+    {
+        assert(pressed_non_fun_key == NON_FUNCTIONAL_KEY_NOT_PRESSED);
+
+        return pressed_fun_key;
+    }
+
+    int MainWindow::get_pressed_non_functional_key() const noexcept
+    {
+        assert(pressed_fun_key == WinKey::NOT_PRESSED);
+
+        return pressed_non_fun_key;
     }
 
     void MainWindow::process_messages_queue() noexcept
