@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MainWindow/IWindow.hpp"
+#include "IWindow.hpp"
 #include "IGraphics2D.hpp"
 
 

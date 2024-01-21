@@ -134,9 +134,11 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GraphicsDirect2D.hpp" />
     <ClInclude Include="IGraphics2D.hpp" />
+    <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />
     <ClInclude Include="MainWindow\IWindow.hpp" />
     <ClInclude Include="MainWindow\MainWindow.hpp" />
+    <ClInclude Include="WinKey.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct2DFactory.cpp">

@@ -51,6 +51,12 @@
     <ClInclude Include="KeyColor.hpp">
       <Filter>Файлы заголовков\Direct2D</Filter>
     </ClInclude>
+    <ClInclude Include="IWindow.hpp">
+      <Filter>Файлы заголовков\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="WinKey.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">

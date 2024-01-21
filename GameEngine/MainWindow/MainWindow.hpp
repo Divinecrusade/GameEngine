@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IWindow.hpp"
+#include "../IWindow.hpp"
 #include <string>
 
 

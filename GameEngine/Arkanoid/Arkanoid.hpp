@@ -2,7 +2,7 @@
 
 #include "../Game.hpp"
 #include "../GraphicsDirect2D.hpp"
-#include "../MainWindow/IWindow.hpp"
+#include "../IWindow.hpp"
 
 
 class Arkanoid final : public GameEngine2D::Game
