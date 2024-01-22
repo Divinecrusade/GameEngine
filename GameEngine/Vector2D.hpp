@@ -22,12 +22,12 @@ namespace GameEngine2D
             Vector2D(Vector2D const&) = default;
             Vector2D(Vector2D&&) = default;
             Vector2D& operator=(Vector2D const&) = default;
-            Vector2D& operator=(Vector&&) = default;
+            Vector2D& operator=(Vector2D&&) = default;
 
             ~Vector2D() = default;
 
             template<typename F>
-            requires F != T
+            requires (!std::is_same<F, T>)
             Vector2D<T>(Vector2D<F> const& vec)
             :
             x{ static_cast<T>(vec.x) },
@@ -35,7 +35,7 @@ namespace GameEngine2D
             { }
 
             template<typename F>
-            requires F != T
+            requires (!std::is_same<F, T>)
             Vector2D<T>& operator=(Vector2D<F> const& vec)
             {
                 x = static_cast<T>(vec.x);

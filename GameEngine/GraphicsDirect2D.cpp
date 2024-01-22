@@ -8,30 +8,30 @@ namespace GameEngine2D
     d2d_factory{ hWnd }
     { }
 
-    void GraphicsDirect2D::draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, Colour c)
+    void GraphicsDirect2D::draw_line(Geometry::Vector2D<float> const& beg, Geometry::Vector2D<float> const& end, unsigned stroke_width, Colour c)
     {
         assert(composing_frame);
 
-        d2d_factory.get_render_target().DrawLine(D2D1_POINT_2F{ static_cast<float>(x1), static_cast<float>(y1) },
-                                                 D2D1_POINT_2F{ static_cast<float>(x2), static_cast<float>(y2) }, 
+        d2d_factory.get_render_target().DrawLine(D2D1_POINT_2F{ beg.x, beg.y },
+                                                 D2D1_POINT_2F{ end.x, end.y }, 
                                                  &d2d_factory.get_brush(c),
-                                                 static_cast<float>(w));
+                                                 static_cast<float>(stroke_width));
     }
 
-    void GraphicsDirect2D::fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Colour c)
+    void GraphicsDirect2D::fill_rectangle(Geometry::Rectangle2D<float> const& rect, Colour c)
     {
         assert(composing_frame);
 
-        d2d_factory.get_render_target().FillRectangle(D2D1_RECT_F{ static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2) }, 
+        d2d_factory.get_render_target().FillRectangle(D2D1_RECT_F{ rect.left, rect.top, rect.right, rect.bottom }, 
                                                       &d2d_factory.get_brush(c));
     }
 
-    void GraphicsDirect2D::draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Colour c)
+    void GraphicsDirect2D::draw_rectangle(Geometry::Rectangle2D<float> const& rect, unsigned stroke_width, Colour c)
     {
         assert(composing_frame);
 
-        d2d_factory.get_render_target().DrawRectangle(D2D1_RECT_F{ static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2) },
-                                                      &d2d_factory.get_brush(c));
+        d2d_factory.get_render_target().DrawRectangle(D2D1_RECT_F{ rect.left, rect.top, rect.right, rect.bottom },
+                                                      &d2d_factory.get_brush(c), static_cast<float>(stroke_width));
     }
 
     void GraphicsDirect2D::begin_frame()

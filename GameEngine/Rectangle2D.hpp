@@ -50,7 +50,7 @@ namespace GameEngine2D
             ~Rectangle2D() = default;
 
             template<typename F>
-            requires F != T
+            requires (!std::is_same<F, T>)
             Rectangle2D<T>(Rectangle2D<F> const& rect)
             :
             left{ static_cast<T>(rect.left) },
@@ -60,7 +60,7 @@ namespace GameEngine2D
             { }
 
             template<typename F>
-            requires F != T
+            requires (!std::is_same<F, T>)
             Rectangle2D<T>&operator=(Rectangle2D<F> const& rect)
             {
                 left = static_cast<T>(rect.left);
