@@ -4,6 +4,11 @@
 
 namespace GameEngine2D
 {
+    enum class ConstEval
+    {
+        COMPILE_TIME
+    };
+
     union KeyColor
     {
     private:
@@ -11,25 +16,25 @@ namespace GameEngine2D
         static consteval uint32_t encode(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
         {
             uint32_t rgba{ 0U };
-            uint32_t r_{ static_cast<uint32_t>(r) << 24U };
-            uint32_t g_{ static_cast<uint32_t>(g) << 16U };
-            uint32_t b_{ static_cast<uint32_t>(b) << 8U };
-            uint32_t a_{ static_cast<uint32_t>(a) };
+            uint32_t r_  { static_cast<uint32_t>(r) };
+            uint32_t g_  { static_cast<uint32_t>(g) << 8U  };
+            uint32_t b_  { static_cast<uint32_t>(b) << 16U };
+            uint32_t a_  { static_cast<uint32_t>(a) << 24U };
 
             return rgba | r_ | g_ | b_ | a_;
         }
 
     public:
-        
+
         static constexpr uint8_t MIN_COLOUR_DEPTH{ 0U };
         static constexpr uint8_t MAX_COLOUR_DEPTH{ 255U };
 
-        static constexpr size_t  R_INDEX{ 3U };
-        static constexpr size_t  G_INDEX{ 2U };
-        static constexpr size_t  B_INDEX{ 1U };
-        static constexpr size_t  A_INDEX{ 0U };
+        static constexpr size_t  R_INDEX{ 0U };
+        static constexpr size_t  G_INDEX{ 1U };
+        static constexpr size_t  B_INDEX{ 2U };
+        static constexpr size_t  A_INDEX{ 3U };
 
-        consteval KeyColor(float, uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOUR_DEPTH) noexcept
+        consteval KeyColor(ConstEval, uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOUR_DEPTH) noexcept
         :
         rgba{ encode(r, g, b, a) }
         { }
@@ -61,13 +66,13 @@ namespace GameEngine2D
 
     namespace Colours
     {
-        static constexpr Colour RED     { 0.f, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
-        static constexpr Colour GREEN   { 0.f, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
-        static constexpr Colour BLUE    { 0.f, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
-        static constexpr Colour BLACK   { 0.f, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
-        static constexpr Colour WHITE   { 0.f, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
-        static constexpr Colour CYAN    { 0.f, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
-        static constexpr Colour MAGENTA { 0.f, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
-        static constexpr Colour YELLOW  { 0.f, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
+        static constexpr Colour RED     { ConstEval::COMPILE_TIME, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
+        static constexpr Colour GREEN   { ConstEval::COMPILE_TIME, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
+        static constexpr Colour BLUE    { ConstEval::COMPILE_TIME, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
+        static constexpr Colour BLACK   { ConstEval::COMPILE_TIME, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
+        static constexpr Colour WHITE   { ConstEval::COMPILE_TIME, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
+        static constexpr Colour CYAN    { ConstEval::COMPILE_TIME, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
+        static constexpr Colour MAGENTA { ConstEval::COMPILE_TIME, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH };
+        static constexpr Colour YELLOW  { ConstEval::COMPILE_TIME, Colour::MAX_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
     }
 }

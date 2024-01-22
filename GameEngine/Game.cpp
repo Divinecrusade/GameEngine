@@ -32,7 +32,7 @@ namespace GameEngine2D
     void Game::render()
     {
         gfx.draw_line(0, 0, gfx.get_screen_width(), gfx.get_screen_height(), 2U, Colours::MAGENTA);
-        gfx.draw_line(gfx.get_screen_width(), 0,  0, gfx.get_screen_height(), 2U, Colours::YELLOW);
+        gfx.draw_line(gfx.get_screen_width(), 0,  0, gfx.get_screen_height(), 2U, Colours::RED);
 
     }
 
