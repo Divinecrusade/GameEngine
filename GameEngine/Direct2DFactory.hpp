@@ -53,10 +53,10 @@ namespace GameEngine2D
             }
         }
 
-        __forceinline static D2D1::ColorF get_color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+        __forceinline static D2D1::ColorF get_color(Colour c)
         {
             static constexpr float MAX_COLOR_DEPTH{ 255.f };
-            return D2D1::ColorF{ r / MAX_COLOR_DEPTH, g / MAX_COLOR_DEPTH, b / MAX_COLOR_DEPTH, a / MAX_COLOR_DEPTH };
+            return D2D1::ColorF{ c.colors[Colour::R_INDEX] / MAX_COLOR_DEPTH, c.colors[Colour::G_INDEX] / MAX_COLOR_DEPTH, c.colors[Colour::B_INDEX] / MAX_COLOR_DEPTH, c.colors[Colour::A_INDEX] / MAX_COLOR_DEPTH };
         }
 
     public:
@@ -74,7 +74,7 @@ namespace GameEngine2D
         RECT get_render_area_size() const noexcept;
 
         ID2D1HwndRenderTarget& get_render_target();
-        ID2D1SolidColorBrush& get_brush(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+        ID2D1SolidColorBrush& get_brush(KeyColor const& key);
         void free_resources();
 
 

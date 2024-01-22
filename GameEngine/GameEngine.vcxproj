@@ -138,6 +138,8 @@
     <ClInclude Include="KeyColor.hpp" />
     <ClInclude Include="MainWindow\IWindow.hpp" />
     <ClInclude Include="MainWindow\MainWindow.hpp" />
+    <ClInclude Include="Rectangle2D.hpp" />
+    <ClInclude Include="Vector2D.hpp" />
     <ClInclude Include="WinKey.hpp" />
   </ItemGroup>
   <ItemGroup>

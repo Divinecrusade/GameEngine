@@ -25,13 +25,10 @@ namespace GameEngine2D
         virtual unsigned get_screen_width() const noexcept override;
         virtual unsigned get_screen_height() const noexcept override;
 
-        virtual void draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, 
-                               unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0U) override;
+        virtual void draw_line(unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned w, Colour c) override;
 
-        virtual void fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, 
-                                    unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0U) override;
-        virtual void draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, 
-                                    unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0U) override;
+        virtual void fill_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Colour c) override;
+        virtual void draw_rectangle(unsigned x1, unsigned y1, unsigned x2, unsigned y2, Colour c) override;
 
     private:
     

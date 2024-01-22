@@ -38,15 +38,14 @@ namespace GameEngine2D
         return *render_target;
     }
 
-    ID2D1SolidColorBrush& Direct2DFactory::get_brush(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    ID2D1SolidColorBrush& Direct2DFactory::get_brush(KeyColor const& key)
     {
         assert(render_target);
 
-        KeyColor const key{ r, g, b, a };
         if (!brushes.contains(key))
         {
             ID2D1SolidColorBrush* tmp{ nullptr };
-            D2D1::ColorF const c{ get_color(r, g, b, a) };
+            D2D1::ColorF const c{ get_color(key) };
             render_target->CreateSolidColorBrush(c, &tmp);
             brushes.insert({ key, tmp });
         }

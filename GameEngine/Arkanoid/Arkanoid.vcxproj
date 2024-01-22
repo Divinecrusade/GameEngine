@@ -507,6 +507,7 @@
     <ClInclude Include="..\MainWindow\MainWindow.hpp" />
     <ClInclude Include="..\MainWindow\WinKey.hpp" />
     <ClInclude Include="Arkanoid.hpp" />
+    <ClInclude Include="PlayField.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Direct2DFactory.cpp" />
