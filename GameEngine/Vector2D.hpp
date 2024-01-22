@@ -9,7 +9,7 @@ namespace GameEngine2D
 { 
     namespace Geometry
     {
-        template<typename T = int>
+        template<typename T>
         requires (std::is_arithmetic<T>() == true)
         struct Vector2D final
         {
@@ -18,7 +18,7 @@ namespace GameEngine2D
             :
             x{ x },
             y{ y }
-            {    }
+            { }
             Vector2D(Vector2D const&) = default;
             Vector2D(Vector2D&&) = default;
             Vector2D& operator=(Vector2D const&) = default;
@@ -26,6 +26,22 @@ namespace GameEngine2D
 
             ~Vector2D() = default;
 
+            template<typename F>
+            requires F != T
+            Vector2D<T>(Vector2D<F> const& vec)
+            :
+            x{ static_cast<T>(vec.x) },
+            y{ static_cast<T>(vec.y) }
+            { }
+
+            template<typename F>
+            requires F != T
+            Vector2D<T>& operator=(Vector2D<F> const& vec)
+            {
+                x = static_cast<T>(vec.x);
+                y = static_cast<T>(vec.y);
+                return *this;
+            }
 
             Vector2D& operator-=(Vector2D const& rhs)
             {

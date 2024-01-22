@@ -8,7 +8,7 @@ namespace GameEngine2D
 {
     namespace Geometry
     {
-        template<typename T = unsigned>
+        template<typename T>
         requires (std::is_arithmetic<T>() == true)
         struct Rectangle2D final
         {
@@ -48,6 +48,27 @@ namespace GameEngine2D
             Rectangle2D& operator=(Rectangle2D&&) = default;
 
             ~Rectangle2D() = default;
+
+            template<typename F>
+            requires F != T
+            Rectangle2D<T>(Rectangle2D<F> const& rect)
+            :
+            left{ static_cast<T>(rect.left) },
+            right{ static_cast<T>(rect.right) },
+            bottom{ static_cast<T>(rect.bottom) },
+            top{ static_cast<T>(rect.top) }
+            { }
+
+            template<typename F>
+            requires F != T
+            Rectangle2D<T>&operator=(Rectangle2D<F> const& rect)
+            {
+                left = static_cast<T>(rect.left);
+                right = static_cast<T>(rect.right);
+                bottom = static_cast<T>(rect.bottom);
+                top = static_cast<T>(rect.top);
+                return *this;
+            }
 
             T get_width() const
             {
@@ -90,6 +111,7 @@ namespace GameEngine2D
             {
                 return rect.contains(*this);
             }
+
 
             T left;
             T right;
