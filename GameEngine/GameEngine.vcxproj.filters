@@ -28,6 +28,9 @@
     <Filter Include="Файлы заголовков\Direct2D">
       <UniqueIdentifier>{194d5bcc-eb9e-4534-bbea-764fa9263f11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Geometry">
+      <UniqueIdentifier>{80143320-a45d-4ae6-9524-4fc17dd384a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow\MainWindow.hpp">
@@ -56,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="WinKey.hpp">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Rectangle2D.hpp">
+      <Filter>Файлы заголовков\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2D.hpp">
+      <Filter>Файлы заголовков\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
