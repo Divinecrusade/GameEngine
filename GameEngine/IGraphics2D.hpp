@@ -16,14 +16,14 @@ namespace GameEngine2D
             virtual void begin_frame() = 0;
             virtual void end_frame() = 0;
 
-            virtual unsigned get_screen_width() const = 0;
-            virtual unsigned get_screen_height() const = 0;
+            virtual int get_screen_width() const = 0;
+            virtual int get_screen_height() const = 0;
 
-            virtual void draw_line(Geometry::Vector2D<float> const& beg, Geometry::Vector2D<float> const& end, unsigned stroke_width, Colour c) = 0;
+            virtual void draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c) = 0;
 
-            virtual void fill_rectangle(Geometry::Rectangle2D<float> const& rect, Colour c) = 0;
+            virtual void fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c) = 0;
             // TODO: add stroke width for rectangle drawing
-            virtual void draw_rectangle(Geometry::Rectangle2D<float> const& rect, unsigned stroke_witdth, Colour c) = 0;
+            virtual void draw_rectangle(Geometry::Rectangle2D<int> const& rect, int stroke_witdth, Colour c) = 0;
         };
     }
 }

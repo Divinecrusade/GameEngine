@@ -22,18 +22,26 @@ namespace GameEngine2D
         virtual void begin_frame() override;
         virtual void end_frame() override;
 
-        virtual unsigned get_screen_width() const noexcept override;
-        virtual unsigned get_screen_height() const noexcept override;
+        virtual int get_screen_width() const noexcept override;
+        virtual int get_screen_height() const noexcept override;
 
-        virtual void draw_line(Geometry::Vector2D<float> const& beg, Geometry::Vector2D<float> const& end, unsigned stroke_width, Colour c) override;
+        virtual void draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c) override;
 
-        virtual void fill_rectangle(Geometry::Rectangle2D<float> const& rect, Colour c) override;
-        virtual void draw_rectangle(Geometry::Rectangle2D<float> const& rect, unsigned stroke_witdth, Colour c) override;
+        virtual void fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c) override;
+        virtual void draw_rectangle(Geometry::Rectangle2D<int> const& rect, int stroke_witdth, Colour c) override;
+
+    private:
+
+        float get_dips_from_pixels(int px) const
+        {
+            return static_cast<float>(px) / (static_cast<float>(GetDpiForWindow(d2d_factory.get_render_target().GetHwnd())) / USER_DEFAULT_SCREEN_DPI);
+        }
+
 
     private:
     
         bool composing_frame{ false };
 
-        Direct2DFactory d2d_factory;
+        mutable Direct2DFactory d2d_factory;
     };
 }

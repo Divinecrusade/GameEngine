@@ -2,10 +2,14 @@
 #include <cassert>
 
 
-PlayField::PlayField(GameEngine2D::Geometry::Rectangle2D<unsigned> const& size_and_location)
+PlayField::PlayField(GameEngine2D::Geometry::Rectangle2D<int> const& size_and_location)
 :
 collision_frame{ size_and_location }
 {
+    assert(collision_frame.left > 0);
+    assert(collision_frame.right > 0);
+    assert(collision_frame.bottom > 0);
+    assert(collision_frame.top > 0);
     assert(collision_frame.left < collision_frame.right);
     assert(collision_frame.top < collision_frame.bottom);
 }

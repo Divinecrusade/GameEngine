@@ -31,10 +31,10 @@ public:
 
 private:
     
-    static constexpr unsigned PADDING_LEFT{ 80U };
-    static constexpr unsigned PADDING_RIGHT{ 20U };
-    static constexpr unsigned PADDING_TOP{ 20U };
-    static constexpr unsigned PADDING_BOTTOM{ 20U };
+    static constexpr int PADDING_LEFT{ 80U };
+    static constexpr int PADDING_RIGHT{ 20U };
+    static constexpr int PADDING_TOP{ 20U };
+    static constexpr int PADDING_BOTTOM{ 20U };
 
 
     PlayField field;
