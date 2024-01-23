@@ -134,16 +134,23 @@ namespace GameEngine2D
             if (last_error != ERROR_CLASS_ALREADY_EXISTS)
               throw std::runtime_error{ "Failed to register class" };
         }
-
+        RECT window_pos{ };
+        window_pos.left = 350;
+        window_pos.right = init_width + window_pos.left;
+        window_pos.top = 100;
+        window_pos.bottom = init_height + window_pos.top;
+        auto const style{ (resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX)) };
+        auto const ex_style{ WS_EX_OVERLAPPEDWINDOW };
+        AdjustWindowRectEx(&window_pos, style, FALSE, ex_style);
         HWND const hWnd
         {
             CreateWindowExW(
-                WS_EX_OVERLAPPEDWINDOW,
+                ex_style,
                 MainWindow::WND_CLASS_NAME,
                 window_name.c_str(),
-                (resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX)),
-                CW_USEDEFAULT, CW_USEDEFAULT,
-                init_width, init_height,
+                style,
+                window_pos.left, window_pos.top,
+                window_pos.right - window_pos.left, window_pos.bottom - window_pos.top,
                 NULL,
                 NULL,
                 hInstance,
@@ -157,15 +164,6 @@ namespace GameEngine2D
             // TODO: make exception, that obtain error code
             throw std::runtime_error{ "Failed to create window" };
         }
-        unsigned const dpi { GetDpiForWindow(hWnd) };
-        SetWindowPos(
-            hWnd,
-            NULL,
-            NULL,
-            NULL,
-            init_width * dpi / USER_DEFAULT_SCREEN_DPI,
-            init_height * dpi / USER_DEFAULT_SCREEN_DPI,
-            SWP_NOMOVE);
 
         return hWnd;
     }
