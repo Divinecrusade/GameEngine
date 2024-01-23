@@ -3,30 +3,33 @@
 #include <chrono>
 
 
-class FrameTimer final
+namespace GameEngine2D
 {
-public:
-
-    FrameTimer()
+    class FrameTimer final
     {
-        last = std::chrono::steady_clock::now();
-    }
-    FrameTimer(FrameTimer const&) = delete;
-    FrameTimer(FrameTimer&&) = delete;
+    public:
 
-    FrameTimer& operator=(FrameTimer const&) = delete;
-    FrameTimer& operator=(FrameTimer&&) = delete;
+        FrameTimer()
+        {
+            last = std::chrono::steady_clock::now();
+        }
+        FrameTimer(FrameTimer const&) = delete;
+        FrameTimer(FrameTimer&&) = delete;
 
-    float mark()
-    {
-        auto const old{ last };
-        last = std::chrono::steady_clock::now();
-        std::chrono::duration<float> const frameTime{ last - old };
+        FrameTimer& operator=(FrameTimer const&) = delete;
+        FrameTimer& operator=(FrameTimer&&) = delete;
 
-        return frameTime.count();
-    }
+        float mark()
+        {
+            auto const old{ last };
+            last = std::chrono::steady_clock::now();
+            std::chrono::duration<float> const frameTime{ last - old };
 
-private:
+            return frameTime.count();
+        }
 
-    std::chrono::steady_clock::time_point last;
-};
+    private:
+
+        std::chrono::steady_clock::time_point last;
+    };
+}
