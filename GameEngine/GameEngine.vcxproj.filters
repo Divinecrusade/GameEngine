@@ -51,9 +51,6 @@
     <ClInclude Include="GraphicsDirect2D.hpp">
       <Filter>Файлы заголовков\Direct2D</Filter>
     </ClInclude>
-    <ClInclude Include="KeyColor.hpp">
-      <Filter>Файлы заголовков\Direct2D</Filter>
-    </ClInclude>
     <ClInclude Include="IWindow.hpp">
       <Filter>Файлы заголовков\Interfaces</Filter>
     </ClInclude>
@@ -65,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="Vector2D.hpp">
       <Filter>Файлы заголовков\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyColor.hpp">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
