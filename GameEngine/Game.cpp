@@ -1,6 +1,5 @@
 #include "Game.hpp"
 
-
 namespace GameEngine2D
 {
     Game::Game(Interfaces::IWindow& window, Interfaces::IGraphics2D& graphics)

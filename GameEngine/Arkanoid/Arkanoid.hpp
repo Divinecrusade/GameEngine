@@ -4,6 +4,8 @@
 #include "../GraphicsDirect2D.hpp"
 #include "../IWindow.hpp"
 
+#include "PlayField.hpp"
+
 
 class Arkanoid final : public GameEngine2D::Game
 {
@@ -25,6 +27,15 @@ public:
     Arkanoid& operator=(Arkanoid const&) = delete;
     Arkanoid& operator=(Arkanoid&&) = delete;
 
+    virtual void render() override;
+
 private:
     
+    static constexpr unsigned PADDING_LEFT{ 80U };
+    static constexpr unsigned PADDING_RIGHT{ 20U };
+    static constexpr unsigned PADDING_TOP{ 20U };
+    static constexpr unsigned PADDING_BOTTOM{ 20U };
+
+
+    PlayField field;
 };

@@ -516,6 +516,7 @@
     <ClCompile Include="..\KeyColor.cpp" />
     <ClCompile Include="..\MainWindow\MainWindow.cpp" />
     <ClCompile Include="Arkanoid.cpp" />
+    <ClCompile Include="PlayField.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
