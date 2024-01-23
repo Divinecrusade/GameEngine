@@ -29,6 +29,6 @@ namespace GameEngine2D
 		ARROW_RIGHT = VK_RIGHT,
 		ARROW_DOWN = VK_DOWN,
 		ARROW_UP = VK_UP,
-		NOT_PRESSED
+		NOT_PRESSED = -1
 	};
 }
