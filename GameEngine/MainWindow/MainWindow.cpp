@@ -5,18 +5,18 @@
 
 namespace GameEngine2D
 {
-    MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, int init_width, int init_height)
+    MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     {
-        static MainWindow wnd{ hInstance, nCmdShow, window_name, init_width, init_height };
+        static MainWindow wnd{ hInstance, nCmdShow, window_name, resizable, init_width, init_height };
 
         return wnd;
     }
 
-    MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, int init_width, int init_height)
+    MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     :
     H_INSTANCE{ hInstance == NULL ? (HINSTANCE)GetModuleHandleW(NULL) : hInstance },
     WND_TITLE { window_name },
-    H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, init_width, init_height)   }
+    H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, resizable, init_width, init_height)   }
     {
         assert(H_WND);
 
@@ -70,7 +70,7 @@ namespace GameEngine2D
 
                 default:
                     
-                    MainWindow::instance().pressed_non_fun_key = wParam;
+                    MainWindow::instance().pressed_non_fun_key = static_cast<int>(wParam);
                     MainWindow::instance().pressed_fun_key = WinKey::NOT_PRESSED;
 
                     break;
@@ -105,7 +105,7 @@ namespace GameEngine2D
         return MESSAGE_HANDLED;
     }
 
-    HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, int init_width, int init_height)
+    HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, bool resizable, int init_width, int init_height)
     {
         assert(hInstance != NULL);
         assert(init_width > 0);
@@ -141,7 +141,7 @@ namespace GameEngine2D
                 WS_EX_OVERLAPPEDWINDOW,
                 MainWindow::WND_CLASS_NAME,
                 window_name.c_str(),
-                WS_OVERLAPPEDWINDOW,
+                (resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX)),
                 CW_USEDEFAULT, CW_USEDEFAULT,
                 init_width, init_height,
                 NULL,

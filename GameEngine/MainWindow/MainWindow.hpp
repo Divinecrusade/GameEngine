@@ -24,7 +24,7 @@ namespace GameEngine2D
         MainWindow& operator=(MainWindow const&) = delete;
         MainWindow& operator=(MainWindow&&) = delete;
 
-        static MainWindow& instance(HINSTANCE hInstance = nullptr, int nCmdShow = 0, std::wstring_view window_name = L"", int init_width = DEFAULT_INIT_WIDTH, int init_height = DEFAULT_INIT_HEIGHT);
+        static MainWindow& instance(HINSTANCE hInstance = nullptr, int nCmdShow = 0, std::wstring_view window_name = L"", bool resizable = true, int init_width = DEFAULT_INIT_WIDTH, int init_height = DEFAULT_INIT_HEIGHT);
     
         virtual WinKey get_pressed_functional_key() const noexcept override;
         virtual int get_pressed_non_functional_key() const noexcept override;
@@ -47,11 +47,11 @@ namespace GameEngine2D
 
     private:
 
-        MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, int init_width, int init_height);
+        MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height);
         virtual ~MainWindow();
 
         static LRESULT CALLBACK message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept;
-        static HWND register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, int init_width, int init_height);
+        static HWND register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, bool resizable, int init_width, int init_height);
 
     private:
 
