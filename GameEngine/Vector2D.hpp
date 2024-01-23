@@ -27,7 +27,6 @@ namespace GameEngine2D
             ~Vector2D() = default;
 
             template<typename F>
-            requires (!std::is_same<F, T>)
             Vector2D<T>(Vector2D<F> const& vec)
             :
             x{ static_cast<T>(vec.x) },
@@ -35,7 +34,6 @@ namespace GameEngine2D
             { }
 
             template<typename F>
-            requires (!std::is_same<F, T>)
             Vector2D<T>& operator=(Vector2D<F> const& vec)
             {
                 x = static_cast<T>(vec.x);

@@ -50,7 +50,6 @@ namespace GameEngine2D
             ~Rectangle2D() = default;
 
             template<typename F>
-            requires (!std::is_same<F, T>)
             Rectangle2D<T>(Rectangle2D<F> const& rect)
             :
             left{ static_cast<T>(rect.left) },
@@ -60,7 +59,6 @@ namespace GameEngine2D
             { }
 
             template<typename F>
-            requires (!std::is_same<F, T>)
             Rectangle2D<T>&operator=(Rectangle2D<F> const& rect)
             {
                 left = static_cast<T>(rect.left);
@@ -88,7 +86,7 @@ namespace GameEngine2D
             }
             Rectangle2D get_expanded(T offset) const
             {
-                return Rectangle2D(left - offset, right + offset, top - offset, bottom + offset);
+                return Rectangle2D(left - offset, right + offset, bottom + offset, top - offset);
             }
 
             bool is_colided_with(Rectangle2D const& rect) const
