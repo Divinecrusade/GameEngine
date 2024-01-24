@@ -26,6 +26,8 @@ public:
     Direction get_direction() const noexcept;
     void set_direction(Direction dir);
     void accelerate(float a);
+    GameEngine2D::Geometry::Rectangle2D<int> get_collision() const;
+    void move_by(GameEngine2D::Geometry::Vector2D<int> const& dpos) noexcept;
 
 private:
 

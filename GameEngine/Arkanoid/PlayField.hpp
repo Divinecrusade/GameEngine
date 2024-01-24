@@ -3,6 +3,7 @@
 #include "../Rectangle2D.hpp"
 #include "../IGraphics2D.hpp"
 
+#include "Paddle.hpp"
 
 class PlayField final
 {
@@ -18,7 +19,8 @@ public:
 
     void draw(GameEngine2D::Interfaces::IGraphics2D& gfx) const;
     
-    //bool is_in_field(Paddle pad) const;
+    bool is_in_field(Paddle const& pad) const;
+    void handle_collision(Paddle& pad) const;
     //bool is_in_field(Ball ball) const;
 
 private:
@@ -30,5 +32,5 @@ private:
     static constexpr GameEngine2D::Colour lose_zone_colour{ GameEngine2D::Colours::RED };
     static constexpr int lose_zone_line_thickness{ 2 };
 
-    GameEngine2D::Geometry::Rectangle2D<unsigned> const collision_frame;
+    GameEngine2D::Geometry::Rectangle2D<int> const collision_frame;
 };

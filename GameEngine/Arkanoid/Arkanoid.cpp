@@ -26,6 +26,7 @@ void Arkanoid::update()
     }
     pad.set_direction(new_dir);
     pad.update(dt);
+    if (!field.is_in_field(pad)) field.handle_collision(pad);
 }
 
 void Arkanoid::render()

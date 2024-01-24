@@ -37,3 +37,15 @@ void Paddle::accelerate(float a)
 {
     cur_speed += a;
 }
+
+GameEngine2D::Geometry::Rectangle2D<int> Paddle::get_collision() const
+{
+    return GameEngine2D::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
+}
+
+void Paddle::move_by(GameEngine2D::Geometry::Vector2D<int> const& dpos) noexcept
+{
+    assert(dpos.y == 0);
+
+    cur_pos += dpos;
+}
