@@ -34,7 +34,7 @@ public:
 
 private:
     
-    static constexpr int PADDING_LEFT{ 80 };
+    static constexpr int PADDING_LEFT{ 200 };
     static constexpr int PADDING_RIGHT{ 20 };
     static constexpr int PADDING_TOP{ 20 };
     static constexpr int PADDING_BOTTOM{ 20 };
