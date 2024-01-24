@@ -25,7 +25,7 @@ public:
 
 private:
 
-    static constexpr GameEngine2D::Colour inner_border_colour{ GameEngine2D::Colours::BLUE };
+    static constexpr GameEngine2D::Colour inner_border_colour{ GameEngine2D::Colours::ROYAL_BLUE };
     static constexpr int inner_border_thickness{ 2 };
     static constexpr GameEngine2D::Colour outer_border_colour{ GameEngine2D::Colours::CYAN };
     static constexpr int outer_border_thickness{ 2 };
