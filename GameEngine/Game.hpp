@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IWindow.hpp"
-#include "IGraphics2D.hpp"
+#include "IFramableGraphics2D.hpp"
 
 
 namespace GameEngine2D
@@ -11,7 +11,7 @@ namespace GameEngine2D
     public:
 
         Game() = delete;
-        Game(Interfaces::IWindow& window, Interfaces::IGraphics2D& graphics);
+        Game(Interfaces::IWindow& window, Interfaces::IFramableGraphics2D& graphics);
         Game(Game const&) = delete;
         Game(Game&&) = delete;
 
@@ -36,6 +36,6 @@ namespace GameEngine2D
 
     protected:
 
-        Interfaces::IGraphics2D& gfx;
+        Interfaces::IFramableGraphics2D& gfx;
     };
 }

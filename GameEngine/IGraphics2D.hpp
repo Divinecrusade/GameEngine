@@ -13,9 +13,6 @@ namespace GameEngine2D
         {
         public:
 
-            virtual void begin_frame() = 0;
-            virtual void end_frame() = 0;
-
             virtual int get_screen_width() const = 0;
             virtual int get_screen_height() const = 0;
 

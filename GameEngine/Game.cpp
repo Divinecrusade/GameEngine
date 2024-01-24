@@ -2,7 +2,7 @@
 
 namespace GameEngine2D
 {
-    Game::Game(Interfaces::IWindow& window, Interfaces::IGraphics2D& graphics)
+    Game::Game(Interfaces::IWindow& window, Interfaces::IFramableGraphics2D& graphics)
     :
     wnd{ window },
     gfx{ graphics }

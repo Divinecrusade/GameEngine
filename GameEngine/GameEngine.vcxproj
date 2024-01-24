@@ -134,6 +134,7 @@
     <ClInclude Include="FrameTimer.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GraphicsDirect2D.hpp" />
+    <ClInclude Include="IFramableGraphics2D.hpp" />
     <ClInclude Include="IGraphics2D.hpp" />
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />

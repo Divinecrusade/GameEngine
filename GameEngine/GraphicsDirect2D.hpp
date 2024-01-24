@@ -1,12 +1,12 @@
 #pragma once
 
-#include "IGraphics2D.hpp"
+#include "IFramableGraphics2D.hpp"
 #include "Direct2DFactory.hpp"
 
 
 namespace GameEngine2D
 {
-    class GraphicsDirect2D : public Interfaces::IGraphics2D
+    class GraphicsDirect2D : public Interfaces::IFramableGraphics2D
     {
     public:
 

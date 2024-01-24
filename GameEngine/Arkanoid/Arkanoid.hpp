@@ -20,7 +20,7 @@ public:
 public:
 
     Arkanoid() = delete;
-    Arkanoid(GameEngine2D::Interfaces::IWindow& window, GameEngine2D::Interfaces::IGraphics2D& graphics);
+    Arkanoid(GameEngine2D::Interfaces::IWindow& window, GameEngine2D::Interfaces::IFramableGraphics2D& graphics);
     Arkanoid(Arkanoid const&) = delete;
     Arkanoid(Arkanoid&&) = delete;
 
