@@ -15,7 +15,12 @@ cur_half_width{ init_half_width }
 
 void Paddle::draw(GameEngine2D::Interfaces::IGraphics2D& gfx)
 {
-    gfx.fill_rectangle(GameEngine2D::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT), MAIN_COLOUR);
+    GameEngine2D::Geometry::Rectangle2D<int> const pad_rect{ GameEngine2D::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT) };
+    gfx.fill_rectangle(pad_rect, MAIN_COLOUR);
+    GameEngine2D::Geometry::Rectangle2D<int> const left_wing{ pad_rect.left, pad_rect.left + WING_WIDTH, pad_rect.bottom, pad_rect.top };
+    GameEngine2D::Geometry::Rectangle2D<int> const right_wing{ pad_rect.right - WING_WIDTH, pad_rect.right, pad_rect.bottom, pad_rect.top };
+    gfx.fill_rectangle(left_wing, WINGS_COLOUR);
+    gfx.fill_rectangle(right_wing, WINGS_COLOUR);
 }
 
 void Paddle::update(float dt)

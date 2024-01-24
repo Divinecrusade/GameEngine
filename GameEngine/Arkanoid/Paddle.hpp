@@ -33,6 +33,8 @@ private:
 
     static constexpr GameEngine2D::Colour MAIN_COLOUR { GameEngine2D::Colours::WHITE };
     static constexpr int HALF_HEIGHT{ 10 };
+    static constexpr GameEngine2D::Colour WINGS_COLOUR{ GameEngine2D::Colours::RED };
+    static constexpr int WING_WIDTH{ 5 };
     
     GameEngine2D::Geometry::Vector2D<int> cur_pos;
     Direction cur_dir{ Direction::STOP };
