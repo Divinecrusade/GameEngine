@@ -23,6 +23,11 @@ void Paddle::update(float dt)
     cur_pos += GameEngine2D::Geometry::Vector2D<float>{ static_cast<float>(cur_dir), 0.f } * cur_speed * dt;
 }
 
+Paddle::Direction Paddle::get_direction() const noexcept
+{
+    return cur_dir;
+}
+
 void Paddle::set_direction(Direction dir)
 {
     cur_dir = dir;

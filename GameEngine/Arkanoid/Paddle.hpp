@@ -23,6 +23,7 @@ public:
 
     void draw(GameEngine2D::Interfaces::IGraphics2D& gfx);
     void update(float dt);
+    Direction get_direction() const noexcept;
     void set_direction(Direction dir);
     void accelerate(float a);
 
