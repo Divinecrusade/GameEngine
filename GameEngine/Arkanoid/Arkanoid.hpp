@@ -7,6 +7,7 @@
 
 #include "Paddle.hpp"
 #include "PlayField.hpp"
+#include "Brick.hpp"
 
 
 class Arkanoid final : public GameEngine2D::Game
@@ -34,7 +35,7 @@ public:
 
 private:
     
-    static constexpr int PADDING_LEFT{ 200 };
+    static constexpr int PADDING_LEFT{ 240 };
     static constexpr int PADDING_RIGHT{ 20 };
     static constexpr int PADDING_TOP{ 20 };
     static constexpr int PADDING_BOTTOM{ 20 };
@@ -44,8 +45,16 @@ private:
     static constexpr int PADDLE_INIT_HALF_WIDTH{ 40 };
     static constexpr float PADDLE_INIT_SPEED{ 125.f };
 
+    static constexpr int N_ROWS_BRICKS{ 4 };
+    static constexpr GameEngine2D::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine2D::Colours::GREEN, GameEngine2D::Colours::YELLOW, GameEngine2D::Colours::WHITE, GameEngine2D::Colours::BLUE };
+    static constexpr int N_BRICKS_IN_ROW{ (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) / Brick::WIDTH };
+    static constexpr int N_BRICKS_TOTAL{ N_ROWS_BRICKS* N_BRICKS_IN_ROW };
+    static constexpr int GRID_BRICKS_BEG_X{ PADDING_LEFT + (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) % Brick::WIDTH / 2};
+    static constexpr int GRID_BRICKS_BEG_Y{ PADDING_TOP + 40 };
+
 
     PlayField field;
     Paddle pad;
     GameEngine2D::FrameTimer ft{ };
+    std::vector<Brick> bricks;
 };

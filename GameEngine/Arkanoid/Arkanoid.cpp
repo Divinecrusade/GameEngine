@@ -6,7 +6,15 @@ Arkanoid::Arkanoid(GameEngine2D::Interfaces::IWindow& window, GameEngine2D::Inte
 Game{ window, graphics },
 field{ GameEngine2D::Geometry::Rectangle2D{ 0 + PADDING_LEFT, WINDOW_WIDTH - PADDING_RIGHT, WINDOW_HEIGHT - PADDING_BOTTOM, 0 + PADDING_TOP } },
 pad{ GameEngine2D::Geometry::Vector2D<int>{ PADDLE_INIT_X, PADDLE_INIT_Y }, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH }
-{ }
+{ 
+    GameEngine2D::Geometry::Vector2D<int> const brick_size{ Brick::WIDTH, Brick::HEIGHT };
+    GameEngine2D::Geometry::Vector2D<int> const grid_beg{ GRID_BRICKS_BEG_X, GRID_BRICKS_BEG_Y };
+    bricks.reserve(N_BRICKS_TOTAL);
+    for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)
+    {
+        bricks.emplace_back(grid_beg + brick_size * GameEngine2D::Geometry::Vector2D<int>{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW] );
+    }
+}
 
 void Arkanoid::update()
 {
@@ -34,4 +42,8 @@ void Arkanoid::render()
     Game::render();
     field.draw(gfx);
     pad.draw(gfx);
+    for (auto const& brick : bricks)
+    {
+        brick.draw(gfx);
+    }
 }
