@@ -27,6 +27,8 @@ private:
     static constexpr int inner_border_thickness{ 2 };
     static constexpr GameEngine2D::Colour outer_border_colour{ GameEngine2D::Colours::CYAN };
     static constexpr int outer_border_thickness{ 2 };
+    static constexpr GameEngine2D::Colour lose_zone_colour{ GameEngine2D::Colours::RED };
+    static constexpr int lose_zone_line_thickness{ 2 };
 
     GameEngine2D::Geometry::Rectangle2D<unsigned> const collision_frame;
 };

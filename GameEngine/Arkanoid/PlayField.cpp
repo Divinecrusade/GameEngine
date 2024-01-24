@@ -18,4 +18,8 @@ void PlayField::draw(GameEngine2D::Interfaces::IGraphics2D& gfx) const
 {
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness), inner_border_thickness, inner_border_colour);
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness + outer_border_thickness), outer_border_thickness, outer_border_colour);
+    gfx.draw_line(GameEngine2D::Geometry::Vector2D{ collision_frame.left + inner_border_thickness, 
+                                                    collision_frame.bottom - inner_border_thickness },
+                  GameEngine2D::Geometry::Vector2D{ collision_frame.right - inner_border_thickness,
+                                                    collision_frame.bottom - inner_border_thickness }, lose_zone_line_thickness, lose_zone_colour);
 }
