@@ -36,70 +36,12 @@ namespace GameEngine2D
 
         switch (message)
         {
-        case WM_KEYDOWN:
-        {
-            switch (wParam)
-            {
-                case VK_LBUTTON:
-                case VK_RBUTTON:
-                case VK_MBUTTON:
-                case VK_CANCEL:
-                case VK_CONTROL:
-                case VK_LCONTROL:
-                case VK_RCONTROL:
-                case VK_BACK:
-                case VK_TAB:
-                case VK_RETURN:
-                case VK_SHIFT:
-                case VK_LSHIFT:
-                case VK_RSHIFT:
-                case VK_MENU:
-                case VK_LMENU:
-                case VK_RMENU:
-                case VK_CAPITAL:
-                case VK_SPACE:
-                case VK_LEFT:
-                case VK_RIGHT:
-                case VK_DOWN:
-                case VK_UP:
-                    
-                    MainWindow::instance().pressed_non_fun_key = MainWindow::NON_FUNCTIONAL_KEY_NOT_PRESSED;
-                    MainWindow::instance().pressed_fun_key = static_cast<WinKey>(wParam);
-
-                    break;
-
-                default:
-                    
-                    MainWindow::instance().pressed_non_fun_key = static_cast<int>(wParam);
-                    MainWindow::instance().pressed_fun_key = WinKey::NOT_PRESSED;
-
-                    break;
-            }
-        }
-
-        case WM_DISPLAYCHANGE:
-    
-            InvalidateRect(hWnd, NULL, FALSE);
-        
-            break;
-
-        case WM_PAINT:
-
-            ValidateRect(hWnd, NULL);
-
-            break;
-
-        case WM_DESTROY:
-
-            PostQuitMessage(EXIT_SUCCESS);
-
-            MainWindow::instance().terminated = true;
-
-            break;
-
-        default:
-        
-            return DefWindowProcW(hWnd, message, wParam, lParam);
+            case WM_KEYDOWN: MainWindow::instance().key_pressed(wParam); break;            
+            case WM_KEYUP: MainWindow::instance().key_released(wParam); break;
+            case WM_DISPLAYCHANGE: InvalidateRect(hWnd, NULL, FALSE); break;
+            case WM_PAINT: ValidateRect(hWnd, NULL); break;
+            case WM_DESTROY: PostQuitMessage(EXIT_SUCCESS); MainWindow::instance().terminated = true; break;
+            default: return DefWindowProcW(hWnd, message, wParam, lParam);
         }
 
         return MESSAGE_HANDLED;
@@ -173,18 +115,116 @@ namespace GameEngine2D
         return H_WND;
     }
 
-    WinKey MainWindow::get_pressed_functional_key() const noexcept
+    bool MainWindow::is_fun_key_pressed(WinKey key) const
     {
-        assert(pressed_non_fun_key == NON_FUNCTIONAL_KEY_NOT_PRESSED);
-
-        return pressed_fun_key;
+        return std::find(pressed_fun_keys.begin(), pressed_fun_keys.end(), key) != pressed_fun_keys.end();
     }
 
-    int MainWindow::get_pressed_non_functional_key() const noexcept
+    bool MainWindow::is_non_fun_key_pressed(int code) const
     {
-        assert(pressed_fun_key == WinKey::NOT_PRESSED);
+        return std::find(pressed_non_fun_keys.begin(), pressed_non_fun_keys.end(), code) != pressed_non_fun_keys.end();
+    }
 
-        return pressed_non_fun_key;
+    WinKey MainWindow::get_last_pressed_functional_key() const noexcept
+    {
+        auto const it { pressed_fun_keys.crbegin() };
+        return (it == pressed_fun_keys.crend() ? WinKey::NOT_PRESSED : *it);
+    }
+
+    int MainWindow::get_last_pressed_non_functional_key() const noexcept
+    {
+        auto const it{ pressed_non_fun_keys.crbegin() };
+        return (it == pressed_non_fun_keys.crend() ? NON_FUNCTIONAL_KEY_NOT_PRESSED : *it);
+    }
+
+    void MainWindow::key_pressed(WPARAM code)
+    {
+        switch (code)
+        {
+            case VK_LBUTTON:
+            case VK_RBUTTON:
+            case VK_MBUTTON:
+            case VK_CANCEL:
+            case VK_CONTROL:
+            case VK_LCONTROL:
+            case VK_RCONTROL:
+            case VK_BACK:
+            case VK_TAB:
+            case VK_RETURN:
+            case VK_SHIFT:
+            case VK_LSHIFT:
+            case VK_RSHIFT:
+            case VK_MENU:
+            case VK_LMENU:
+            case VK_RMENU:
+            case VK_CAPITAL:
+            case VK_SPACE:
+            case VK_LEFT:
+            case VK_RIGHT:
+            case VK_DOWN:
+            case VK_UP:
+            {
+                WinKey const fun_key{ static_cast<WinKey>(code) };
+                if (!is_fun_key_pressed(fun_key))
+                {
+                    pressed_fun_keys.push_back(fun_key);
+                }
+
+                break;
+            }
+            default:
+            {
+                int const non_fun_key{ static_cast<int>(code) };
+                if (!is_non_fun_key_pressed(non_fun_key))
+                {
+                    pressed_non_fun_keys.push_back(non_fun_key);
+                }
+
+                break;
+            }
+        }
+    }
+
+    void MainWindow::key_released(WPARAM code)
+    {
+        switch (code)
+        {
+            case VK_LBUTTON:
+            case VK_RBUTTON:
+            case VK_MBUTTON:
+            case VK_CANCEL:
+            case VK_CONTROL:
+            case VK_LCONTROL:
+            case VK_RCONTROL:
+            case VK_BACK:
+            case VK_TAB:
+            case VK_RETURN:
+            case VK_SHIFT:
+            case VK_LSHIFT:
+            case VK_RSHIFT:
+            case VK_MENU:
+            case VK_LMENU:
+            case VK_RMENU:
+            case VK_CAPITAL:
+            case VK_SPACE:
+            case VK_LEFT:
+            case VK_RIGHT:
+            case VK_DOWN:
+            case VK_UP:
+            {
+                WinKey const fun_key{ static_cast<WinKey>(code) };
+                pressed_fun_keys.erase(std::remove(pressed_fun_keys.begin(), pressed_fun_keys.end(), fun_key), pressed_fun_keys.end());
+
+                break;
+            }
+            default:
+            {
+                int const non_fun_key{ static_cast<int>(code) };
+                pressed_non_fun_keys.erase(std::remove(pressed_non_fun_keys.begin(), pressed_non_fun_keys.end(), non_fun_key), pressed_non_fun_keys.end());
+
+                break;
+            }
+        }
     }
 
     void MainWindow::process_messages_queue() noexcept
