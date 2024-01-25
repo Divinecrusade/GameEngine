@@ -8,6 +8,35 @@ namespace GameEngine
     d2d_factory{ hWnd }
     { }
 
+    void GraphicsDirect2D::begin_frame()
+    {
+        assert(!composing_frame);
+
+        composing_frame = true;
+        d2d_factory.get_render_target().BeginDraw();
+    }
+
+    void GraphicsDirect2D::end_frame()
+    {
+        assert(composing_frame);
+
+        composing_frame = false;
+        d2d_factory.get_render_target().EndDraw();
+        d2d_factory.free_resources();
+    }
+
+    int GraphicsDirect2D::get_screen_width() const noexcept
+    {
+        RECT const area_size{ d2d_factory.get_render_area_size() };
+        return area_size.right - area_size.left;
+    }
+
+    int GraphicsDirect2D::get_screen_height() const noexcept
+    {
+        RECT const area_size{ d2d_factory.get_render_area_size() };
+        return area_size.bottom - area_size.top;
+    }
+
     void GraphicsDirect2D::draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c)
     {
         assert(composing_frame);
@@ -61,32 +90,39 @@ namespace GameEngine
         d2d_factory.get_render_target().DrawRectangle(DIPs, &d2d_factory.get_brush(c), static_cast<float>(stroke_width));
     }
 
-    void GraphicsDirect2D::begin_frame()
+    void GraphicsDirect2D::fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c)
     {
-        assert(!composing_frame);
+        assert(radius_x > 0);
+        assert(radius_y > 0);   
 
-        composing_frame = true;
-        d2d_factory.get_render_target().BeginDraw();
+        D2D1_ELLIPSE const DIPs
+        {
+            D2D1_POINT_2F
+            {
+                get_dips_from_pixels(center.x),
+                get_dips_from_pixels(center.y)
+            },
+            get_dips_from_pixels(radius_x),
+            get_dips_from_pixels(radius_y)
+        };
+        d2d_factory.get_render_target().FillEllipse(DIPs, &d2d_factory.get_brush(c));
     }
 
-    void GraphicsDirect2D::end_frame()
+    void GraphicsDirect2D::draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c)
     {
-        assert(composing_frame);
+        assert(radius_x > 0);
+        assert(radius_y > 0);
 
-        composing_frame = false;
-        d2d_factory.get_render_target().EndDraw();
-        d2d_factory.free_resources();
-    }
-
-    int GraphicsDirect2D::get_screen_width() const noexcept
-    {
-        RECT const area_size{ d2d_factory.get_render_area_size() };
-        return area_size.right - area_size.left;
-    }
-
-    int GraphicsDirect2D::get_screen_height() const noexcept
-    {
-        RECT const area_size{ d2d_factory.get_render_area_size() };
-        return area_size.bottom - area_size.top;
+        D2D1_ELLIPSE const DIPs
+        {
+            D2D1_POINT_2F
+            {
+                get_dips_from_pixels(center.x),
+                get_dips_from_pixels(center.y)
+            },
+            get_dips_from_pixels(radius_x),
+            get_dips_from_pixels(radius_y)
+        };
+        d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), static_cast<float>(stroke_width));
     }
 }

@@ -30,6 +30,9 @@ namespace GameEngine
         virtual void fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c) override;
         virtual void draw_rectangle(Geometry::Rectangle2D<int> const& rect, int stroke_witdth, Colour c) override;
 
+        virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
+        virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
+
     private:
 
         float get_dips_from_pixels(int px) const
