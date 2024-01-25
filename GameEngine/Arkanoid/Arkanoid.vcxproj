@@ -507,6 +507,7 @@
     <ClInclude Include="..\MainWindow\MainWindow.hpp" />
     <ClInclude Include="..\MainWindow\WinKey.hpp" />
     <ClInclude Include="Arkanoid.hpp" />
+    <ClInclude Include="Ball.hpp" />
     <ClInclude Include="Brick.hpp" />
     <ClInclude Include="Paddle.hpp" />
     <ClInclude Include="PlayField.hpp" />
@@ -518,6 +519,7 @@
     <ClCompile Include="..\KeyColor.cpp" />
     <ClCompile Include="..\MainWindow\MainWindow.cpp" />
     <ClCompile Include="Arkanoid.cpp" />
+    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PlayField.cpp" />

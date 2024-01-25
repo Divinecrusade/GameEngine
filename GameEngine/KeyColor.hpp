@@ -117,7 +117,7 @@ namespace GameEngine
         static constexpr Colour GAINSBORO{ 220U, 220U, 220U };
         static constexpr Colour GHOST_WHITE{ 248U, 248U, 255U };
         static constexpr Colour GOLD{ 255U, 215U, 0U };
-        static constexpr Colour GoldenRod{ 218U, 165U, 32U };
+        static constexpr Colour GOLDEN_ROD{ 218U, 165U, 32U };
         static constexpr Colour GREEN_YELLOW{ 173U, 255U, 47U };
         static constexpr Colour GREY{ 128U, 128U, 128U };
         static constexpr Colour HONEYDEW{ 240U, 255U, 240U };
