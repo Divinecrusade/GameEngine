@@ -20,9 +20,9 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 namespace std 
 {
-    template<> struct hash<GameEngine2D::KeyColor> 
+    template<> struct hash<GameEngine::KeyColor> 
     {
-        size_t operator() (GameEngine2D::KeyColor const& arg) const
+        size_t operator() (GameEngine::KeyColor const& arg) const
         {           
             return hash<uint32_t>{}(arg.get_encoded());
         }
@@ -30,7 +30,7 @@ namespace std
 }
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     template<class Interface>
     concept Releasable =

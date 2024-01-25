@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace GameEngine2D
+namespace GameEngine
 {
     union KeyColor
     {

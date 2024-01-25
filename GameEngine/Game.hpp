@@ -4,7 +4,7 @@
 #include "IFramableGraphics2D.hpp"
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     class Game
     {

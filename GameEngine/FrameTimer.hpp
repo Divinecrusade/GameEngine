@@ -3,7 +3,7 @@
 #include <chrono>
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     class FrameTimer final
     {

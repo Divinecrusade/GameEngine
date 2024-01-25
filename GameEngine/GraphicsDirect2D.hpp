@@ -4,7 +4,7 @@
 #include "Direct2DFactory.hpp"
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     class GraphicsDirect2D : public Interfaces::IFramableGraphics2D
     {

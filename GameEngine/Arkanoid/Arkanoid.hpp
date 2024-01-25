@@ -10,7 +10,7 @@
 #include "Brick.hpp"
 
 
-class Arkanoid final : public GameEngine2D::Game
+class Arkanoid final : public GameEngine::Game
 {
 public:
 
@@ -21,7 +21,7 @@ public:
 public:
 
     Arkanoid() = delete;
-    Arkanoid(GameEngine2D::Interfaces::IWindow& window, GameEngine2D::Interfaces::IFramableGraphics2D& graphics);
+    Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics);
     Arkanoid(Arkanoid const&) = delete;
     Arkanoid(Arkanoid&&) = delete;
 
@@ -46,7 +46,7 @@ private:
     static constexpr float PADDLE_INIT_SPEED{ 125.f };
 
     static constexpr int N_ROWS_BRICKS{ 4 };
-    static constexpr GameEngine2D::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine2D::Colours::INDIGO, GameEngine2D::Colours::GOLD, GameEngine2D::Colours::AZURE, GameEngine2D::Colours::STEEL_BLUE };
+    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::GOLD, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE };
     static constexpr int N_BRICKS_IN_ROW{ (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) / Brick::WIDTH };
     static constexpr int N_BRICKS_TOTAL{ N_ROWS_BRICKS* N_BRICKS_IN_ROW };
     static constexpr int GRID_BRICKS_BEG_X{ PADDING_LEFT + (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) % Brick::WIDTH / 2};
@@ -55,6 +55,6 @@ private:
 
     PlayField field;
     Paddle pad;
-    GameEngine2D::FrameTimer ft{ };
+    GameEngine::FrameTimer ft{ };
     std::vector<Brick> bricks;
 };

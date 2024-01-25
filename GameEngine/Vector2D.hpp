@@ -5,7 +5,7 @@
 #include <type_traits>
 
 
-namespace GameEngine2D
+namespace GameEngine
 { 
     namespace Geometry
     {

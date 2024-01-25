@@ -3,7 +3,7 @@
 #include "IGraphics2D.hpp"
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     namespace Interfaces
     {

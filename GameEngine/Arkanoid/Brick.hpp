@@ -14,10 +14,10 @@ public:
 
     static constexpr int DEFAULT_POS_X{ 0 };
     static constexpr int DEFAULT_POS_Y{ 0 };
-    static constexpr GameEngine2D::Colour DEFAULT_COLOUR{ GameEngine2D::Colours::MAGENTA };
+    static constexpr GameEngine::Colour DEFAULT_COLOUR{ GameEngine::Colours::MAGENTA };
 
     Brick();
-    Brick(GameEngine2D::Geometry::Vector2D<int> const& pos, GameEngine2D::Colour c);
+    Brick(GameEngine::Geometry::Vector2D<int> const& pos, GameEngine::Colour c);
     Brick(Brick const& b);
     Brick(Brick&& b) noexcept;
     Brick& operator=(Brick const& b);
@@ -25,7 +25,7 @@ public:
 
     ~Brick() = default;
 
-    void draw(GameEngine2D::Interfaces::IGraphics2D& gfx) const;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
 
 private:
 
@@ -35,6 +35,6 @@ private:
 
     static constexpr int VISUAL_PADDING{ 1 };
 
-    GameEngine2D::Geometry::Rectangle2D<int> collision_box;
-    GameEngine2D::Colour c;
+    GameEngine::Geometry::Rectangle2D<int> collision_box;
+    GameEngine::Colour c;
 };

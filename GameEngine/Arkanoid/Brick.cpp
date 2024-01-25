@@ -3,11 +3,11 @@
 
 Brick::Brick()
 :
-collision_box{ GameEngine2D::Geometry::Vector2D<int>{ DEFAULT_POS_X, DEFAULT_POS_Y }, WIDTH, HEIGHT },
+collision_box{ GameEngine::Geometry::Vector2D<int>{ DEFAULT_POS_X, DEFAULT_POS_Y }, WIDTH, HEIGHT },
 c{ DEFAULT_COLOUR }
 { }
 
-Brick::Brick(GameEngine2D::Geometry::Vector2D<int> const& pos, GameEngine2D::Colour c)
+Brick::Brick(GameEngine::Geometry::Vector2D<int> const& pos, GameEngine::Colour c)
 :
 collision_box{ pos, WIDTH, HEIGHT },
 c{ c }
@@ -43,7 +43,7 @@ Brick& Brick::operator=(Brick&& b) noexcept
     return *this;
 }
 
-void Brick::draw(GameEngine2D::Interfaces::IGraphics2D & gfx) const
+void Brick::draw(GameEngine::Interfaces::IGraphics2D & gfx) const
 {
     gfx.fill_rectangle(collision_box.get_expanded(-VISUAL_PADDING), c);
 }

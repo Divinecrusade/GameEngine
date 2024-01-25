@@ -3,7 +3,7 @@
 #include <WinUser.h>
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
 	enum class WinKey	// not all keys presented
 	{

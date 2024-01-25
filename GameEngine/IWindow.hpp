@@ -4,7 +4,7 @@
 #include "WinKey.hpp"
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     namespace Interfaces
     {

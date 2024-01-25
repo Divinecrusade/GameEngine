@@ -4,7 +4,7 @@
 #include <cassert>
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     namespace Geometry
     {

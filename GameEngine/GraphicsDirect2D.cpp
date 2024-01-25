@@ -1,7 +1,7 @@
 #include "GraphicsDirect2D.hpp"
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     GraphicsDirect2D::GraphicsDirect2D(HWND hWnd)
     :

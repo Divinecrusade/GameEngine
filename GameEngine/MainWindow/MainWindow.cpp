@@ -3,7 +3,7 @@
 #include <cassert>
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     {

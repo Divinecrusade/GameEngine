@@ -2,7 +2,7 @@
 #include <algorithm>
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     KeyColor::KeyColor(KeyColor&& c) noexcept
     {

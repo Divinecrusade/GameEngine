@@ -6,7 +6,7 @@
 #include <algorithm>
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     class MainWindow final : public Interfaces::IWindow
     {

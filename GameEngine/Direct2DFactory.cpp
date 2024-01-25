@@ -1,7 +1,7 @@
 #include "Direct2DFactory.hpp"
 
 
-namespace GameEngine2D
+namespace GameEngine
 {
     Direct2DFactory::Direct2DFactory(HWND attached_window)
     :
