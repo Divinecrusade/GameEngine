@@ -35,10 +35,10 @@ public:
 
 private:
     
-    static constexpr int PADDING_LEFT{ 240 };
-    static constexpr int PADDING_RIGHT{ 20 };
-    static constexpr int PADDING_TOP{ 20 };
-    static constexpr int PADDING_BOTTOM{ 20 };
+    static constexpr int PADDING_LEFT{ 230 };
+    static constexpr int PADDING_RIGHT{ 30 };
+    static constexpr int PADDING_TOP{ 30 };
+    static constexpr int PADDING_BOTTOM{ 30 };
 
     static constexpr int PADDLE_INIT_X{ (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) / 2 + PADDING_LEFT };
     static constexpr int PADDLE_INIT_Y{ WINDOW_HEIGHT - PADDING_BOTTOM - 40 };
