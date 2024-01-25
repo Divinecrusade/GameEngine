@@ -49,7 +49,7 @@ namespace GameEngine
         D2D1_POINT_2F const p1{ get_dips_from_pixels(beg.x), get_dips_from_pixels(beg.y) };
         D2D1_POINT_2F const p2{ get_dips_from_pixels(end.x), get_dips_from_pixels(end.y) };
 
-        d2d_factory.get_render_target().DrawLine(p1, p2, &d2d_factory.get_brush(c), static_cast<float>(stroke_width));
+        d2d_factory.get_render_target().DrawLine(p1, p2, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 
     void GraphicsDirect2D::fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c)
@@ -87,11 +87,12 @@ namespace GameEngine
             get_dips_from_pixels(rect.bottom)
         };
 
-        d2d_factory.get_render_target().DrawRectangle(DIPs, &d2d_factory.get_brush(c), static_cast<float>(stroke_width));
+        d2d_factory.get_render_target().DrawRectangle(DIPs, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 
     void GraphicsDirect2D::fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c)
     {
+        assert(composing_frame);
         assert(radius_x > 0);
         assert(radius_y > 0);   
 
@@ -110,6 +111,7 @@ namespace GameEngine
 
     void GraphicsDirect2D::draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c)
     {
+        assert(composing_frame);
         assert(radius_x > 0);
         assert(radius_y > 0);
 
@@ -123,6 +125,6 @@ namespace GameEngine
             get_dips_from_pixels(radius_x),
             get_dips_from_pixels(radius_y)
         };
-        d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), static_cast<float>(stroke_width));
+        d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 }
