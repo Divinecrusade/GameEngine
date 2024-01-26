@@ -21,7 +21,9 @@ public:
     
     bool is_in_field(Paddle const& pad) const;
     void handle_collision(Paddle& pad) const;
-    //bool is_in_field(Ball ball) const;
+
+    bool is_in_field(Ball const& ball) const;
+    void handle_collision(Ball& ball) const;
 
 private:
 

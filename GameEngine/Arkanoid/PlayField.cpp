@@ -25,14 +25,46 @@ void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx) const
 
 bool PlayField::is_in_field(Paddle const& pad) const
 {
-    return collision_frame.contains(pad.get_collision());
+    return collision_frame.contains(pad.get_collision_box());
 }
 
 void PlayField::handle_collision(Paddle& pad) const
 {
     assert(!is_in_field(pad));
 
-    auto const rect_pad{ pad.get_collision() };
+    auto const rect_pad{ pad.get_collision_box() };
     int dx{ (rect_pad.left < collision_frame.left ? collision_frame.left - rect_pad.left : collision_frame.right - rect_pad.right) };
     pad.move_by(GameEngine::Geometry::Vector2D<int>{ dx, 0 });
+}
+
+bool PlayField::is_in_field(Ball const& ball) const
+{
+    return collision_frame.contains(ball.get_collision_box());
+}
+
+void PlayField::handle_collision(Ball& ball) const
+{
+    assert(!is_in_field(ball));
+
+    auto const ball_collision_box{ ball.get_collision_box() };
+    if (ball_collision_box.left < collision_frame.left)
+    {
+        ball.move_by(GameEngine::Geometry::Vector2D<int>{collision_frame.left - ball_collision_box.left, 0});
+        ball.inverse_x();
+    }
+    else if (ball_collision_box.right > collision_frame.right)
+    {
+        ball.move_by(GameEngine::Geometry::Vector2D<int>{collision_frame.right - ball_collision_box.right, 0});
+        ball.inverse_x();
+    }
+    else if (ball_collision_box.top < collision_frame.top)
+    {
+        ball.move_by(GameEngine::Geometry::Vector2D<int>{0, collision_frame.top - ball_collision_box.top});
+        ball.inverse_y();
+    }
+    else
+    {
+        ball.move_by(GameEngine::Geometry::Vector2D<int>{0, collision_frame.bottom - ball_collision_box.bottom});
+        ball.inverse_y();
+    }
 }

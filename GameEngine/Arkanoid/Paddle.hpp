@@ -3,6 +3,8 @@
 #include "../Rectangle2D.hpp"
 #include "../IGraphics2D.hpp"
 
+#include "Ball.hpp"
+
 
 class Paddle final
 {
@@ -23,11 +25,17 @@ public:
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx);
     void update(float dt);
+
     Direction get_direction() const noexcept;
     void set_direction(Direction dir);
-    void accelerate(float a);
-    GameEngine::Geometry::Rectangle2D<int> get_collision() const;
+
     void move_by(GameEngine::Geometry::Vector2D<int> const& dpos) noexcept;
+    void accelerate(float a);
+
+    bool is_collided_with(Ball const& ball) const;
+    void handle_collision(Ball& ball) const;
+
+    GameEngine::Geometry::Rectangle2D<int> get_collision_box() const;
 
 private:
 

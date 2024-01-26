@@ -5,7 +5,8 @@ Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfac
 :
 Game{ window, graphics },
 field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING_LEFT, WINDOW_WIDTH - PADDING_RIGHT, WINDOW_HEIGHT - PADDING_BOTTOM, 0 + PADDING_TOP } },
-pad{ GameEngine::Geometry::Vector2D<int>{ PADDLE_INIT_X, PADDLE_INIT_Y }, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH }
+pad{ GameEngine::Geometry::Vector2D<int>{ PADDLE_INIT_X, PADDLE_INIT_Y }, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
+ball{ {BALL_INIT_POS_X, BALL_INIT_POS_Y}, {BALL_INIT_VEL_X, BALL_INIT_VEL_Y} }
 { 
     GameEngine::Geometry::Vector2D<int> const brick_size{ Brick::WIDTH, Brick::HEIGHT };
     GameEngine::Geometry::Vector2D<int> const grid_beg{ GRID_BRICKS_BEG_X, GRID_BRICKS_BEG_Y };
@@ -20,6 +21,7 @@ void Arkanoid::update()
 {
     float const dt{ ft.mark() };
 
+    ball.update(dt);
     Paddle::Direction new_dir{ pad.get_direction() };
     switch (get_wnd().get_last_pressed_functional_key())
     {
@@ -35,6 +37,8 @@ void Arkanoid::update()
     pad.set_direction(new_dir);
     pad.update(dt);
     if (!field.is_in_field(pad)) field.handle_collision(pad);
+    if (!field.is_in_field(ball)) field.handle_collision(ball);
+    //if (pad.is_collided_with(ball)) pad.handle_collision(ball);
 }
 
 void Arkanoid::render()
@@ -46,4 +50,5 @@ void Arkanoid::render()
     {
         brick.draw(gfx);
     }
+    ball.draw(gfx);
 }

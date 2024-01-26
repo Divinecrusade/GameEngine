@@ -22,15 +22,20 @@ public:
     void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
     void update(float dt);
     
-    void change_direction(GameEngine::Geometry::Vector2D<float> dir);
     void accelerate(float a);
 
     GameEngine::Geometry::Rectangle2D<int> get_collision_box() const;
+    GameEngine::Geometry::Vector2D<float> get_velocity() const;
+
+    void move_by(GameEngine::Geometry::Vector2D<int> const& dpos);
+
+    void inverse_x();
+    void inverse_y();
 
 private:
 
     static constexpr GameEngine::Colour c{ GameEngine::Colours::LIGHT_GOLDEN_ROD_YELLOW };
-    static constexpr int RADIUS{ 30 };
+    static constexpr int RADIUS{ 10 };
 
     GameEngine::Geometry::Vector2D<int> cur_pos;
     GameEngine::Geometry::Vector2D<float> cur_vel;

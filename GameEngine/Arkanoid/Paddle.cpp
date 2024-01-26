@@ -38,19 +38,30 @@ void Paddle::set_direction(Direction dir)
     cur_dir = dir;
 }
 
-void Paddle::accelerate(float a)
-{
-    cur_speed += a;
-}
-
-GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision() const
-{
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
-}
-
 void Paddle::move_by(GameEngine::Geometry::Vector2D<int> const& dpos) noexcept
 {
     assert(dpos.y == 0);
 
     cur_pos += dpos;
+}
+
+void Paddle::accelerate(float a)
+{
+    cur_speed += a;
+}
+
+bool Paddle::is_collided_with(Ball const& ball) const
+{
+    return get_collision_box().is_colided_with(ball.get_collision_box());
+}
+
+void Paddle::handle_collision(Ball& ball) const
+{
+    assert(is_collided_with(ball));
+
+}
+
+GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const
+{
+    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
 }

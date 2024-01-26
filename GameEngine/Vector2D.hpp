@@ -99,7 +99,7 @@ namespace GameEngine
                 const T len{ get_length(vec) };
                 if (len != static_cast<T>(0))
                 {
-                    return vec * (static_cast<T>(1) / len);
+                    return vec / len;
                 }
                 return vec;
             }
