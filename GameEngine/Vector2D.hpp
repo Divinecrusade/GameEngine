@@ -1,8 +1,12 @@
 #pragma once
 
+#include "Auxiliry.hpp"
+
 #include <cmath>
 #include <concepts>
 #include <type_traits>
+#include <cmath>
+#include <cassert>
 
 
 namespace GameEngine
@@ -89,24 +93,53 @@ namespace GameEngine
                 return vec.x * vec.x + vec.y * vec.y;
             }
 
-            static T get_length(Vector2D const& vec)
+            static double get_length(Vector2D const& vec)
             {
                 return std::sqrt(get_square_length(vec));
             }
 
+            double get_length() const
+            {
+                return Vector2D::get_length(*this);
+            }
+
             static Vector2D get_normalized(Vector2D const& vec)
             {
-                const T len{ get_length(vec) };
-                if (len != static_cast<T>(0))
+                double const len{ get_length(vec) };
+                if (!Auxiliry::is_equal_with_precision(len, 0.))
                 {
-                    return vec / len;
+                    return vec / static_cast<T>(len);
                 }
                 return vec;
+            }
+
+            Vector2D get_normalized() const
+            {
+                return Vector2D<T>::get_normalized(*this);
             }
 
             Vector2D& normalize()
             {
                 return *this = get_normalized(*this);
+            }
+
+            static Vector2D get_rotated(Vector2D const& vec, double radians)
+            {
+                Vector2D tmp{ static_cast<T>(vec.x * std::cos(radians) - vec.y * std::sin(radians)), static_cast<T>(vec.x * std::sin(radians) + vec.y * std::cos(radians)) };
+                
+                assert(Auxiliry::is_equal_with_precision(vec.get_length(), tmp.get_length()));
+                
+                return tmp;
+            }
+
+            Vector2D get_rotated(double radians) const
+            {
+                return Vector2D::get_rotated(*this, radians);
+            }
+
+            Vector2D& rotate(double radians)
+            {
+                return *this = Vector2D::get_rotated(*this, radians);
             }
 
 
