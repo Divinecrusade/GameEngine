@@ -25,7 +25,10 @@ public:
     void accelerate(float a);
 
     GameEngine::Geometry::Rectangle2D<int> get_collision_box() const;
+    GameEngine::Geometry::Vector2D<int> get_center() const;
     GameEngine::Geometry::Vector2D<float> get_velocity() const;
+
+    void change_direction(GameEngine::Geometry::Vector2D<float> const& dir);
 
     void move_by(GameEngine::Geometry::Vector2D<int> const& dpos);
 
@@ -33,6 +36,8 @@ public:
     void inverse_y();
 
 private:
+
+    static constexpr float MIN_VEL_Y{ 60.f };
 
     static constexpr GameEngine::Colour c{ GameEngine::Colours::LIGHT_GOLDEN_ROD_YELLOW };
     static constexpr int RADIUS{ 10 };

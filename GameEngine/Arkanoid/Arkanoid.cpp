@@ -38,7 +38,7 @@ void Arkanoid::update()
     pad.update(dt);
     if (!field.is_in_field(pad)) field.handle_collision(pad);
     if (!field.is_in_field(ball)) field.handle_collision(ball);
-    //if (pad.is_collided_with(ball)) pad.handle_collision(ball);
+    if (pad.is_collided_with(ball)) pad.handle_collision(ball);
 }
 
 void Arkanoid::render()

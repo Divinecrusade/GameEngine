@@ -59,9 +59,88 @@ void Paddle::handle_collision(Ball& ball) const
 {
     assert(is_collided_with(ball));
 
+    CollisionEdge const edge{ push_out(ball) };
+    deflect(ball, edge);
 }
 
 GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const
 {
     return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
+}
+
+Paddle::CollisionEdge Paddle::push_out(Ball& ball) const
+{
+    assert(is_collided_with(ball));
+
+    CollisionEdge edge{ };
+    
+    auto const ball_collision_box{ ball.get_collision_box() };
+    auto const padd_collision_box{ get_collision_box() };
+
+    if (ball_collision_box.bottom > padd_collision_box.top && ball_collision_box.top < padd_collision_box.top)
+    {
+        ball.move_by({ 0, padd_collision_box.top - ball_collision_box.bottom });
+
+        edge = CollisionEdge::TOP;
+    }
+    else if (ball_collision_box.top < padd_collision_box.bottom && ball_collision_box.bottom > padd_collision_box.bottom)
+    {
+        ball.move_by({ 0, padd_collision_box.bottom - ball_collision_box.top });
+
+        edge = CollisionEdge::BOTTOM;
+    }
+    else if (ball_collision_box.right > padd_collision_box.left && ball_collision_box.left < padd_collision_box.left)
+    {
+        ball.move_by({ padd_collision_box.left - ball_collision_box.right, 0 });
+
+        edge = CollisionEdge::LEFT;
+    }
+    else
+    {
+        ball.move_by({ padd_collision_box.right - ball_collision_box.left, 0 });
+
+        edge = CollisionEdge::RIGHT;
+    }
+
+    return edge;
+}
+
+void Paddle::deflect(Ball& ball, CollisionEdge edge) const
+{
+    switch (edge)
+    {
+        case CollisionEdge::BOTTOM:
+        case CollisionEdge::TOP:
+        
+            ball.change_direction(calculate_deflect_direction(edge, std::fabs(ball.get_center().x - cur_pos.x), (ball.get_velocity().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
+
+        break;
+
+        case CollisionEdge::LEFT:
+        case CollisionEdge::RIGHT:
+            
+            ball.inverse_x();
+
+        break;
+    }
+}
+
+GameEngine::Geometry::Vector2D<float> Paddle::calculate_deflect_direction(CollisionEdge edge, double abs_dL, Direction ball_direction) const
+{
+    assert(ball_direction == Direction::LEFT || ball_direction == Direction::RIGHT);
+    assert(edge == CollisionEdge::BOTTOM || edge == CollisionEdge::TOP);
+
+    GameEngine::Geometry::Vector2D<float> new_dir{ 0.f, (edge == CollisionEdge::TOP ? -1.f : 1.f) };
+    double const deflect_angle
+    {
+        (ball_direction == Direction::LEFT ? -1. : 1.)
+        *
+        (abs_dL <= cur_half_width * MIN_DEFLECT_ZONE_RATIO ?
+        MIN_ANGLE_DEFLECT
+        :
+        std::min(MAX_ANGLE_DEFLECT, (MIN_ANGLE_DEFLECT + (MAX_ANGLE_DEFLECT - MIN_ANGLE_DEFLECT) * (abs_dL / cur_half_width))))
+    };
+    new_dir.rotate(deflect_angle);
+
+    return new_dir;
 }

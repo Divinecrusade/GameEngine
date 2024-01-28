@@ -72,6 +72,9 @@
     <ClInclude Include="IFramableGraphics2D.hpp">
       <Filter>Файлы заголовков\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="Auxiliry.hpp">
+      <Filter>Файлы заголовков\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">

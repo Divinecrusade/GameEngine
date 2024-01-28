@@ -4,6 +4,10 @@
 #include "../IGraphics2D.hpp"
 
 #include "Ball.hpp"
+#include "../Auxiliry.hpp"
+
+
+using namespace GameEngine::Geometry::Literals;
 
 
 class Paddle final
@@ -39,13 +43,27 @@ public:
 
 private:
 
+    enum class CollisionEdge
+    {
+        LEFT, RIGHT, BOTTOM, TOP
+    };
+    CollisionEdge push_out(Ball& ball) const;
+    void deflect(Ball& ball, CollisionEdge edge) const;
+    inline GameEngine::Geometry::Vector2D<float> calculate_deflect_direction(CollisionEdge edge, double abs_dL, Direction ball_direction) const;
+
+private:
+
     static constexpr GameEngine::Colour MAIN_COLOUR { GameEngine::Colours::WHITE };
     static constexpr int HALF_HEIGHT{ 10 };
     static constexpr GameEngine::Colour WINGS_COLOUR{ GameEngine::Colours::RED };
     static constexpr int WING_WIDTH{ 5 };
+
+    static constexpr auto   MIN_ANGLE_DEFLECT{ 20._deg };
+    static constexpr auto   MAX_ANGLE_DEFLECT{ 80._deg };
+    static constexpr auto   MIN_DEFLECT_ZONE_RATIO{ 10._percent };
     
     GameEngine::Geometry::Vector2D<int> cur_pos;
     Direction cur_dir{ Direction::STOP };
     float cur_speed;
-    int cur_half_width;
+    int cur_half_width;  
 };

@@ -41,7 +41,7 @@ private:
     static constexpr int PADDING_BOTTOM{ 30 };
 
     static constexpr int PADDLE_INIT_X{ (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) / 2 + PADDING_LEFT };
-    static constexpr int PADDLE_INIT_Y{ WINDOW_HEIGHT - PADDING_BOTTOM - 40 };
+    static constexpr int PADDLE_INIT_Y{ WINDOW_HEIGHT - PADDING_BOTTOM - 60 };
     static constexpr int PADDLE_INIT_HALF_WIDTH{ 40 };
     static constexpr float PADDLE_INIT_SPEED{ 200.f };
 
@@ -52,10 +52,10 @@ private:
     static constexpr int GRID_BRICKS_BEG_X{ PADDING_LEFT + (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) % Brick::WIDTH / 2};
     static constexpr int GRID_BRICKS_BEG_Y{ PADDING_TOP + 40 };
 
-    static constexpr int BALL_INIT_POS_X{ PADDLE_INIT_X - 80 };
-    static constexpr int BALL_INIT_POS_Y{ PADDLE_INIT_Y - 80 };
-    static constexpr float BALL_INIT_VEL_X{ 125.f };
-    static constexpr float BALL_INIT_VEL_Y{ 125.f };
+    static constexpr int BALL_INIT_POS_X{ PADDLE_INIT_X - 160 };
+    static constexpr int BALL_INIT_POS_Y{ PADDLE_INIT_Y - 160 };
+    static constexpr float BALL_INIT_VEL_X{ 200.f };
+    static constexpr float BALL_INIT_VEL_Y{ 200.f };
 
 
     PlayField field;
