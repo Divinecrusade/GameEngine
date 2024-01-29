@@ -61,8 +61,8 @@ private:
     static constexpr GameEngine::Colour WINGS_COLOUR{ GameEngine::Colours::RED };
     static constexpr int WING_WIDTH{ 5 };
 
-    static constexpr auto   MIN_ANGLE_DEFLECT{ 20._deg };
-    static constexpr auto   MAX_ANGLE_DEFLECT{ 80._deg };
+    static constexpr auto   MIN_ANGLE_DEFLECT{ 10._deg };
+    static constexpr auto   MAX_ANGLE_DEFLECT{ 85._deg };
     static constexpr auto   MIN_DEFLECT_ZONE_RATIO{ 5._percent };
     
     GameEngine::Geometry::Vector2D<int> cur_pos;
