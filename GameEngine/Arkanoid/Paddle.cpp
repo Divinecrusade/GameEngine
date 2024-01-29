@@ -75,31 +75,37 @@ Paddle::CollisionEdge Paddle::push_out(Ball& ball) const
     CollisionEdge edge{ };
     
     auto const ball_collision_box{ ball.get_collision_box() };
+    auto const ball_center{ ball.get_center() };
     auto const padd_collision_box{ get_collision_box() };
-
-    if (ball_collision_box.bottom > padd_collision_box.top && ball_collision_box.top < padd_collision_box.top)
+    if (ball_center.x >= padd_collision_box.left && ball_center.x <= padd_collision_box.right)
     {
-        ball.move_by({ 0, padd_collision_box.top - ball_collision_box.bottom });
+        if (ball.get_velocity().y > 0.f)
+        {
+            ball.move_by({ 0, padd_collision_box.top - ball_collision_box.bottom });
 
-        edge = CollisionEdge::TOP;
+            edge = CollisionEdge::TOP;
+        }
+        else
+        {
+            ball.move_by({ 0, padd_collision_box.bottom - ball_collision_box.top });
+
+            edge = CollisionEdge::BOTTOM;
+        }
     }
-    else if (ball_collision_box.top < padd_collision_box.bottom && ball_collision_box.bottom > padd_collision_box.bottom)
+    else 
     {
-        ball.move_by({ 0, padd_collision_box.bottom - ball_collision_box.top });
+        if (ball.get_velocity().x > 0.f)
+        {
+            ball.move_by({ padd_collision_box.left - ball_collision_box.right, 0 });
 
-        edge = CollisionEdge::BOTTOM;
-    }
-    else if (ball_collision_box.right > padd_collision_box.left && ball_collision_box.left < padd_collision_box.left)
-    {
-        ball.move_by({ padd_collision_box.left - ball_collision_box.right, 0 });
+            edge = CollisionEdge::LEFT;
+        }
+        else
+        {
+            ball.move_by({ padd_collision_box.right - ball_collision_box.left, 0 });
 
-        edge = CollisionEdge::LEFT;
-    }
-    else
-    {
-        ball.move_by({ padd_collision_box.right - ball_collision_box.left, 0 });
-
-        edge = CollisionEdge::RIGHT;
+            edge = CollisionEdge::RIGHT;
+        }
     }
 
     return edge;
