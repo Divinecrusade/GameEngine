@@ -20,6 +20,7 @@ ball{ {BALL_INIT_POS_X, BALL_INIT_POS_Y}, {BALL_INIT_VEL_X, BALL_INIT_VEL_Y} }
 void Arkanoid::update()
 {
     float const dt{ ft.mark() };
+    bool collision_happended{ false };
 
     ball.update(dt);
     Paddle::Direction new_dir{ pad.get_direction() };
@@ -36,8 +37,13 @@ void Arkanoid::update()
     }
     pad.set_direction(new_dir);
     pad.update(dt);
+
     if (!field.is_in_field(pad)) field.handle_collision(pad);
-    if (!field.is_in_field(ball)) field.handle_collision(ball);
+    if (!field.is_in_field(ball)) 
+    {
+        field.handle_collision(ball);
+        collision_happended = true;
+    }
     if (pad.is_collided_with(ball)) pad.handle_collision(ball);
 
     auto collided_brick{ bricks.end() };
@@ -68,7 +74,10 @@ void Arkanoid::update()
     {
         collided_brick->handle_collision(ball);
         bricks.erase(std::remove(bricks.begin(), bricks.end(), *collided_brick), bricks.end());
+        collision_happended = true;
     }
+
+    if (collision_happended && pad.is_cooldowned()) pad.reset_cooldown();
 }
 
 void Arkanoid::render()

@@ -55,12 +55,17 @@ bool Paddle::is_collided_with(Ball const& ball) const
     return get_collision_box().is_colided_with(ball.get_collision_box());
 }
 
-void Paddle::handle_collision(Ball& ball) const
+void Paddle::handle_collision(Ball& ball)
 {
     assert(is_collided_with(ball));
 
-    CollisionEdge const edge{ push_out(ball) };
-    deflect(ball, edge);
+    if (!cooldown)
+    {
+        CollisionEdge const edge{ process(ball) };
+        deflect(ball, edge);
+
+        cooldown = true;
+    }
 }
 
 GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const
@@ -68,9 +73,22 @@ GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const
     return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
 }
 
-Paddle::CollisionEdge Paddle::push_out(Ball& ball) const
+bool Paddle::is_cooldowned() const noexcept
+{
+    return cooldown;
+}
+
+void Paddle::reset_cooldown() noexcept
+{
+    assert(cooldown);
+
+    cooldown = false;
+}
+
+Paddle::CollisionEdge Paddle::process(Ball& ball) const
 {
     assert(is_collided_with(ball));
+    assert(!cooldown);
 
     CollisionEdge edge{ };
     
@@ -79,33 +97,13 @@ Paddle::CollisionEdge Paddle::push_out(Ball& ball) const
     auto const padd_collision_box{ get_collision_box() };
     if (ball_center.x >= padd_collision_box.left && ball_center.x <= padd_collision_box.right)
     {
-        if (ball.get_velocity().y > 0.f)
-        {
-            ball.move_by({ 0, padd_collision_box.top - ball_collision_box.bottom });
-
-            edge = CollisionEdge::TOP;
-        }
-        else
-        {
-            ball.move_by({ 0, padd_collision_box.bottom - ball_collision_box.top });
-
-            edge = CollisionEdge::BOTTOM;
-        }
+        if (ball.get_velocity().y > 0.f) edge = CollisionEdge::TOP;
+        else edge = CollisionEdge::BOTTOM;
     }
     else 
     {
-        if (ball.get_velocity().x > 0.f)
-        {
-            ball.move_by({ padd_collision_box.left - ball_collision_box.right, 0 });
-
-            edge = CollisionEdge::LEFT;
-        }
-        else
-        {
-            ball.move_by({ padd_collision_box.right - ball_collision_box.left, 0 });
-
-            edge = CollisionEdge::RIGHT;
-        }
+        if (ball.get_velocity().x > 0.f) edge = CollisionEdge::LEFT;
+        else edge = CollisionEdge::RIGHT;
     }
 
     return edge;
@@ -113,6 +111,8 @@ Paddle::CollisionEdge Paddle::push_out(Ball& ball) const
 
 void Paddle::deflect(Ball& ball, CollisionEdge edge) const
 {
+    assert(!cooldown);
+
     switch (edge)
     {
         case CollisionEdge::BOTTOM:
