@@ -27,6 +27,11 @@ namespace GameEngine
             {
                 return std::fabs(a - b) <= PRECISION;
             }
+
+            template <std::integral T> bool signbit(T val) 
+            {
+                return val < 0;
+            }
         }
     }
 }

@@ -39,6 +39,36 @@ void Arkanoid::update()
     if (!field.is_in_field(pad)) field.handle_collision(pad);
     if (!field.is_in_field(ball)) field.handle_collision(ball);
     if (pad.is_collided_with(ball)) pad.handle_collision(ball);
+
+    auto collided_brick{ bricks.end() };
+    int distance{ };
+    for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
+    {
+        if (brick->is_colided_with(ball))
+        {
+            if (collided_brick == bricks.end()) 
+            {
+                collided_brick = brick;
+                distance = collided_brick->get_sqr_distance(ball);
+
+                continue;
+            }
+            int const tmp_distance{ brick->get_sqr_distance(ball) };
+            if (distance > tmp_distance)
+            {
+                collided_brick = brick;
+                distance = tmp_distance;
+
+                break;
+            }
+        }
+    }
+    
+    if (collided_brick != bricks.end())
+    {
+        collided_brick->handle_collision(ball);
+        bricks.erase(std::remove(bricks.begin(), bricks.end(), *collided_brick), bricks.end());
+    }
 }
 
 void Arkanoid::render()

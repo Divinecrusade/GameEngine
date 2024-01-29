@@ -4,6 +4,8 @@
 #include "../KeyColor.hpp"
 #include "../IGraphics2D.hpp"
 
+#include "Ball.hpp"
+
 
 class Brick final
 {
@@ -27,9 +29,15 @@ public:
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
 
+    bool is_colided_with(Ball const& ball) const noexcept;
+    void handle_collision(Ball& ball) const;
+
+    int get_sqr_distance(Ball const& ball) const;
+
 private:
 
     void swap(Brick&& b) noexcept;
+    friend bool operator==(Brick const& lhs, Brick const& rhs) noexcept;
 
 private:
 
@@ -38,3 +46,6 @@ private:
     GameEngine::Geometry::Rectangle2D<int> collision_box;
     GameEngine::Colour c;
 };
+
+bool operator==(Brick const& lhs, Brick const& rhs) noexcept;
+bool operator!=(Brick const& lhs, Brick const& rhs) noexcept;
