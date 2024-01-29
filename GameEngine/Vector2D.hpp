@@ -87,6 +87,10 @@ namespace GameEngine
                 return *this;
             }
 
+            T get_square_length() const
+            {
+                return Vector2D<T>::get_square_length(*this);
+            }
 
             static T get_square_length(Vector2D const& vec)
             {

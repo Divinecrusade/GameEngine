@@ -116,5 +116,20 @@ namespace GameEngine
             T bottom;
             T top;
         };
+    
+        template<typename T>
+        requires (std::is_arithmetic<T>() == true)
+        bool operator==(Rectangle2D<T> const& lhs, Rectangle2D<T> const& rhs) noexcept
+        {
+            return lhs.left == rhs.left && lhs.right == rhs.right && 
+                   lhs.bottom == rhs.bottom && lhs.top == rhs.top;
+        }
+    
+        template<typename T>
+        requires (std::is_arithmetic<T>() == true)
+        bool operator!=(Rectangle2D<T> const& lhs, Rectangle2D<T> const& rhs)
+        {
+            return !(lhs == rhs);
+        }
     }
 }
