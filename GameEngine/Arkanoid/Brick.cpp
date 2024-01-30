@@ -5,7 +5,7 @@
 
 Brick::Brick()
 :
-collision_box{ GameEngine::Geometry::Vector2D<int>{ DEFAULT_POS_X, DEFAULT_POS_Y }, WIDTH, HEIGHT },
+collision_box{ DEFAULT_POS, WIDTH, HEIGHT },
 c{ DEFAULT_COLOUR }
 { }
 
