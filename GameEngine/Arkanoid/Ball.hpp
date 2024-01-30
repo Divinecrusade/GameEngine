@@ -37,7 +37,7 @@ public:
 
 private:
 
-    static constexpr float MIN_VEL_Y{ 60.f };
+    static constexpr float MIN_VEL{ 60.f };
 
     static constexpr GameEngine::Colour c{ GameEngine::Colours::LIGHT_GOLDEN_ROD_YELLOW };
     static constexpr int RADIUS{ 10 };

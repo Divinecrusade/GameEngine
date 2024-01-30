@@ -43,8 +43,10 @@ void Ball::change_direction(GameEngine::Geometry::Vector2D<float> const& dir)
     auto cur_magnitude{ cur_vel.get_length() };
 
     cur_vel = dir.get_normalized() * static_cast<float>(cur_magnitude);
-    if (cur_vel.y > 0.f && cur_vel.y < MIN_VEL_Y) cur_vel.y = MIN_VEL_Y;
-    else if (cur_vel.y < 0.f && cur_vel.y > -MIN_VEL_Y) cur_vel.y = -MIN_VEL_Y;
+    if (cur_vel.y > 0.f && cur_vel.y < MIN_VEL) cur_vel.y = MIN_VEL;
+    else if (cur_vel.y < 0.f && cur_vel.y > -MIN_VEL) cur_vel.y = -MIN_VEL;
+    if (cur_vel.x > 0.f && cur_vel.x < MIN_VEL) cur_vel.x = MIN_VEL;
+    else if (cur_vel.x < 0.f && cur_vel.x > -MIN_VEL) cur_vel.x = -MIN_VEL;
 }
 
 void Ball::move_by(GameEngine::Geometry::Vector2D<int> const& dpos)
