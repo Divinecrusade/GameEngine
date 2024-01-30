@@ -35,27 +35,20 @@ public:
 
 private:
     
-    static constexpr int PADDING_LEFT{ 230 };
-    static constexpr int PADDING_RIGHT{ 30 };
-    static constexpr int PADDING_TOP{ 30 };
-    static constexpr int PADDING_BOTTOM{ 30 };
+    static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 230, 30, 30, 30 };
+    static constexpr GameEngine::Geometry::Vector2D<int> PADDLE_INIT_POS{ (WINDOW_WIDTH - PADDING.left - PADDING.right) / 2 + PADDING.left, WINDOW_HEIGHT - PADDING.bottom - 60 };
 
-    static constexpr int PADDLE_INIT_X{ (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) / 2 + PADDING_LEFT };
-    static constexpr int PADDLE_INIT_Y{ WINDOW_HEIGHT - PADDING_BOTTOM - 60 };
     static constexpr int PADDLE_INIT_HALF_WIDTH{ 40 };
     static constexpr float PADDLE_INIT_SPEED{ 200.f };
 
     static constexpr int N_ROWS_BRICKS{ 4 };
     static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::GOLD, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE };
-    static constexpr int N_BRICKS_IN_ROW{ (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) / Brick::WIDTH };
-    static constexpr int N_BRICKS_TOTAL{ N_ROWS_BRICKS* N_BRICKS_IN_ROW };
-    static constexpr int GRID_BRICKS_BEG_X{ PADDING_LEFT + (WINDOW_WIDTH - PADDING_LEFT - PADDING_RIGHT) % Brick::WIDTH / 2};
-    static constexpr int GRID_BRICKS_BEG_Y{ PADDING_TOP + 40 };
+    static constexpr int N_BRICKS_IN_ROW{ (WINDOW_WIDTH - PADDING.left - PADDING.right) / Brick::WIDTH };
+    static constexpr int N_BRICKS_TOTAL { N_ROWS_BRICKS* N_BRICKS_IN_ROW };
+    static constexpr GameEngine::Geometry::Vector2D<int> GRID_BRICKS_BEG{ PADDING.left + (WINDOW_WIDTH - PADDING.left - PADDING.right) % Brick::WIDTH / 2, PADDING.top + 40 };
 
-    static constexpr int BALL_INIT_POS_X{ PADDLE_INIT_X - 160 };
-    static constexpr int BALL_INIT_POS_Y{ PADDLE_INIT_Y - 160 };
-    static constexpr float BALL_INIT_VEL_X{ 200.f };
-    static constexpr float BALL_INIT_VEL_Y{ 200.f };
+    static constexpr GameEngine::Geometry::Vector2D<float> BALL_INIT_VELOCITY{ 0.f, 200.f };
+    static constexpr GameEngine::Geometry::Vector2D<int>   BALL_INIT_POS{ PADDLE_INIT_POS.x, PADDLE_INIT_POS.y - 100 };
 
 
     PlayField field;

@@ -17,70 +17,70 @@ namespace GameEngine
         requires (std::is_arithmetic<T>() == true)
         struct Vector2D final
         {
-            Vector2D() noexcept = default;
-            Vector2D(T const& x, T const& y)
+            constexpr Vector2D() noexcept = default;
+            constexpr Vector2D(T const& x, T const& y)
             :
             x{ x },
             y{ y }
             { }
-            Vector2D(Vector2D const&) = default;
+            constexpr Vector2D(Vector2D const&) = default;
             Vector2D(Vector2D&&) = default;
-            Vector2D& operator=(Vector2D const&) = default;
+            constexpr Vector2D& operator=(Vector2D const&) = default;
             Vector2D& operator=(Vector2D&&) = default;
 
             ~Vector2D() = default;
 
             template<typename F>
-            Vector2D<T>(Vector2D<F> const& vec)
+            constexpr Vector2D<T>(Vector2D<F> const& vec)
             :
             x{ static_cast<T>(vec.x) },
             y{ static_cast<T>(vec.y) }
             { }
 
             template<typename F>
-            Vector2D<T>& operator=(Vector2D<F> const& vec)
+            constexpr Vector2D<T>& operator=(Vector2D<F> const& vec)
             {
                 x = static_cast<T>(vec.x);
                 y = static_cast<T>(vec.y);
                 return *this;
             }
 
-            Vector2D& operator-=(Vector2D const& rhs)
+            constexpr Vector2D& operator-=(Vector2D const& rhs)
             {
                 x -= rhs.x;
                 y -= rhs.y;
                 return *this;
             }
 
-            Vector2D& operator+=(Vector2D const& rhs)
+            constexpr Vector2D& operator+=(Vector2D const& rhs)
             {
                 x += rhs.x;
                 y += rhs.y;
                 return *this;
             }
 
-            Vector2D& operator/=(Vector2D const& rhs)
+            constexpr Vector2D& operator/=(Vector2D const& rhs)
             {
                 x /= rhs.x;
                 y /= rhs.y;
                 return *this;
             }
 
-            Vector2D& operator/=(T const& rhs)
+            constexpr Vector2D& operator/=(T const& rhs)
             {
                 x /= rhs;
                 y /= rhs;
                 return *this;
             }
 
-            Vector2D& operator*=(Vector2D const& rhs)
+            constexpr Vector2D& operator*=(Vector2D const& rhs)
             {
                 x *= rhs.x;
                 y *= rhs.y;
                 return *this;
             }
 
-            Vector2D& operator*=(T const& rhs)
+            constexpr Vector2D& operator*=(T const& rhs)
             {
                 x *= rhs;
                 y *= rhs;
@@ -152,55 +152,55 @@ namespace GameEngine
         };
 
         template<typename T>
-        Vector2D<T> operator-(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
+        constexpr Vector2D<T> operator-(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
         {
             return Vector2D<T>{ lhs } -= rhs;
         }
         
         template<typename T>
-        Vector2D<T> operator+(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
+        constexpr Vector2D<T> operator+(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
         {
             return Vector2D<T>{ lhs } += rhs;
         }
     
         template<typename T>
-        Vector2D<T> operator/(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
+        constexpr Vector2D<T> operator/(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
         {
             return Vector2D<T>{ lhs } /= rhs;
         }
 
         template<typename T>
-        Vector2D<T> operator/(Vector2D<T> const& lhs, T const& rhs)
+        constexpr Vector2D<T> operator/(Vector2D<T> const& lhs, T const& rhs)
         {
             return Vector2D<T>{ lhs } /= rhs;
         }
 
         template<typename T>
-        Vector2D<T> operator*(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
+        constexpr Vector2D<T> operator*(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
         {
             return Vector2D<T>{ lhs } *= rhs;
         }
 
         template<typename T>
-        Vector2D<T> operator*(Vector2D<T> const& lhs, T const& rhs)
+        constexpr Vector2D<T> operator*(Vector2D<T> const& lhs, T const& rhs)
         {
             return Vector2D{ lhs } *= rhs;
         }
 
         template<typename T>
-        Vector2D<T> operator*(T const& lhs, Vector2D<T> const& rhs)
+        constexpr Vector2D<T> operator*(T const& lhs, Vector2D<T> const& rhs)
         {
             return Vector2D{ rhs } *= lhs;
         }
 
         template<typename T>
-        bool operator==(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
+        constexpr bool operator==(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
         {
             return lhs.x == rhs.x && lhs.y == rhs.y;
         }
 
         template<typename T>
-        bool operator!=(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
+        constexpr bool operator!=(Vector2D<T> const& lhs, Vector2D<T> const& rhs)
         {
             return !(lhs == rhs);
         }

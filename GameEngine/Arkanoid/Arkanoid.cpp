@@ -4,16 +4,15 @@
 Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics)
 :
 Game{ window, graphics },
-field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING_LEFT, WINDOW_WIDTH - PADDING_RIGHT, WINDOW_HEIGHT - PADDING_BOTTOM, 0 + PADDING_TOP } },
-pad{ GameEngine::Geometry::Vector2D<int>{ PADDLE_INIT_X, PADDLE_INIT_Y }, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
-ball{ {BALL_INIT_POS_X, BALL_INIT_POS_Y}, {BALL_INIT_VEL_X, BALL_INIT_VEL_Y} }
+field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW_WIDTH - PADDING.right, WINDOW_HEIGHT - PADDING.bottom, 0 + PADDING.top } },
+pad{ PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
+ball{ BALL_INIT_POS, BALL_INIT_VELOCITY }
 { 
     GameEngine::Geometry::Vector2D<int> const brick_size{ Brick::WIDTH, Brick::HEIGHT };
-    GameEngine::Geometry::Vector2D<int> const grid_beg{ GRID_BRICKS_BEG_X, GRID_BRICKS_BEG_Y };
     bricks.reserve(N_BRICKS_TOTAL);
     for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)
     {
-        bricks.emplace_back(grid_beg + brick_size * GameEngine::Geometry::Vector2D<int>{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW] );
+        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * GameEngine::Geometry::Vector2D<int>{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW] );
     }
 }
 
