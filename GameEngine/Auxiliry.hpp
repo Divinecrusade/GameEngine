@@ -23,12 +23,12 @@ namespace GameEngine
         namespace Auxiliry
         {            
             static constexpr double PRECISION{ 1e-5 };
-            inline bool is_equal_with_precision(double a, double b)
+            inline bool is_equal_with_precision(double a, double b) noexcept
             {
                 return std::fabs(a - b) <= PRECISION;
             }
 
-            template <std::integral T> bool signbit(T val) 
+            template <std::integral T> bool signbit(T val) noexcept 
             {
                 return val < 0;
             }

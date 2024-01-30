@@ -10,7 +10,7 @@ class PlayField final
 public:
 
     PlayField() = delete;
-    PlayField(GameEngine::Geometry::Rectangle2D<int> const& size_and_location);
+    PlayField(GameEngine::Geometry::Rectangle2D<int> const& size_and_location) noexcept;
     PlayField(PlayField const&) = delete;
     PlayField(PlayField&&) = delete;
 
@@ -19,11 +19,11 @@ public:
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
     
-    bool is_in_field(Paddle const& pad) const;
-    void handle_collision(Paddle& pad) const;
+    bool is_in_field(Paddle const& pad) const noexcept;
+    void handle_collision(Paddle& pad) const noexcept;
 
-    bool is_in_field(Ball const& ball) const;
-    void handle_collision(Ball& ball) const;
+    bool is_in_field(Ball const& ball) const noexcept;
+    void handle_collision(Ball& ball) const noexcept;
 
 private:
 

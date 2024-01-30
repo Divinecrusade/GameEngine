@@ -2,7 +2,7 @@
 #include <cassert>
 
 
-PlayField::PlayField(GameEngine::Geometry::Rectangle2D<int> const& size_and_location)
+PlayField::PlayField(GameEngine::Geometry::Rectangle2D<int> const& size_and_location) noexcept
 :
 collision_frame{ size_and_location }
 {
@@ -23,12 +23,12 @@ void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx) const
                   lose_zone_line_thickness, lose_zone_colour);
 }
 
-bool PlayField::is_in_field(Paddle const& pad) const
+bool PlayField::is_in_field(Paddle const& pad) const noexcept
 {
     return collision_frame.contains(pad.get_collision_box());
 }
 
-void PlayField::handle_collision(Paddle& pad) const
+void PlayField::handle_collision(Paddle& pad) const noexcept
 {
     assert(!is_in_field(pad));
 
@@ -37,12 +37,12 @@ void PlayField::handle_collision(Paddle& pad) const
     pad.move_by(GameEngine::Geometry::Vector2D<int>{ dx, 0 });
 }
 
-bool PlayField::is_in_field(Ball const& ball) const
+bool PlayField::is_in_field(Ball const& ball) const noexcept
 {
     return collision_frame.contains(ball.get_collision_box());
 }
 
-void PlayField::handle_collision(Ball& ball) const
+void PlayField::handle_collision(Ball& ball) const noexcept
 {
     assert(!is_in_field(ball));
 

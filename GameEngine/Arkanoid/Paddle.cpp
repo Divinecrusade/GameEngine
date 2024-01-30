@@ -1,7 +1,7 @@
 #include "Paddle.hpp"
 
 
-Paddle::Paddle(GameEngine::Geometry::Vector2D<int> init_pos, float init_speed, int init_half_width)
+Paddle::Paddle(GameEngine::Geometry::Vector2D<int> init_pos, float init_speed, int init_half_width) noexcept
 :
 cur_pos{ init_pos },
 cur_speed{ init_speed },
@@ -23,7 +23,7 @@ void Paddle::draw(GameEngine::Interfaces::IGraphics2D& gfx)
     gfx.fill_rectangle(right_wing, WINGS_COLOUR);
 }
 
-void Paddle::update(float dt)
+void Paddle::update(float dt) noexcept
 {
     cur_pos += GameEngine::Geometry::Vector2D<float>{ static_cast<float>(cur_dir), 0.f } * cur_speed * dt;
 }
@@ -33,7 +33,7 @@ Paddle::Direction Paddle::get_direction() const noexcept
     return cur_dir;
 }
 
-void Paddle::set_direction(Direction dir)
+void Paddle::set_direction(Direction dir) noexcept
 {
     cur_dir = dir;
 }
@@ -45,12 +45,12 @@ void Paddle::move_by(GameEngine::Geometry::Vector2D<int> const& dpos) noexcept
     cur_pos += dpos;
 }
 
-void Paddle::accelerate(float a)
+void Paddle::accelerate(float a) noexcept
 {
     cur_speed += a;
 }
 
-bool Paddle::is_collided_with(Ball const& ball) const
+bool Paddle::is_collided_with(Ball const& ball) const noexcept
 {
     return get_collision_box().is_colided_with(ball.get_collision_box());
 }
@@ -68,7 +68,7 @@ void Paddle::handle_collision(Ball& ball)
     }
 }
 
-GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const
+GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const noexcept
 {
     return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
 }
@@ -85,7 +85,7 @@ void Paddle::reset_cooldown() noexcept
     cooldown = false;
 }
 
-Paddle::CollisionEdge Paddle::process(Ball& ball) const
+Paddle::CollisionEdge Paddle::process(Ball& ball) const noexcept
 {
     assert(is_collided_with(ball));
     assert(!cooldown);

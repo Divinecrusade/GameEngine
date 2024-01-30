@@ -3,19 +3,19 @@
 #include <cmath>
 
 
-Brick::Brick()
+Brick::Brick() noexcept
 :
 collision_box{ DEFAULT_POS, WIDTH, HEIGHT },
 c{ DEFAULT_COLOUR }
 { }
 
-Brick::Brick(GameEngine::Geometry::Vector2D<int> const& pos, GameEngine::Colour c)
+Brick::Brick(GameEngine::Geometry::Vector2D<int> const& pos, GameEngine::Colour c) noexcept
 :
 collision_box{ pos, WIDTH, HEIGHT },
 c{ c }
 { }
 
-Brick::Brick(Brick const& b)
+Brick::Brick(Brick const& b) noexcept
 :
 collision_box{ b.collision_box },
 c{ b.c }
@@ -28,7 +28,7 @@ Brick::Brick()
     swap(std::move(b));
 }
 
-Brick& Brick::operator=(Brick const& b)
+Brick& Brick::operator=(Brick const& b) noexcept
 {
     if (this != &b)
     {
@@ -55,7 +55,7 @@ bool Brick::is_colided_with(Ball const& ball) const noexcept
     return ball.get_collision_box().is_colided_with(collision_box);
 }
 
-void Brick::handle_collision(Ball& ball) const
+void Brick::handle_collision(Ball& ball) const noexcept
 {
     assert(is_colided_with(ball));
 
@@ -72,7 +72,7 @@ void Brick::handle_collision(Ball& ball) const
     }
 }
 
-int Brick::get_sqr_distance(Ball const& ball) const
+int Brick::get_sqr_distance(Ball const& ball) const noexcept
 {
     return (ball.get_center() - collision_box.get_center()).get_square_length();
 }
