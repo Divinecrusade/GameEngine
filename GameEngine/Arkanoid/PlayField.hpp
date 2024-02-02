@@ -23,6 +23,7 @@ public:
     void handle_collision(Paddle& pad) const noexcept;
 
     bool is_in_field(Ball const& ball) const noexcept;
+    bool is_in_lose_zone(Ball const& ball) const noexcept;
     void handle_collision(Ball& ball) const noexcept;
 
 private:

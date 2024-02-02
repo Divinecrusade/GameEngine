@@ -42,6 +42,11 @@ bool PlayField::is_in_field(Ball const& ball) const noexcept
     return collision_frame.contains(ball.get_collision_box());
 }
 
+bool PlayField::is_in_lose_zone(Ball const& ball) const noexcept
+{
+    return ball.get_collision_box().is_colided_with(GameEngine::Geometry::Rectangle2D<int>{{collision_frame.left, collision_frame.bottom}, {collision_frame.right, collision_frame.bottom}});
+}
+
 void PlayField::handle_collision(Ball& ball) const noexcept
 {
     assert(!is_in_field(ball));

@@ -37,6 +37,7 @@ void Arkanoid::render()
         case GameStage::START: break;
 
         case GameStage::IN_PROGRESS:
+        case GameStage::GAMEOVER:
             pad.draw(gfx);
             for (auto const& brick : bricks)
             {
@@ -45,10 +46,7 @@ void Arkanoid::render()
             ball.draw(gfx);
 
         break;
-
-        case GameStage::GAMEOVER: break;
     }
-
 }
 
 void Arkanoid::update_start_stage()
@@ -87,6 +85,11 @@ void Arkanoid::update_in_progress_stage(float dt)
     if (!field.is_in_field(pad)) field.handle_collision(pad);
     if (!field.is_in_field(ball))
     {
+        if (field.is_in_lose_zone(ball)) 
+        { 
+            cur_stage = GameStage::GAMEOVER;
+            return;
+        }
         field.handle_collision(ball);
         collision_happended = true;
     }
@@ -120,12 +123,13 @@ void Arkanoid::update_in_progress_stage(float dt)
     {
         collided_brick->handle_collision(ball);
         bricks.erase(std::remove(bricks.begin(), bricks.end(), *collided_brick), bricks.end());
-        collision_happended = true;
-
         if (bricks.size() == 0U)
         {
             cur_stage = GameStage::GAMEOVER;
+            return;
         }
+        
+        collision_happended = true;
     }
 
     if (collision_happended) pad.reset_cooldown();
