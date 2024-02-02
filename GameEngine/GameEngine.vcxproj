@@ -137,11 +137,12 @@
     <ClInclude Include="GraphicsDirect2D.hpp" />
     <ClInclude Include="IFramableGraphics2D.hpp" />
     <ClInclude Include="IGraphics2D.hpp" />
+    <ClInclude Include="ISurface.hpp" />
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />
-    <ClInclude Include="MainWindow\IWindow.hpp" />
     <ClInclude Include="MainWindow\MainWindow.hpp" />
     <ClInclude Include="Rectangle2D.hpp" />
+    <ClInclude Include="Surface.hpp" />
     <ClInclude Include="Vector2D.hpp" />
     <ClInclude Include="WinKey.hpp" />
   </ItemGroup>
@@ -155,6 +156,7 @@
     </ClCompile>
     <ClCompile Include="KeyColor.cpp" />
     <ClCompile Include="MainWindow\MainWindow.cpp" />
+    <ClCompile Include="Surface.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
