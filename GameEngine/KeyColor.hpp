@@ -29,6 +29,7 @@ namespace GameEngine
         static constexpr size_t  B_INDEX{ 2U };
         static constexpr size_t  A_INDEX{ 3U };
 
+        KeyColor() noexcept = default;
         constexpr KeyColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOUR_DEPTH) noexcept
         :
         rgba{ encode(r, g, b, a) }
