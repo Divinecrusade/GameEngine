@@ -27,7 +27,7 @@ namespace GameEngine
         virtual ~Surface() noexcept;
 
         virtual void draw(Interfaces::IGraphics2D& gfx, Geometry::Vector2D<int> const& pos, Colour chroma) const override;
-        virtual std::vector<std::reference_wrapper<Colour>> get_bitmap() const override;
+        virtual std::vector<std::reference_wrapper<Colour const>> get_bitmap() const override;
 
         virtual int get_width() const noexcept override;
         virtual int get_height() const noexcept override;

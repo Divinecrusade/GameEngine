@@ -67,18 +67,18 @@ namespace GameEngine
         assert(false);
     }
 
-    std::vector<std::reference_wrapper<Colour>> Surface::get_bitmap() const
+    std::vector<std::reference_wrapper<Colour const>> Surface::get_bitmap() const
     {
-        std::vector<std::reference_wrapper<Colour>> tmp;
+        std::vector<std::reference_wrapper<Colour const>> tmp;
         size_t const N{ static_cast<size_t>(width) * height };
         tmp.reserve(N);
 
         for (size_t i{ 0U }; i != N; ++i)
         {
-            tmp.emplace_back(buffer[i]);
+            tmp.emplace_back(std::cref(buffer[i]));
         }
 
-        return tmp;
+        return std::move(tmp);
     }
 
     int Surface::get_width() const noexcept
