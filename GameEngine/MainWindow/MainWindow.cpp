@@ -81,8 +81,8 @@ namespace GameEngine
         window_pos.right = init_width + window_pos.left;
         window_pos.top = 100;
         window_pos.bottom = init_height + window_pos.top;
-        auto const style{ (resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX)) };
-        auto const ex_style{ WS_EX_OVERLAPPEDWINDOW };
+        DWORD const style{ static_cast<DWORD>((resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX))) };
+        DWORD const ex_style{ static_cast<DWORD>(WS_EX_OVERLAPPEDWINDOW) };
         AdjustWindowRectEx(&window_pos, style, FALSE, ex_style);
         HWND const hWnd
         {

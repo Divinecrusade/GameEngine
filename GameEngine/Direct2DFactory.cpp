@@ -29,7 +29,7 @@ namespace GameEngine
         if (!render_target)
         {
             RECT const render_area{ get_render_area_size() };
-            D2D1_SIZE_U const d2d1_size{ D2D1::SizeU(render_area.right - render_area.left, render_area.bottom - render_area.top) };
+            D2D1_SIZE_U const d2d1_size{ D2D1::SizeU(static_cast<UINT32>(render_area.right) - static_cast<UINT32>(render_area.left), static_cast<UINT32>(render_area.bottom) - static_cast<UINT32>(render_area.top)) };
             D2D1_HWND_RENDER_TARGET_PROPERTIES const render_properties{ D2D1::HwndRenderTargetProperties(attached_window, d2d1_size) };
             if (FAILED(d2d_factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), render_properties, &render_target)))
                 throw std::runtime_error{ "Failed to create D2D1 render target" };

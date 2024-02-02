@@ -12,11 +12,11 @@ namespace GameEngine
         {
             inline consteval double operator ""_deg(long double angle)
             {
-                return angle * std::numbers::pi / 180;
+                return static_cast<double>(angle / 180.L) * std::numbers::pi;
             }
             inline consteval double operator ""_percent(long double percentage)
             {
-                return percentage / 100;
+                return static_cast<double>(percentage / 100.L);
             }
         }
 
@@ -28,9 +28,10 @@ namespace GameEngine
                 return std::fabs(a - b) <= PRECISION;
             }
 
-            template <std::integral T> bool signbit(T val) noexcept 
+            template <std::integral T> 
+            constexpr inline bool signbit(T const& val) noexcept 
             {
-                return val < 0;
+                return val < static_cast<T>(0);
             }
         }
     }
