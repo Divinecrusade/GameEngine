@@ -9,10 +9,7 @@ namespace GameEngine
     {
     public:
 
-        FrameTimer()
-        {
-            last = std::chrono::steady_clock::now();
-        }
+        FrameTimer() = default;
         FrameTimer(FrameTimer const&) = delete;
         FrameTimer(FrameTimer&&) = delete;
 
@@ -30,6 +27,6 @@ namespace GameEngine
 
     private:
 
-        std::chrono::steady_clock::time_point last;
+        std::chrono::steady_clock::time_point last{ std::chrono::steady_clock::now() };
     };
 }

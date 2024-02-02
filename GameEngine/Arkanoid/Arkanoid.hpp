@@ -12,6 +12,13 @@
 
 class Arkanoid final : public GameEngine::Game
 {
+private:
+
+    enum class GameStage
+    {
+        START, IN_PROGRESS, GAMEOVER
+    };
+
 public:
 
     static constexpr int WINDOW_WIDTH{ 800 };
@@ -34,6 +41,12 @@ public:
     virtual void render() override;
 
 private:
+
+    void update_start_stage();
+    void update_in_progress_stage(float dt);
+    void update_gameover_stage();
+
+private:
     
     static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 230, 30, 30, 30 };
     static constexpr GameEngine::Geometry::Vector2D<int> PADDLE_INIT_POS{ (WINDOW_WIDTH - PADDING.left - PADDING.right) / 2 + PADDING.left, WINDOW_HEIGHT - PADDING.bottom - 60 };
@@ -50,6 +63,7 @@ private:
     static constexpr GameEngine::Geometry::Vector2D<float> BALL_INIT_VELOCITY{ 0.f, 200.f };
     static constexpr GameEngine::Geometry::Vector2D<int>   BALL_INIT_POS{ PADDLE_INIT_POS.x, PADDLE_INIT_POS.y - 100 };
 
+    GameStage cur_stage{ GameStage::START };
 
     PlayField field;
     Paddle pad;

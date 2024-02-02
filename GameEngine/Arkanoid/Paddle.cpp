@@ -80,8 +80,6 @@ bool Paddle::is_cooldowned() const noexcept
 
 void Paddle::reset_cooldown() noexcept
 {
-    assert(cooldown);
-
     cooldown = false;
 }
 
