@@ -3,14 +3,21 @@
 #include <wingdi.h>
 #include <stdexcept>
 #include <fstream>
+#include <algorithm>
+#include <cwchar>
+
 
 namespace GameEngine
 {
     Surface::Surface(std::filesystem::path const& img_src)
     {
         if (!std::filesystem::exists(img_src)) throw std::runtime_error{ "Image not found" };
-        if (img_src.extension() != SUPPORTED_EXTENSION) throw std::runtime_error{ "Unsupported image extension" };
-
+        if (std::find_if(std::cbegin(SUPPORTED_EXTENSIONS), std::cend(SUPPORTED_EXTENSIONS), 
+            [ext = img_src.extension().native()](wchar_t const* const& s)
+            {
+                return wcscmp(ext.c_str(), s) == 0;
+            }) == std::cend(SUPPORTED_EXTENSIONS)) throw std::runtime_error{ "Unsupported image extension" };
+        
         std::ifstream fin{ img_src, std::ifstream::binary };
 
         BITMAPFILEHEADER bmp_header{ };
@@ -40,7 +47,8 @@ namespace GameEngine
         buffer = new Colour[width * height];
         
         int const pixel_size{ bmp_info.biBitCount / 8 };
-        if (pixel_size != SUPPORTED_PIXEL_SIZE) throw std::runtime_error{ "Not supported colour mode" };
+        if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES)) 
+            throw std::runtime_error{ "Not supported colour depth" };
         int const padding{ (4 - (bmp_info.biWidth * pixel_size % 4)) % 4 };
         fin.seekg(bmp_header.bfOffBits, std::ifstream::beg);
         for (int y{ y_start }; y != y_end; y += dy)
@@ -48,7 +56,12 @@ namespace GameEngine
             for (int x{ 0 }; x != width; ++x)
             {
                 uint32_t rgba{ };
-                fin.read(reinterpret_cast<char*>(&rgba), sizeof(rgba));
+
+                if (pixel_size == 4) fin.read(reinterpret_cast<char*>(&rgba), sizeof(rgba));
+                else if (pixel_size == 3) rgba = Colour::encode(fin.get(), fin.get(), fin.get(), Colour::MAX_COLOUR_DEPTH);
+            #ifdef _DEBUG
+                else assert(false);
+            #endif // DEBUG
 
                 buffer[y * width + x] = Colour{ rgba };
             }

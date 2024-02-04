@@ -11,8 +11,12 @@ namespace GameEngine
     {
     public:
 
-        static constexpr char const* const SUPPORTED_EXTENSION{ "bmp" };
-        static constexpr int SUPPORTED_PIXEL_SIZE{ 4 };
+        static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L"bmp", L"BMP" };
+        static constexpr int                     SUPPORTED_COLOUR_DEPTHS[]{ 24, 32 };
+
+    private:
+
+        static constexpr int SUPPORTED_PIXEL_SIZES[]{ SUPPORTED_COLOUR_DEPTHS[0] / 8, SUPPORTED_COLOUR_DEPTHS[1] / 8 };
 
     public:
 
