@@ -2,16 +2,21 @@
 
 #include "ISurface.hpp"
 
+#include <Windows.h>
 #include <filesystem>
+#include <stdexcept>
+#include <fstream>
+#include <algorithm>
+#include <cwchar>
 
 
 namespace GameEngine
 {
-    class Surface : Interfaces::ISurface
+    class Surface : public Interfaces::ISurface
     {
     public:
 
-        static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L"bmp", L"BMP" };
+        static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
         static constexpr int                     SUPPORTED_COLOUR_DEPTHS[]{ 24, 32 };
 
     private:
@@ -28,19 +33,18 @@ namespace GameEngine
         Surface& operator=(Surface const&) = delete;
         Surface& operator=(Surface&&) = delete;
 
-        virtual ~Surface() noexcept;
+        virtual ~Surface() noexcept = default;
 
-        virtual void draw(Interfaces::IGraphics2D& gfx, Geometry::Vector2D<int> const& pos, Colour chroma) const override;
-        virtual std::vector<std::reference_wrapper<Colour const>> get_bitmap() const override;
+        virtual std::shared_ptr<Colour const[]> get_pixels() const override;
 
-        virtual int get_width() const noexcept override;
-        virtual int get_height() const noexcept override;
+        virtual size_t get_width() const noexcept override;
+        virtual size_t get_height() const noexcept override;
 
     private:
         
         int width;
         int height;
 
-        Colour* buffer;
+        std::shared_ptr<Colour[]> buffer;
     };
 }

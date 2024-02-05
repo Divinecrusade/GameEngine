@@ -1,11 +1,5 @@
 #include "Surface.hpp"
 
-#include <wingdi.h>
-#include <stdexcept>
-#include <fstream>
-#include <algorithm>
-#include <cwchar>
-
 
 namespace GameEngine
 {
@@ -44,7 +38,7 @@ namespace GameEngine
             y_start = height - 1U;
             dy = -1;
         }
-        buffer = new Colour[width * height];
+        buffer = std::shared_ptr<Colour[]>(new Colour[width * height]);
         
         int const pixel_size{ bmp_info.biBitCount / 8 };
         if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES)) 
@@ -63,44 +57,28 @@ namespace GameEngine
                 else assert(false);
             #endif // DEBUG
 
-                buffer[y * width + x] = Colour{ rgba };
+                buffer[static_cast<size_t>(y) * width + x] = Colour{ rgba };
             }
             fin.seekg(padding, std::ifstream::cur);
         }
     }
 
-    GameEngine::Surface::~Surface() noexcept
+    std::shared_ptr<Colour const[]> Surface::get_pixels() const
     {
-        delete[] buffer;
+        return std::shared_ptr<Colour const[]>(buffer);
     }
 
-    // TODO
-    void Surface::draw(Interfaces::IGraphics2D& gfx, Geometry::Vector2D<int> const& pos, Colour chroma) const
+    size_t Surface::get_width() const noexcept
     {
-        assert(false);
+        assert(width > 0);
+
+        return static_cast<size_t>(width);
     }
 
-    std::vector<std::reference_wrapper<Colour const>> Surface::get_bitmap() const
+    size_t Surface::get_height() const noexcept
     {
-        std::vector<std::reference_wrapper<Colour const>> tmp;
-        size_t const N{ static_cast<size_t>(width) * height };
-        tmp.reserve(N);
+        assert(height > 0);
 
-        for (size_t i{ 0U }; i != N; ++i)
-        {
-            tmp.emplace_back(std::cref(buffer[i]));
-        }
-
-        return std::move(tmp);
-    }
-
-    int Surface::get_width() const noexcept
-    {
-        return width;
-    }
-
-    int Surface::get_height() const noexcept
-    {
-        return height;
+        return static_cast<size_t>(height);
     }
 }

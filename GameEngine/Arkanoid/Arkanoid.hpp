@@ -4,6 +4,7 @@
 #include "../GraphicsDirect2D.hpp"
 #include "../IWindow.hpp"
 #include "../FrameTimer.hpp"
+#include "../Surface.hpp"
 
 #include "Paddle.hpp"
 #include "PlayField.hpp"
@@ -18,6 +19,8 @@ private:
     {
         START, IN_PROGRESS, GAMEOVER
     };
+
+    static constexpr wchar_t const* const ASSETS_DIR{ L"data\\assets\\" };
 
 public:
 
@@ -70,4 +73,6 @@ private:
     GameEngine::FrameTimer ft{ };
     std::vector<Brick> bricks;
     Ball ball;
+
+    GameEngine::Surface gamestart_img;
 };

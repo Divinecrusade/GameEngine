@@ -507,10 +507,12 @@
     <ClInclude Include="..\Game.hpp" />
     <ClInclude Include="..\GraphicsDirect2D.hpp" />
     <ClInclude Include="..\IGraphics2D.hpp" />
+    <ClInclude Include="..\ISurface.hpp" />
     <ClInclude Include="..\KeyColor.hpp" />
     <ClInclude Include="..\MainWindow\IWindow.hpp" />
     <ClInclude Include="..\MainWindow\MainWindow.hpp" />
     <ClInclude Include="..\MainWindow\WinKey.hpp" />
+    <ClInclude Include="..\Surface.hpp" />
     <ClInclude Include="Arkanoid.hpp" />
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="Brick.hpp" />
@@ -523,6 +525,7 @@
     <ClCompile Include="..\GraphicsDirect2D.cpp" />
     <ClCompile Include="..\KeyColor.cpp" />
     <ClCompile Include="..\MainWindow\MainWindow.cpp" />
+    <ClCompile Include="..\Surface.cpp" />
     <ClCompile Include="Arkanoid.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Brick.cpp" />

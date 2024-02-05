@@ -6,7 +6,8 @@ Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfac
 Game{ window, graphics },
 field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW_WIDTH - PADDING.right, WINDOW_HEIGHT - PADDING.bottom, 0 + PADDING.top } },
 pad{ PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
-ball{ BALL_INIT_POS, BALL_INIT_VELOCITY }
+ball{ BALL_INIT_POS, BALL_INIT_VELOCITY },
+gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) }
 { 
     GameEngine::Geometry::Vector2D<int> const brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -28,35 +29,14 @@ void Arkanoid::update()
     }
 }
 
-void Arkanoid::render()
-{
-    Game::render();
-    field.draw(gfx);
-    switch (cur_stage)
-    {
-        case GameStage::START: break;
-
-        case GameStage::IN_PROGRESS:
-        case GameStage::GAMEOVER:
-            pad.draw(gfx);
-            for (auto const& brick : bricks)
-            {
-                brick.draw(gfx);
-            }
-            ball.draw(gfx);
-
-        break;
-    }
-}
-
 void Arkanoid::update_start_stage()
 {
     assert(cur_stage == GameStage::START);
 
     switch (get_wnd().get_last_pressed_functional_key())
     {
-        case GameEngine::WinKey::ENTER: cur_stage = GameStage::IN_PROGRESS; break;
-        default: break;
+    case GameEngine::WinKey::ENTER: cur_stage = GameStage::IN_PROGRESS; break;
+    default: break;
     }
 }
 
@@ -70,14 +50,14 @@ void Arkanoid::update_in_progress_stage(float dt)
     Paddle::Direction new_dir{ pad.get_direction() };
     switch (get_wnd().get_last_pressed_functional_key())
     {
-        case GameEngine::WinKey::ARROW_LEFT: new_dir = Paddle::Direction::LEFT; break;
-        case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
-        default:
+    case GameEngine::WinKey::ARROW_LEFT: new_dir = Paddle::Direction::LEFT; break;
+    case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
+    default:
 
-            if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
-                new_dir = Paddle::Direction::STOP;
+        if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
+            new_dir = Paddle::Direction::STOP;
 
-            break;
+        break;
     }
     pad.set_direction(new_dir);
     pad.update(dt);
@@ -85,8 +65,8 @@ void Arkanoid::update_in_progress_stage(float dt)
     if (!field.is_in_field(pad)) field.handle_collision(pad);
     if (!field.is_in_field(ball))
     {
-        if (field.is_in_lose_zone(ball)) 
-        { 
+        if (field.is_in_lose_zone(ball))
+        {
             cur_stage = GameStage::GAMEOVER;
             return;
         }
@@ -128,7 +108,7 @@ void Arkanoid::update_in_progress_stage(float dt)
             cur_stage = GameStage::GAMEOVER;
             return;
         }
-        
+
         collision_happended = true;
     }
 
@@ -138,4 +118,29 @@ void Arkanoid::update_in_progress_stage(float dt)
 void Arkanoid::update_gameover_stage()
 {
     assert(cur_stage == GameStage::GAMEOVER);
+}
+
+void Arkanoid::render()
+{
+    Game::render();
+    switch (cur_stage)
+    {
+        case GameStage::START: 
+
+            gfx.draw_sprite({0, 0}, gamestart_img);
+        
+        break;
+
+        case GameStage::IN_PROGRESS:
+        case GameStage::GAMEOVER:
+            field.draw(gfx);
+            pad.draw(gfx);
+            for (auto const& brick : bricks)
+            {
+                brick.draw(gfx);
+            }
+            ball.draw(gfx);
+
+        break;
+    }
 }

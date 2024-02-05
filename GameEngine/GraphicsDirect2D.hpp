@@ -2,6 +2,7 @@
 
 #include "IFramableGraphics2D.hpp"
 #include "Direct2DFactory.hpp"
+#include "ISurface.hpp"
 
 
 namespace GameEngine
@@ -33,13 +34,14 @@ namespace GameEngine
         virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
         virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
 
+        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma = Colours::MAGENTA) override;
+
     private:
 
         float get_dips_from_pixels(int px) const
         {
             return static_cast<float>(px) / (static_cast<float>(GetDpiForWindow(d2d_factory.get_render_target().GetHwnd())) / USER_DEFAULT_SCREEN_DPI);
         }
-
 
     private:
     

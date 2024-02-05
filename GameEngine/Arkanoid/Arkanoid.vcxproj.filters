@@ -69,6 +69,12 @@
     <ClInclude Include="..\Auxiliry.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\ISurface.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Surface.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainWindow\MainWindow.cpp">
@@ -103,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="Ball.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Surface.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

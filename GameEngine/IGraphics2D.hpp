@@ -3,6 +3,7 @@
 #include "KeyColor.hpp"
 #include "Vector2D.hpp"
 #include "Rectangle2D.hpp"
+#include "ISurface.hpp"
 
 
 namespace GameEngine
@@ -23,6 +24,8 @@ namespace GameEngine
 
             virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) = 0;
             virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) = 0;
+        
+            virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, ISurface const& sprite, Colour chroma = Colours::MAGENTA) = 0;
         };
     }
 }

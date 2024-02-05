@@ -127,4 +127,27 @@ namespace GameEngine
         };
         d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
+
+    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma)
+    {
+        assert(composing_frame);
+        assert(left_top_pos.x >= 0);
+        assert(left_top_pos.y >= 0);
+
+        ID2D1Bitmap* bitmap{ nullptr };
+        D2D1_SIZE_U const sizes{ D2D1::SizeU(sprite.get_width(), sprite.get_height()) };
+        UINT32 const pitch { sizes.width * sizeof(UINT8) * 4 };
+        FLOAT dpiX{ };
+        FLOAT dpiY{ };
+        d2d_factory.get_render_target().GetDpi(&dpiX, &dpiY);
+        D2D1_BITMAP_PROPERTIES const props
+        { 
+            D2D1::PixelFormat(DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
+            dpiX, dpiY
+        };
+        auto pixels{ sprite.get_pixels() };
+        d2d_factory.get_render_target().CreateBitmap(sizes, reinterpret_cast<void const*>(pixels.get()), pitch, props, &bitmap);
+        d2d_factory.get_render_target().DrawBitmap(bitmap, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), 
+                                                                       get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
+    }
 }
