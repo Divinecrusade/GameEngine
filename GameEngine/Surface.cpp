@@ -73,22 +73,6 @@ namespace GameEngine
         return std::shared_ptr<Colour const[]>(buffer);
     }
 
-    std::vector<Colour> GameEngine::Surface::get_pixels(SurfaceEffects::PixelManipulation const& effect) const
-    {
-        std::vector<Colour> pixels{ };
-
-        pixels.reserve(width * height);
-        for (size_t y{ 0U }; y != height; ++y)
-        {
-            for (size_t x{ 0U }; x != width; ++x)
-            {
-                pixels.emplace_back(effect(buffer[y * width + x]));
-            }
-        }
-
-        return pixels;
-    }
-
     size_t Surface::get_width() const noexcept
     {
         return width;

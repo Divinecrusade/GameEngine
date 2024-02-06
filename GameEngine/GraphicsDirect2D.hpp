@@ -39,6 +39,8 @@ namespace GameEngine
 
     private:
 
+        std::vector<Colour> make_mask(Interfaces::ISurface const& sprite, Colour c_req);
+
         float get_dips_from_pixels(int px) const
         {
             return static_cast<float>(px) / (static_cast<float>(GetDpiForWindow(d2d_factory.get_render_target().GetHwnd())) / USER_DEFAULT_SCREEN_DPI);

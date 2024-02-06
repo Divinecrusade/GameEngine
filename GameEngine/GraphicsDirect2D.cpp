@@ -162,7 +162,7 @@ namespace GameEngine
         auto img{ sprite.get_pixels() };
         ID2D1Bitmap* bmp_img{ nullptr };
 
-        auto mask{ sprite.get_pixels(GameEngine::SurfaceEffects::Filter{ chroma }) };
+        auto mask{ make_mask(sprite, chroma) };
         ID2D1Bitmap* bmp_mask{ nullptr };
 
         D2D1_SIZE_U const sizes{ D2D1::SizeU(sprite.get_width(), sprite.get_height()) };
@@ -209,5 +209,34 @@ namespace GameEngine
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
         d2d_factory.get_render_target().FillOpacityMask(bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area, &drawing_area);
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+    }
+
+    std::vector<Colour> GameEngine::GraphicsDirect2D::make_mask(Interfaces::ISurface const& sprite, Colour c_req)
+    {
+        size_t const width{ sprite.get_width() };
+        size_t const height{ sprite.get_height() };
+        size_t const n_pixels{ width * height };
+
+        auto const pixels{ sprite.get_pixels() };
+
+        std::vector<Colour> mask{ };
+        mask.reserve(n_pixels);
+
+        for (size_t y{ 0U }; y != width; ++y)
+        for (size_t x{ 0U }; x != height; ++x)
+        {
+            Colour c_cur{ pixels[y * width + x] };
+            if (Colour::is_equal_except_one_component(c_cur, c_req))
+            {
+                c_cur[Colour::ComponentIndex::A] = Colour::MIN_COLOUR_DEPTH; 
+                mask.emplace_back(c_cur);
+            }
+            else
+            {
+                mask.emplace_back(c_cur);
+            }
+        }
+
+        return mask;
     }
 }

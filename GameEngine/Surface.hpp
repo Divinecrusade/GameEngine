@@ -36,7 +36,6 @@ namespace GameEngine
         virtual ~Surface() noexcept = default;
 
         virtual std::shared_ptr<Colour const[]> get_pixels() const override;
-        virtual std::vector<Colour> get_pixels(SurfaceEffects::PixelManipulation const& effect) const;
 
         virtual size_t get_width() const noexcept override;
         virtual size_t get_height() const noexcept override;

@@ -32,6 +32,15 @@ namespace GameEngine
             return rgba | r_ | g_ | b_ | a_;
         }
 
+        static constexpr bool is_equal_except_one_component(KeyColor const& lhs, KeyColor const& rhs, ComponentIndex ignored_component = ComponentIndex::A)
+        {
+            KeyColor const xored_colour{ lhs.rgba ^ rhs.rgba };
+            KeyColor mask{ };
+            mask[ignored_component] = xored_colour[ignored_component];
+
+            return xored_colour.rgba == mask.rgba;
+        }
+
         constexpr KeyColor() noexcept = default;
         constexpr KeyColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOUR_DEPTH) noexcept
         :
