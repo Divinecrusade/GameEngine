@@ -153,7 +153,7 @@ namespace GameEngine
                                                                         get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
     }
 
-    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma)
+    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma)
     {
         assert(composing_frame);
 
@@ -162,7 +162,7 @@ namespace GameEngine
         auto img{ sprite.get_pixels() };
         ID2D1Bitmap* bmp_img{ nullptr };
 
-        auto mask{ sprite.get_pixels(GameEngine::SurfaceEffects::Filter{ Colours::WHITE }) };
+        auto mask{ sprite.get_pixels(GameEngine::SurfaceEffects::Filter{ chroma }) };
         ID2D1Bitmap* bmp_mask{ nullptr };
 
         D2D1_SIZE_U const sizes{ D2D1::SizeU(sprite.get_width(), sprite.get_height()) };
