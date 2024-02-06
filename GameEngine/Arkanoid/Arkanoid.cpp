@@ -127,8 +127,7 @@ void Arkanoid::render()
     {
         case GameStage::START: 
 
-            gfx.draw_sprite({0, 100}, gamestart_img);
-            gfx.draw_sprite({0, 0}, gamestart_img, GameEngine::Colours::WHITE);
+            gfx.draw_sprite({0, WINDOW_HEIGHT / 2 - static_cast<int>(gamestart_img.get_height() / 2U)}, gamestart_img);
         
         break;
 
