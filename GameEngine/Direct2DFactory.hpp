@@ -59,6 +59,13 @@ namespace GameEngine
             return D2D1::ColorF{ c[Colour::ComponentIndex::R] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::G] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::B] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::A] / MAX_COLOR_DEPTH };
         }
 
+        static D2D1_PIXEL_FORMAT const& get_pixel_format() noexcept
+        {
+            static D2D1_PIXEL_FORMAT PIXEL_FORMAT{ D2D1::PixelFormat(DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED) };
+            
+            return PIXEL_FORMAT;
+        }
+
     public:
 
         Direct2DFactory() = delete;
@@ -77,6 +84,7 @@ namespace GameEngine
         ID2D1SolidColorBrush& get_brush(KeyColor const& key);
         void free_resources();
 
+        D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
 
     private:
     
