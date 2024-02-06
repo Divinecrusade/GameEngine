@@ -134,7 +134,8 @@ namespace GameEngine
         assert(left_top_pos.x >= 0);
         assert(left_top_pos.y >= 0);
 
-        ID2D1Bitmap* bitmap{ nullptr };
+        ID2D1Bitmap* bmp_picture{ nullptr };
+        ID2D1Bitmap* bmp_mask{ nullptr };
         D2D1_SIZE_U const sizes{ D2D1::SizeU(sprite.get_width(), sprite.get_height()) };
         UINT32 const pitch { sizes.width * sizeof(UINT8) * 4 };
         FLOAT dpiX{ };
@@ -142,12 +143,34 @@ namespace GameEngine
         d2d_factory.get_render_target().GetDpi(&dpiX, &dpiY);
         D2D1_BITMAP_PROPERTIES const props
         { 
-            D2D1::PixelFormat(DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
+            D2D1::PixelFormat(DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
             dpiX, dpiY
         };
-        auto pixels{ sprite.get_pixels() };
-        d2d_factory.get_render_target().CreateBitmap(sizes, reinterpret_cast<void const*>(pixels.get()), pitch, props, &bitmap);
-        d2d_factory.get_render_target().DrawBitmap(bitmap, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), 
-                                                                       get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
+        auto mask{ sprite.get_pixels(GameEngine::SurfaceEffects::Filter{ Colours::WHITE })};
+        auto img{ sprite.get_pixels()};
+        d2d_factory.get_render_target().CreateBitmap(sizes, reinterpret_cast<void const*>(img.get()), pitch, props, &bmp_picture);
+        d2d_factory.get_render_target().CreateBitmap(sizes, reinterpret_cast<void const*>(mask.data()), pitch, props, &bmp_mask);
+        
+        D2D1_BITMAP_BRUSH_PROPERTIES props_for_img
+        {
+            D2D1::BitmapBrushProperties
+            (
+                D2D1_EXTEND_MODE_CLAMP,
+                D2D1_EXTEND_MODE_CLAMP,
+                D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
+            )
+        };
+        ID2D1BitmapBrush* brush{ nullptr };
+        d2d_factory.get_render_target().CreateBitmapBrush(bmp_picture, props_for_img, &brush);
+
+        D2D1_RECT_F rect{ D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())) };
+        
+        d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+        assert(bmp_mask && bmp_picture);
+        d2d_factory.get_render_target().FillOpacityMask(bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &rect, &rect);
+        d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+        //assert(bitmap);
+        //d2d_factory.get_render_target().DrawBitmap(bitmap, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), 
+        //                                                               get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
     }
 }

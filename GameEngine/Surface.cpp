@@ -20,7 +20,8 @@ namespace GameEngine
         fin.read(reinterpret_cast<char*>(&bmp_header), sizeof(bmp_header));
         fin.read(reinterpret_cast<char*>(&bmp_info), sizeof(bmp_info));
 
-        width = bmp_info.biWidth;
+        int width = bmp_info.biWidth;
+        int height{ };
 
         int y_start{ };
         int y_end{ };
@@ -38,7 +39,11 @@ namespace GameEngine
             y_start = height - 1U;
             dy = -1;
         }
-        buffer = std::shared_ptr<Colour[]>(new Colour[width * height]);
+        assert(width > 0);
+        this->width = static_cast<size_t>(width);
+        assert(height > 0);
+        this->height = static_cast<size_t>(height);
+        buffer = std::shared_ptr<Colour[]>(new Colour[this->width * this->height]);
         
         int const pixel_size{ bmp_info.biBitCount / 8 };
         if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES)) 
@@ -68,17 +73,29 @@ namespace GameEngine
         return std::shared_ptr<Colour const[]>(buffer);
     }
 
+    std::vector<Colour> GameEngine::Surface::get_pixels(SurfaceEffects::PixelManipulation const& effect) const
+    {
+        std::vector<Colour> pixels{ };
+
+        pixels.reserve(width * height);
+        for (size_t y{ 0U }; y != height; ++y)
+        {
+            for (size_t x{ 0U }; x != width; ++x)
+            {
+                pixels.emplace_back(effect(buffer[y * width + x]));
+            }
+        }
+
+        return pixels;
+    }
+
     size_t Surface::get_width() const noexcept
     {
-        assert(width > 0);
-
-        return static_cast<size_t>(width);
+        return width;
     }
 
     size_t Surface::get_height() const noexcept
     {
-        assert(height > 0);
-
-        return static_cast<size_t>(height);
+        return height;
     }
 }

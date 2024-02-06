@@ -11,10 +11,13 @@ namespace GameEngine
         static constexpr uint8_t MIN_COLOUR_DEPTH{ 0U };
         static constexpr uint8_t MAX_COLOUR_DEPTH{ 255U };
 
-        static constexpr size_t  R_INDEX{ 0U };
-        static constexpr size_t  G_INDEX{ 1U };
-        static constexpr size_t  B_INDEX{ 2U };
-        static constexpr size_t  A_INDEX{ 3U };
+        enum class ComponentIndex : size_t
+        {
+            R = 0U,
+            G = 1U,
+            B = 2U,
+            A = 3U
+        };
 
         static constexpr uint32_t encode(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
         {
@@ -47,12 +50,19 @@ namespace GameEngine
 
         uint32_t get_encoded() const noexcept;
         
-    public:
+        constexpr uint8_t& operator[](ComponentIndex index) noexcept
+        {
+            return colors[static_cast<size_t>(index)];
+        }
 
-        uint8_t colors[4U];
+        constexpr uint8_t const& operator[](ComponentIndex index) const noexcept
+        {
+            return colors[static_cast<size_t>(index)];
+        }
 
     private:
 
+        uint8_t colors[4U];
         uint32_t rgba{ 0U };
     };
 

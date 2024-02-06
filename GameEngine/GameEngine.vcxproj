@@ -143,6 +143,7 @@
     <ClInclude Include="MainWindow\MainWindow.hpp" />
     <ClInclude Include="Rectangle2D.hpp" />
     <ClInclude Include="Surface.hpp" />
+    <ClInclude Include="SurfaceEffects.hpp" />
     <ClInclude Include="Vector2D.hpp" />
     <ClInclude Include="WinKey.hpp" />
   </ItemGroup>

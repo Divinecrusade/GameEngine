@@ -56,7 +56,7 @@ namespace GameEngine
         __forceinline static D2D1::ColorF get_color(Colour c)
         {
             static constexpr float MAX_COLOR_DEPTH{ 255.f };
-            return D2D1::ColorF{ c.colors[Colour::R_INDEX] / MAX_COLOR_DEPTH, c.colors[Colour::G_INDEX] / MAX_COLOR_DEPTH, c.colors[Colour::B_INDEX] / MAX_COLOR_DEPTH, c.colors[Colour::A_INDEX] / MAX_COLOR_DEPTH };
+            return D2D1::ColorF{ c[Colour::ComponentIndex::R] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::G] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::B] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::A] / MAX_COLOR_DEPTH };
         }
 
     public:
