@@ -127,7 +127,8 @@ void Arkanoid::render()
     {
         case GameStage::START: 
 
-            gfx.draw_sprite({0, 0}, gamestart_img);
+            gfx.draw_sprite({0, 100}, gamestart_img);
+            gfx.draw_sprite({0, 0}, gamestart_img, GameEngine::Colours::WHITE);
         
         break;
 
