@@ -155,7 +155,6 @@
     <ClCompile Include="GraphicsDirect2D.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="KeyColor.cpp" />
     <ClCompile Include="MainWindow\MainWindow.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="WinMain.cpp" />

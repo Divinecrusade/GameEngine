@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <algorithm>
+
 
 namespace GameEngine
 {
@@ -30,7 +32,7 @@ namespace GameEngine
             return rgba | r_ | g_ | b_ | a_;
         }
 
-        KeyColor() noexcept = default;
+        constexpr KeyColor() noexcept = default;
         constexpr KeyColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOUR_DEPTH) noexcept
         :
         rgba{ encode(r, g, b, a) }
@@ -43,18 +45,33 @@ namespace GameEngine
         :
         rgba{ c.rgba }
         { }
-        KeyColor(KeyColor&& c) noexcept;
-        KeyColor& operator=(KeyColor const& c) noexcept;
-        KeyColor& operator=(KeyColor&& c) noexcept;
+        KeyColor(KeyColor&& c) noexcept
+        {
+            std::swap(rgba, c.rgba);
+        }
+        constexpr KeyColor& operator=(KeyColor const& c) noexcept
+        {
+            rgba = c.rgba;
+
+            return *this;
+        }
+        KeyColor& operator=(KeyColor&& c) noexcept
+        {
+            std::swap(rgba, c.rgba);
+
+            return *this;
+        }
         ~KeyColor() = default;
 
-        uint32_t get_encoded() const noexcept;
+        constexpr uint32_t get_encoded() const noexcept
+        {
+            return rgba;
+        }
         
         constexpr uint8_t& operator[](ComponentIndex index) noexcept
         {
             return colors[static_cast<size_t>(index)];
         }
-
         constexpr uint8_t const& operator[](ComponentIndex index) const noexcept
         {
             return colors[static_cast<size_t>(index)];
@@ -66,7 +83,10 @@ namespace GameEngine
         uint32_t rgba{ 0U };
     };
 
-    bool operator==(KeyColor const& lhs, KeyColor const& rhs);
+    constexpr bool operator==(KeyColor const& lhs, KeyColor const& rhs)
+    {
+        return lhs.get_encoded() == rhs.get_encoded();
+    }
 
     using Colour = KeyColor;
 
