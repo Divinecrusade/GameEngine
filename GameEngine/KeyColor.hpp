@@ -83,9 +83,13 @@ namespace GameEngine
         uint32_t rgba{ 0U };
     };
 
-    constexpr bool operator==(KeyColor const& lhs, KeyColor const& rhs)
+    constexpr bool operator==(KeyColor const& lhs, KeyColor const& rhs) noexcept
     {
         return lhs.get_encoded() == rhs.get_encoded();
+    }
+    constexpr bool operator!=(KeyColor const& lhs, KeyColor const& rhs) noexcept
+    {
+        return !(lhs == rhs);
     }
 
     using Colour = KeyColor;
