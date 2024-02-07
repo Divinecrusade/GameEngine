@@ -36,6 +36,14 @@ namespace std
             return hash<unsigned long>{}(reinterpret_cast<unsigned long>(arg));
         }
     };
+
+    template<> struct hash<ID2D1Bitmap*>
+    {
+        size_t operator() (ID2D1Bitmap* arg) const
+        {
+            return hash<unsigned long>{}(reinterpret_cast<unsigned long>(arg));
+        }
+    };
 }
 
 
@@ -92,6 +100,8 @@ namespace GameEngine
         ID2D1HwndRenderTarget& get_render_target();
         ID2D1SolidColorBrush& get_brush(KeyColor const& key);
         ID2D1Bitmap& get_bitmap(GameEngine::Interfaces::ISurface const& srf);
+        ID2D1BitmapBrush& get_bitmapbrush(ID2D1Bitmap& bitmap);
+
         void free_resources();
 
         D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
@@ -104,5 +114,6 @@ namespace GameEngine
         ID2D1HwndRenderTarget* render_target{ nullptr };
         std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
         std::unordered_map<KeyColor const*, ID2D1Bitmap*>   bitmaps;
+        std::unordered_map<ID2D1Bitmap*, ID2D1BitmapBrush*> bitmapbrushes;
     };
 }

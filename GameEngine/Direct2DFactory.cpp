@@ -80,6 +80,30 @@ namespace GameEngine
         return *bitmaps[img.get()];
     }
 
+    ID2D1BitmapBrush& GameEngine::Direct2DFactory::get_bitmapbrush(ID2D1Bitmap& bitmap)
+    {
+        assert(render_target);
+
+        if (!bitmapbrushes.contains(&bitmap))
+        {
+            ID2D1BitmapBrush* brush{ nullptr };
+            render_target->CreateBitmapBrush
+            (
+                &bitmap,
+                D2D1::BitmapBrushProperties
+                (
+                    D2D1_EXTEND_MODE_CLAMP,
+                    D2D1_EXTEND_MODE_CLAMP,
+                    D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
+                ),
+                &brush
+            );
+            bitmapbrushes.insert({ &bitmap, brush });
+        }
+
+        return *bitmapbrushes[&bitmap];
+    }
+
     void Direct2DFactory::free_resources()
     {
         safe_release(render_target);
@@ -87,5 +111,7 @@ namespace GameEngine
         brushes.clear();
         std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); } );
         bitmaps.clear();
+        std::for_each(bitmapbrushes.begin(), bitmapbrushes.end(), [](auto& pair) { safe_release(pair.second); });
+        bitmapbrushes.clear();
     }
 }

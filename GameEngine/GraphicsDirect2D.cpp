@@ -144,24 +144,10 @@ namespace GameEngine
     {
         assert(composing_frame);
 
-        ID2D1BitmapBrush* brush{ nullptr };
-
         ID2D1Bitmap& bmp_img { d2d_factory.get_bitmap(sprite) };
         ID2D1Bitmap& bmp_mask{ d2d_factory.get_bitmap(Surface{ sprite.get_width(), sprite.get_height(), make_mask(sprite, chroma) }) };
+        ID2D1BitmapBrush& brush{ d2d_factory.get_bitmapbrush(bmp_img) };
 
-        d2d_factory.get_render_target().CreateBitmapBrush
-        (
-            &bmp_img,
-            D2D1::BitmapBrushProperties
-            (
-                D2D1_EXTEND_MODE_CLAMP,
-                D2D1_EXTEND_MODE_CLAMP,
-                D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
-            ),
-            &brush
-        );
-        assert(brush);
-        
         D2D1_RECT_F const drawing_area
         {
             D2D1::RectF
@@ -173,9 +159,9 @@ namespace GameEngine
             )
         };
 
-        brush->SetTransform(D2D1::Matrix3x2F::Translation(D2D1::SizeF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y))));
+        brush.SetTransform(D2D1::Matrix3x2F::Translation(D2D1::SizeF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y))));
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-        d2d_factory.get_render_target().FillOpacityMask(&bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area);
+        d2d_factory.get_render_target().FillOpacityMask(&bmp_mask, &brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area);
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
     }
 
