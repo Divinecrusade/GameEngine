@@ -49,6 +49,8 @@ private:
     void update_in_progress_stage(float dt);
     void update_gameover_stage();
 
+    void render_full_scene();
+
 private:
     
     static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 230, 30, 30, 30 };
@@ -75,4 +77,5 @@ private:
     Ball ball;
 
     GameEngine::Surface gamestart_img;
+    GameEngine::Surface gameover_img;
 };

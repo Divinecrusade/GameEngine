@@ -166,7 +166,7 @@ namespace GameEngine
         ID2D1Bitmap* bmp_mask{ nullptr };
 
         D2D1_SIZE_U const sizes{ D2D1::SizeU(sprite.get_width(), sprite.get_height()) };
-        UINT32 const pitch { sizes.width * sizeof(UINT8) * 4 };
+        UINT32 const pitch { sizes.width * sizeof(GameEngine::Colour) };
 
         FLOAT dpiX{ };
         FLOAT dpiY{ };
@@ -194,20 +194,21 @@ namespace GameEngine
             &brush
         );
         assert(brush);
-
+        
         D2D1_RECT_F const drawing_area
-        { 
+        {
             D2D1::RectF
             (
                 get_dips_from_pixels(left_top_pos.x),
                 get_dips_from_pixels(left_top_pos.y),
                 get_dips_from_pixels(left_top_pos.x + sprite.get_width()),
                 get_dips_from_pixels(left_top_pos.y + sprite.get_height())
-            ) 
+            )
         };
 
+        brush->SetTransform(D2D1::Matrix3x2F::Translation(D2D1::SizeF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y))));
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-        d2d_factory.get_render_target().FillOpacityMask(bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area, &drawing_area);
+        d2d_factory.get_render_target().FillOpacityMask(bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area);
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
     }
 
@@ -221,20 +222,17 @@ namespace GameEngine
 
         std::vector<Colour> mask{ };
         mask.reserve(n_pixels);
-
-        for (size_t y{ 0U }; y != width; ++y)
-        for (size_t x{ 0U }; x != height; ++x)
+        
+        for (size_t y{ 0U }; y != height; ++y)
+        for (size_t x{ 0U }; x != width; ++x)
         {
             Colour c_cur{ pixels[y * width + x] };
             if (Colour::is_equal_except_one_component(c_cur, c_req))
             {
                 c_cur[Colour::ComponentIndex::A] = Colour::MIN_COLOUR_DEPTH; 
-                mask.emplace_back(c_cur);
             }
-            else
-            {
-                mask.emplace_back(c_cur);
-            }
+            
+            mask.emplace_back(c_cur);
         }
 
         return mask;

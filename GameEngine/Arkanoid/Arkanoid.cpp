@@ -7,7 +7,8 @@ Game{ window, graphics },
 field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW_WIDTH - PADDING.right, WINDOW_HEIGHT - PADDING.bottom, 0 + PADDING.top } },
 pad{ PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball{ BALL_INIT_POS, BALL_INIT_VELOCITY },
-gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) }
+gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) },
+gameover_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gameover.bmp" }}) }
 { 
     GameEngine::Geometry::Vector2D<int> const brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -120,6 +121,17 @@ void Arkanoid::update_gameover_stage()
     assert(cur_stage == GameStage::GAMEOVER);
 }
 
+void Arkanoid::render_full_scene()
+{
+    field.draw(gfx);
+    pad.draw(gfx);
+    for (auto const& brick : bricks)
+    {
+        brick.draw(gfx);
+    }
+    ball.draw(gfx);
+}
+
 void Arkanoid::render()
 {
     Game::render();
@@ -132,14 +144,17 @@ void Arkanoid::render()
         break;
 
         case GameStage::IN_PROGRESS:
+
+            render_full_scene();
+
+        break;
+
         case GameStage::GAMEOVER:
-            field.draw(gfx);
-            pad.draw(gfx);
-            for (auto const& brick : bricks)
-            {
-                brick.draw(gfx);
-            }
-            ball.draw(gfx);
+
+            render_full_scene();
+
+            gfx.draw_sprite_excluding_color({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK);
+            //gfx.draw_sprite({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img);
 
         break;
     }
