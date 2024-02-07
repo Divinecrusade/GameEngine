@@ -43,7 +43,7 @@ namespace GameEngine
         this->width = static_cast<size_t>(width);
         assert(height > 0);
         this->height = static_cast<size_t>(height);
-        buffer = std::shared_ptr<Colour[]>(new Colour[this->width * this->height]);
+        auto buffer { std::shared_ptr<Colour[]>(new Colour[this->width * this->height]) };
         
         int const pixel_size{ bmp_info.biBitCount / 8 };
         if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES)) 
@@ -66,7 +66,15 @@ namespace GameEngine
             }
             fin.seekg(padding, std::ifstream::cur);
         }
+        this->buffer = std::move(buffer);
     }
+
+    GameEngine::Surface::Surface(size_t width, size_t height, std::shared_ptr<Colour const[]> buffer)
+    :
+    width{ width },
+    height{ height },
+    buffer{ buffer }
+    { }
 
     Surface::Surface(Surface const& srf)
     :

@@ -27,6 +27,7 @@ namespace GameEngine
 
         Surface() = delete;
         Surface(std::filesystem::path const& img_src);
+        Surface(size_t width, size_t height, std::shared_ptr<Colour const[]> buffer);
         Surface(Surface const& srf);
         Surface(Surface&& tmp) noexcept;
 
@@ -49,6 +50,6 @@ namespace GameEngine
         size_t width{ 0U };
         size_t height{ 0U };
 
-        std::shared_ptr<Colour[]> buffer;
+        std::shared_ptr<Colour const[]> buffer;
     };
 }
