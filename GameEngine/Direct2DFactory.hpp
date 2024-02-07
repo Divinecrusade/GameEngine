@@ -103,6 +103,6 @@ namespace GameEngine
 
         ID2D1HwndRenderTarget* render_target{ nullptr };
         std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
-        std::unordered_map<KeyColor const*, ID2D1Bitmap*>         bitmaps;
+        std::unordered_map<KeyColor const*, ID2D1Bitmap*>   bitmaps;
     };
 }

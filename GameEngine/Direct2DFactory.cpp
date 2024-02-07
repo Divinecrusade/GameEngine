@@ -13,6 +13,7 @@ namespace GameEngine
 
     Direct2DFactory::~Direct2DFactory()
     {
+        free_resources();
         safe_release(d2d_factory);
     }
 
