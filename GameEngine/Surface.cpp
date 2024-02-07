@@ -68,6 +68,34 @@ namespace GameEngine
         }
     }
 
+    Surface::Surface(Surface const& srf)
+    :
+    width { srf.width  },
+    height{ srf.height },
+    buffer{ srf.buffer }
+    { }
+
+    Surface::Surface(Surface&& tmp) noexcept
+    {
+        this->swap(std::move(tmp));
+    }
+
+    Surface& Surface::operator=(Surface const& srf)
+    {
+        width = srf.width;
+        height = srf.height;
+        buffer = srf.buffer;
+
+        return *this;
+    }
+
+    Surface& GameEngine::Surface::operator=(Surface&& tmp) noexcept
+    {
+        this->swap(std::move(tmp));
+
+        return *this;
+    }
+
     std::shared_ptr<Colour const[]> Surface::get_pixels() const
     {
         return std::shared_ptr<Colour const[]>(buffer);
@@ -81,5 +109,12 @@ namespace GameEngine
     size_t Surface::get_height() const noexcept
     {
         return height;
+    }
+
+    void Surface::swap(Surface&& tmp) noexcept
+    {
+        std::swap(width, tmp.width);
+        std::swap(height, tmp.height);
+        std::swap(buffer, tmp.buffer);
     }
 }

@@ -27,11 +27,11 @@ namespace GameEngine
 
         Surface() = delete;
         Surface(std::filesystem::path const& img_src);
-        Surface(Surface const&) = delete;
-        Surface(Surface&&) = delete;
+        Surface(Surface const& srf);
+        Surface(Surface&& tmp) noexcept;
 
-        Surface& operator=(Surface const&) = delete;
-        Surface& operator=(Surface&&) = delete;
+        Surface& operator=(Surface const& srf);
+        Surface& operator=(Surface&& tmp) noexcept;
 
         virtual ~Surface() noexcept = default;
 
@@ -41,9 +41,13 @@ namespace GameEngine
         virtual size_t get_height() const noexcept override;
 
     private:
+
+        void swap(Surface&& tmp) noexcept;
+
+    private:
         
-        size_t width;
-        size_t height;
+        size_t width{ 0U };
+        size_t height{ 0U };
 
         std::shared_ptr<Colour[]> buffer;
     };
