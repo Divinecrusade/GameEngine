@@ -133,27 +133,11 @@ namespace GameEngine
         assert(composing_frame);
 
         ID2D1Bitmap& bmp_img{ d2d_factory.get_bitmap(sprite) };
-        /*
-        ID2D1Bitmap* bmp_img{ nullptr };
-        FLOAT dpiX{ };
-        FLOAT dpiY{ };
-        d2d_factory.get_render_target().GetDpi(&dpiX, &dpiY);
-
-        auto img{ sprite.get_pixels() };
-
-        d2d_factory.get_render_target().CreateBitmap
-        (
-            D2D1::SizeU(sprite.get_width(), sprite.get_height()), 
-            reinterpret_cast<void const*>(img.get()), 
-            sprite.get_width() * sizeof(GameEngine::Colour),
-            D2D1_BITMAP_PROPERTIES{ d2d_factory.PIXEL_FORMAT, dpiX, dpiY },
-            &bmp_img
-        );
-        assert(bmp_img);
-        */
         
-        d2d_factory.get_render_target().DrawBitmap(&bmp_img, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), 
-                                                                        get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
+        d2d_factory.get_render_target().DrawBitmap(&bmp_img, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), 
+                                                                         get_dips_from_pixels(left_top_pos.y), 
+                                                                         get_dips_from_pixels(left_top_pos.x + sprite.get_width()), 
+                                                                         get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
     }
 
     void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma)
@@ -162,32 +146,12 @@ namespace GameEngine
 
         ID2D1BitmapBrush* brush{ nullptr };
 
-        auto img{ sprite.get_pixels() };
-        ID2D1Bitmap* bmp_img{ nullptr };
-
-        auto mask{ make_mask(sprite, chroma) };
-        ID2D1Bitmap* bmp_mask{ nullptr };
-
-        D2D1_SIZE_U const sizes{ D2D1::SizeU(sprite.get_width(), sprite.get_height()) };
-        UINT32 const pitch { sizes.width * sizeof(GameEngine::Colour) };
-
-        FLOAT dpiX{ };
-        FLOAT dpiY{ };
-        d2d_factory.get_render_target().GetDpi(&dpiX, &dpiY);
-
-        D2D1_BITMAP_PROPERTIES const props
-        { 
-            d2d_factory.PIXEL_FORMAT,
-            dpiX, dpiY
-        };
-
-        d2d_factory.get_render_target().CreateBitmap(sizes, reinterpret_cast<void const*>(img.get()), pitch, props, &bmp_img);
-        d2d_factory.get_render_target().CreateBitmap(sizes, reinterpret_cast<void const*>(mask.data()), pitch, props, &bmp_mask);
-        assert(bmp_img && bmp_mask);
+        ID2D1Bitmap& bmp_img { d2d_factory.get_bitmap(sprite) };
+        ID2D1Bitmap& bmp_mask{ d2d_factory.get_bitmap(Surface{ sprite.get_width(), sprite.get_height(), make_mask(sprite, chroma) }) };
 
         d2d_factory.get_render_target().CreateBitmapBrush
         (
-            bmp_img,
+            &bmp_img,
             D2D1::BitmapBrushProperties
             (
                 D2D1_EXTEND_MODE_CLAMP,
@@ -211,31 +175,30 @@ namespace GameEngine
 
         brush->SetTransform(D2D1::Matrix3x2F::Translation(D2D1::SizeF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y))));
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-        d2d_factory.get_render_target().FillOpacityMask(bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area);
+        d2d_factory.get_render_target().FillOpacityMask(&bmp_mask, brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area);
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
     }
 
-    std::vector<Colour> GameEngine::GraphicsDirect2D::make_mask(Interfaces::ISurface const& sprite, Colour c_req)
+    std::shared_ptr<Colour const []> GameEngine::GraphicsDirect2D::make_mask(Interfaces::ISurface const& sprite, Colour c_req)
     {
         size_t const width{ sprite.get_width() };
         size_t const height{ sprite.get_height() };
         size_t const n_pixels{ width * height };
 
-        auto const pixels{ sprite.get_pixels() };
+        auto const img{ sprite.get_pixels() };
 
-        std::vector<Colour> mask{ };
-        mask.reserve(n_pixels);
+        std::shared_ptr<Colour[]> mask{ new Colour[n_pixels] };
         
         for (size_t y{ 0U }; y != height; ++y)
         for (size_t x{ 0U }; x != width; ++x)
         {
-            Colour c_cur{ pixels[y * width + x] };
+            Colour c_cur{ img[y * width + x] };
             if (Colour::is_equal_except_one_component(c_cur, c_req))
             {
                 c_cur[Colour::ComponentIndex::A] = Colour::MIN_COLOUR_DEPTH; 
             }
             
-            mask.emplace_back(c_cur);
+            mask[y * width + x] = (c_cur);
         }
 
         return mask;

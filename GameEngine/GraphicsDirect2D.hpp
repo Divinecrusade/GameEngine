@@ -3,6 +3,8 @@
 #include "IFramableGraphics2D.hpp"
 #include "Direct2DFactory.hpp"
 
+#include "Surface.hpp"
+
 
 namespace GameEngine
 {
@@ -38,7 +40,7 @@ namespace GameEngine
 
     private:
 
-        std::vector<Colour> make_mask(Interfaces::ISurface const& sprite, Colour c_req);
+        std::shared_ptr<Colour const[]> make_mask(Interfaces::ISurface const& sprite, Colour c_req);
 
         float get_dips_from_pixels(int px) const
         {
