@@ -3,6 +3,7 @@
 #pragma comment(lib, "d2d1.lib")
 
 #include "KeyColor.hpp"
+#include "ISurface.hpp"
 
 #include <d2d1.h>
 #include <wincodec.h>
@@ -25,6 +26,14 @@ namespace std
         size_t operator() (GameEngine::KeyColor const& arg) const
         {           
             return hash<uint32_t>{}(arg.get_encoded());
+        }
+    };
+
+    template<> struct hash<GameEngine::KeyColor const*>
+    {
+        size_t operator() (GameEngine::KeyColor const* arg) const
+        {
+            return hash<unsigned long>{}(reinterpret_cast<unsigned long>(arg));
         }
     };
 }
@@ -82,6 +91,7 @@ namespace GameEngine
 
         ID2D1HwndRenderTarget& get_render_target();
         ID2D1SolidColorBrush& get_brush(KeyColor const& key);
+        ID2D1Bitmap& get_bitmap(GameEngine::Interfaces::ISurface const& srf);
         void free_resources();
 
         D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
@@ -93,5 +103,6 @@ namespace GameEngine
 
         ID2D1HwndRenderTarget* render_target{ nullptr };
         std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
+        std::unordered_map<KeyColor const*, ID2D1Bitmap*>         bitmaps;
     };
 }

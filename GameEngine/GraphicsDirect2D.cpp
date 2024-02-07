@@ -132,6 +132,8 @@ namespace GameEngine
     {
         assert(composing_frame);
 
+        ID2D1Bitmap& bmp_img{ d2d_factory.get_bitmap(sprite) };
+        /*
         ID2D1Bitmap* bmp_img{ nullptr };
         FLOAT dpiX{ };
         FLOAT dpiY{ };
@@ -147,9 +149,10 @@ namespace GameEngine
             D2D1_BITMAP_PROPERTIES{ d2d_factory.PIXEL_FORMAT, dpiX, dpiY },
             &bmp_img
         );
-        
         assert(bmp_img);
-        d2d_factory.get_render_target().DrawBitmap(bmp_img, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), 
+        */
+        
+        d2d_factory.get_render_target().DrawBitmap(&bmp_img, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y), 
                                                                         get_dips_from_pixels(left_top_pos.x + sprite.get_width()), get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
     }
 

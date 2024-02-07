@@ -53,10 +53,38 @@ namespace GameEngine
         return *brushes[key];
     }
 
+    ID2D1Bitmap& Direct2DFactory::get_bitmap(GameEngine::Interfaces::ISurface const& srf)
+    {
+        assert(render_target);
+
+        auto img{ srf.get_pixels() };
+        if (!bitmaps.contains(img.get()))
+        {
+            ID2D1Bitmap* bmp_img{ nullptr };
+            FLOAT dpiX{ };
+            FLOAT dpiY{ };
+            render_target->GetDpi(&dpiX, &dpiY);
+
+            render_target->CreateBitmap
+            (
+                D2D1::SizeU(srf.get_width(), srf.get_height()),
+                reinterpret_cast<void const*>(img.get()),
+                srf.get_width() * sizeof(GameEngine::Colour),
+                D2D1_BITMAP_PROPERTIES{ PIXEL_FORMAT, dpiX, dpiY },
+                &bmp_img
+            );
+            bitmaps.insert({ img.get(), bmp_img});
+        }
+
+        return *bitmaps[img.get()];
+    }
+
     void Direct2DFactory::free_resources()
     {
         safe_release(render_target);
         std::for_each(brushes.begin(), brushes.end(), [](auto& pair) { safe_release(pair.second); } );
         brushes.clear();
+        std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); } );
+        bitmaps.clear();
     }
 }

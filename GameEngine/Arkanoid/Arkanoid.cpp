@@ -154,7 +154,6 @@ void Arkanoid::render()
             render_full_scene();
 
             gfx.draw_sprite_excluding_color({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK);
-            //gfx.draw_sprite({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img);
 
         break;
     }

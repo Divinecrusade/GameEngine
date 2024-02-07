@@ -2,7 +2,6 @@
 
 #include "IFramableGraphics2D.hpp"
 #include "Direct2DFactory.hpp"
-#include "ISurface.hpp"
 
 
 namespace GameEngine
