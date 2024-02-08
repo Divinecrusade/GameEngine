@@ -116,7 +116,7 @@ void Paddle::deflect(Ball& ball, CollisionEdge edge) const
         case CollisionEdge::BOTTOM:
         case CollisionEdge::TOP:
         
-            ball.change_direction(calculate_deflect_direction(edge, std::fabs(ball.get_center().x - cur_pos.x), (ball.get_velocity().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
+            ball.change_direction(calculate_deflect_direction(edge, ball.get_center().x - cur_pos.x, (ball.get_velocity().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
 
         break;
 
@@ -129,15 +129,17 @@ void Paddle::deflect(Ball& ball, CollisionEdge edge) const
     }
 }
 
-GameEngine::Geometry::Vector2D<float> Paddle::calculate_deflect_direction(CollisionEdge edge, double abs_dL, Direction ball_direction) const
+GameEngine::Geometry::Vector2D<float> Paddle::calculate_deflect_direction(CollisionEdge edge, double dL, Direction ball_direction) const
 {
-    assert(ball_direction == Direction::LEFT || ball_direction == Direction::RIGHT);
     assert(edge == CollisionEdge::BOTTOM || edge == CollisionEdge::TOP);
+    assert(ball_direction == Direction::LEFT || ball_direction == Direction::RIGHT);
 
-    GameEngine::Geometry::Vector2D<float> new_dir{ 0.f, (edge == CollisionEdge::TOP ? -1.f : 1.f) };
+    GameEngine::Geometry::Vector2D<float> new_dir{ 0, (edge == CollisionEdge::TOP ? -1.f : 1.f) };
+    Direction padd_collised_part{ dL < 0.f ? Direction::RIGHT : Direction::LEFT };
+    double const abs_dL{ std::fabs(dL) };
     double const deflect_angle
     {
-        (ball_direction == Direction::LEFT ? -1. : 1.)
+        ((padd_collised_part == ball_direction) ? (ball_direction == Direction::LEFT ? 1. : -1.) : (ball_direction == Direction::LEFT ? -1. : 1.))
         *
         (abs_dL <= cur_half_width * MIN_DEFLECT_ZONE_RATIO ?
         MIN_ANGLE_DEFLECT
