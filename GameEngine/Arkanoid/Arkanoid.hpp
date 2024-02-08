@@ -60,7 +60,7 @@ private:
     static constexpr float PADDLE_INIT_SPEED{ 250.f };
 
     static constexpr int N_ROWS_BRICKS{ 5 };
-    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::GOLD, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE, GameEngine::Colours::CRIMSON };
+    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::YELLOW, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE, GameEngine::Colours::CRIMSON };
     static constexpr int N_BRICKS_IN_ROW{ (WINDOW_WIDTH - PADDING.left - PADDING.right) / Brick::WIDTH };
     static constexpr int N_BRICKS_TOTAL { N_ROWS_BRICKS* N_BRICKS_IN_ROW };
     static constexpr GameEngine::Geometry::Vector2D<int> GRID_BRICKS_BEG{ PADDING.left + (WINDOW_WIDTH - PADDING.left - PADDING.right) % Brick::WIDTH / 2, PADDING.top + 50 };

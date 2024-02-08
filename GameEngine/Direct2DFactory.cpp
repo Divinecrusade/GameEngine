@@ -14,6 +14,8 @@ namespace GameEngine
     Direct2DFactory::~Direct2DFactory()
     {
         free_resources();
+        safe_release(geom);
+        safe_release(sink);
         safe_release(d2d_factory);
     }
 
@@ -37,6 +39,16 @@ namespace GameEngine
         }
     
         return *render_target;
+    }
+
+    ID2D1PathGeometry& Direct2DFactory::get_geometry()
+    {
+        if (!geom)
+        {
+            d2d_factory->CreatePathGeometry(&geom);
+        }
+        
+        return *geom;
     }
 
     ID2D1SolidColorBrush& Direct2DFactory::get_brush(KeyColor const& key)
@@ -102,6 +114,25 @@ namespace GameEngine
         }
 
         return *bitmapbrushes[&bitmap];
+    }
+
+    ID2D1GeometrySink& Direct2DFactory::open_sink()
+    {
+        if (sink)
+        {
+            close_sink();
+            safe_release(geom);
+        }
+        auto hr = get_geometry().Open(&sink);
+
+        return *sink;
+    }
+
+    void Direct2DFactory::close_sink()
+    {
+        assert(sink);
+
+        sink->Close();
     }
 
     void Direct2DFactory::free_resources()

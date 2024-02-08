@@ -38,6 +38,9 @@ namespace GameEngine
         virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite) override;
         virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma) override;
 
+        virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
+        virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
+
     private:
 
         std::shared_ptr<Colour const[]> make_mask(Interfaces::ISurface const& sprite, Colour c_req);

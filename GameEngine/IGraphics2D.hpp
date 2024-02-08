@@ -5,6 +5,8 @@
 #include "Rectangle2D.hpp"
 #include "ISurface.hpp"
 
+#include <vector>
+
 
 namespace GameEngine
 {
@@ -27,6 +29,9 @@ namespace GameEngine
         
             virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, ISurface const& sprite) = 0;
             virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, ISurface const& sprite, Colour chroma) = 0;
+       
+            virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c);
+            virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c);
         };
     }
 }

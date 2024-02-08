@@ -47,7 +47,36 @@ Brick& Brick::operator=(Brick&& b) noexcept
 
 void Brick::draw(GameEngine::Interfaces::IGraphics2D & gfx) const
 {
-    gfx.fill_rectangle(collision_box.get_expanded(-VISUAL_PADDING), c);
+    auto padded_block{ collision_box.get_expanded(-VISUAL_PADDING) };
+    auto flat_visual_block{ padded_block.get_expanded(-FRAME_WIDTH) };
+
+    gfx.fill_rectangle(flat_visual_block, c);
+
+    std::vector<GameEngine::Geometry::Vector2D<int>> points{ 4U };
+
+    points[0U] = GameEngine::Geometry::Vector2D<int>{ padded_block.left, padded_block.top };
+    points[1U] = GameEngine::Geometry::Vector2D<int>{ padded_block.left, padded_block.bottom };
+    points[2U] = points[1U] + GameEngine::Geometry::Vector2D<int>{ FRAME_WIDTH, -FRAME_WIDTH };
+    points[3U] = points[0U] + GameEngine::Geometry::Vector2D<int>{ FRAME_WIDTH, FRAME_WIDTH };
+    gfx.fill_polygon(points, GameEngine::Colour{uint8_t(c[GameEngine::Colour::ComponentIndex::R] * LEFT_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::G] * LEFT_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::B] * LEFT_FACTOR_C) });
+
+    points[0U] = GameEngine::Geometry::Vector2D<int>{ padded_block.right, padded_block.top };
+    points[1U] = GameEngine::Geometry::Vector2D<int>{ padded_block.right, padded_block.bottom };
+    points[2U] = points[1U] + GameEngine::Geometry::Vector2D<int>{ -FRAME_WIDTH, -FRAME_WIDTH };
+    points[3U] = points[0U] + GameEngine::Geometry::Vector2D<int>{ -FRAME_WIDTH, FRAME_WIDTH };
+    gfx.fill_polygon(points, GameEngine::Colour{ uint8_t(c[GameEngine::Colour::ComponentIndex::R] * RIGHT_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::G] * RIGHT_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::B] * RIGHT_FACTOR_C) });
+
+    points[0U] = GameEngine::Geometry::Vector2D<int>{ padded_block.left, padded_block.bottom };
+    points[1U] = GameEngine::Geometry::Vector2D<int>{ padded_block.right, padded_block.bottom };
+    points[2U] = points[1U] + GameEngine::Geometry::Vector2D<int>{ -FRAME_WIDTH, -FRAME_WIDTH };
+    points[3U] = points[0U] + GameEngine::Geometry::Vector2D<int>{ FRAME_WIDTH, -FRAME_WIDTH };
+    gfx.fill_polygon(points, GameEngine::Colour{ uint8_t(c[GameEngine::Colour::ComponentIndex::R] * BOT_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::G] * BOT_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::B] * BOT_FACTOR_C) });
+
+    points[0U] = GameEngine::Geometry::Vector2D<int>{ padded_block.left, padded_block.top };
+    points[1U] = GameEngine::Geometry::Vector2D<int>{ padded_block.right, padded_block.top };
+    points[2U] = points[1U] + GameEngine::Geometry::Vector2D<int>{ -FRAME_WIDTH, FRAME_WIDTH };
+    points[3U] = points[0U] + GameEngine::Geometry::Vector2D<int>{ FRAME_WIDTH, FRAME_WIDTH };
+    gfx.fill_polygon(points, GameEngine::Colour{ uint8_t(c[GameEngine::Colour::ComponentIndex::R] * TOP_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::G] * TOP_FACTOR_C), uint8_t(c[GameEngine::Colour::ComponentIndex::B] * TOP_FACTOR_C) });
 }
 
 bool Brick::is_colided_with(Ball const& ball) const noexcept

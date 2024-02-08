@@ -98,9 +98,12 @@ namespace GameEngine
         RECT get_render_area_size() const noexcept;
 
         ID2D1HwndRenderTarget& get_render_target();
+        ID2D1PathGeometry& get_geometry();
         ID2D1SolidColorBrush& get_brush(KeyColor const& key);
         ID2D1Bitmap& get_bitmap(GameEngine::Interfaces::ISurface const& srf);
         ID2D1BitmapBrush& get_bitmapbrush(ID2D1Bitmap& bitmap);
+        ID2D1GeometrySink& open_sink();
+        void close_sink();
 
         void free_resources();
 
@@ -110,8 +113,10 @@ namespace GameEngine
     
         HWND const attached_window;
         ID2D1Factory* d2d_factory{ nullptr };
+        ID2D1GeometrySink* sink{ nullptr };
 
         ID2D1HwndRenderTarget* render_target{ nullptr };
+        ID2D1PathGeometry*     geom{ nullptr };
         std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
         std::unordered_map<KeyColor const*, ID2D1Bitmap*>   bitmaps;
         std::unordered_map<ID2D1Bitmap*, ID2D1BitmapBrush*> bitmapbrushes;

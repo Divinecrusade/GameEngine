@@ -40,6 +40,13 @@ private:
 
 private:
 
+    static constexpr float LEFT_FACTOR_C { 1.10f };
+    static constexpr float RIGHT_FACTOR_C{ 0.65f };
+    static constexpr float BOT_FACTOR_C  { 0.80f };
+    static constexpr float TOP_FACTOR_C  { 0.93f };
+
+    static constexpr int FRAME_WIDTH{ 3 };
+
     static constexpr int VISUAL_PADDING{ 1 };
 
     GameEngine::Geometry::Rectangle2D<int> collision_box;
