@@ -11,8 +11,8 @@ class Brick final
 {
 public:
 
-    static constexpr int WIDTH{ 60 };
-    static constexpr int HEIGHT{ 30 };
+    static constexpr int WIDTH{ 40 };
+    static constexpr int HEIGHT{ 20 };
 
     static constexpr GameEngine::Geometry::Vector2D<int> DEFAULT_POS{ 0, 0 };
     static constexpr GameEngine::Colour DEFAULT_COLOUR{ GameEngine::Colours::MAGENTA };

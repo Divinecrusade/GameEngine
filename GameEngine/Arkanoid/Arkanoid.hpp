@@ -53,17 +53,17 @@ private:
 
 private:
     
-    static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 230, 30, 30, 30 };
+    static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 250, 30, 30, 30 };
     static constexpr GameEngine::Geometry::Vector2D<int> PADDLE_INIT_POS{ (WINDOW_WIDTH - PADDING.left - PADDING.right) / 2 + PADDING.left, WINDOW_HEIGHT - PADDING.bottom - 60 };
 
     static constexpr int PADDLE_INIT_HALF_WIDTH{ 40 };
     static constexpr float PADDLE_INIT_SPEED{ 250.f };
 
-    static constexpr int N_ROWS_BRICKS{ 4 };
-    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::GOLD, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE };
+    static constexpr int N_ROWS_BRICKS{ 5 };
+    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::GOLD, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE, GameEngine::Colours::CRIMSON };
     static constexpr int N_BRICKS_IN_ROW{ (WINDOW_WIDTH - PADDING.left - PADDING.right) / Brick::WIDTH };
     static constexpr int N_BRICKS_TOTAL { N_ROWS_BRICKS* N_BRICKS_IN_ROW };
-    static constexpr GameEngine::Geometry::Vector2D<int> GRID_BRICKS_BEG{ PADDING.left + (WINDOW_WIDTH - PADDING.left - PADDING.right) % Brick::WIDTH / 2, PADDING.top + 40 };
+    static constexpr GameEngine::Geometry::Vector2D<int> GRID_BRICKS_BEG{ PADDING.left + (WINDOW_WIDTH - PADDING.left - PADDING.right) % Brick::WIDTH / 2, PADDING.top + 50 };
 
     static constexpr GameEngine::Geometry::Vector2D<float> BALL_INIT_DIR{ 0.f, 1.f };
     static constexpr float BALL_INIT_SPEED{ 400.f };
