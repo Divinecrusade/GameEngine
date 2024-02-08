@@ -10,7 +10,7 @@ class Ball final
 public:
 
     Ball() noexcept = delete;
-    Ball(GameEngine::Geometry::Vector2D<int> init_pos, GameEngine::Geometry::Vector2D<float> init_vel) noexcept;
+    Ball(GameEngine::Geometry::Vector2D<int> init_pos, GameEngine::Geometry::Vector2D<float> init_dir, float init_speed) noexcept;
     Ball(Ball const&) = delete;
     Ball(Ball&&) = delete;
 
@@ -37,11 +37,11 @@ public:
 
 private:
 
-    static constexpr float MIN_VEL{ 60.f };
-
     static constexpr GameEngine::Colour c{ GameEngine::Colours::LIGHT_GOLDEN_ROD_YELLOW };
-    static constexpr int RADIUS{ 10 };
+    static constexpr int RADIUS{ 8 };
 
     GameEngine::Geometry::Vector2D<int> cur_pos;
+    float cur_speed;
+
     GameEngine::Geometry::Vector2D<float> cur_vel;
 };

@@ -6,7 +6,7 @@ Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfac
 Game{ window, graphics },
 field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW_WIDTH - PADDING.right, WINDOW_HEIGHT - PADDING.bottom, 0 + PADDING.top } },
 pad{ PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
-ball{ BALL_INIT_POS, BALL_INIT_VELOCITY },
+ball{ BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) },
 gameover_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gameover.bmp" }}) }
 { 
