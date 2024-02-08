@@ -5,6 +5,8 @@
 
 namespace GameEngine
 {
+    MainWindow* MainWindow::instance_{ nullptr };
+
     MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     {
         static MainWindow wnd{ hInstance, nCmdShow, window_name, resizable, init_width, init_height };
@@ -19,7 +21,9 @@ namespace GameEngine
     H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, resizable, init_width, init_height)   }
     {
         assert(H_WND);
+        assert(!instance_);
 
+        instance_ = this;
         ShowWindow(H_WND, nCmdShow);
         UpdateWindow(H_WND);
     }
@@ -28,6 +32,7 @@ namespace GameEngine
     {
         if (!terminated) DestroyWindow(H_WND);
         UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE);
+        instance_ = nullptr;
     }
 
     LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
@@ -36,12 +41,12 @@ namespace GameEngine
 
         switch (message)
         {
-            case WM_KEYDOWN: MainWindow::instance().key_pressed(wParam); break;            
-            case WM_KEYUP: MainWindow::instance().key_released(wParam); break;
+            case WM_KEYDOWN:       MainWindow::instance_->key_pressed(wParam); break;
+            case WM_KEYUP:         MainWindow::instance_->key_released(wParam); break;
             case WM_DISPLAYCHANGE: InvalidateRect(hWnd, NULL, FALSE); break;
-            case WM_PAINT: ValidateRect(hWnd, NULL); break;
-            case WM_DESTROY: PostQuitMessage(EXIT_SUCCESS); MainWindow::instance().terminated = true; break;
-            default: return DefWindowProcW(hWnd, message, wParam, lParam);
+            case WM_PAINT:         ValidateRect(hWnd, NULL); break;
+            case WM_DESTROY:       PostQuitMessage(EXIT_SUCCESS); MainWindow::instance_->terminated = true; break;
+            default:               return DefWindowProcW(hWnd, message, wParam, lParam);
         }
 
         return MESSAGE_HANDLED;

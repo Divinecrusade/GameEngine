@@ -64,6 +64,8 @@ namespace GameEngine
     private:
 
         static constexpr wchar_t const* WND_CLASS_NAME{ L"Main App Window" };
+
+        static MainWindow* instance_;
     
         bool terminated{ false };
 
