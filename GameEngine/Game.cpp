@@ -25,16 +25,10 @@ namespace GameEngine
     }
 
     void Game::update()
-    {
-        auto dt{ ft.mark() };
-
-        test.update(dt);
-    }
+    { }
 
     void Game::render()
-    {
-        test.draw(gfx, {120, 200}, Colours::MAGENTA);
-    }
+    { }
 
     Interfaces::IWindow const& Game::get_wnd() const noexcept
     {

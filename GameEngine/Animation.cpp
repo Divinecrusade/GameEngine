@@ -19,15 +19,18 @@ frame_duration{ frame_duration }
 
     int y_start{ };
     int y_end{ };
-    if (sprites_sheet.dy > 0)
+    int dy{ };
+    if (sprites_sheet.is_reversed)
     {
         y_start = 0;
         y_end = static_cast<int>(frame_height);
+        dy = 1;
     }
     else
     {
         y_start = static_cast<int>(frame_height) - 1;
         y_end = 0;
+        dy = -1;
     }
 
     frames.reserve(n);
@@ -37,7 +40,7 @@ frame_duration{ frame_duration }
     {
         std::shared_ptr<Colour[]> frame{ new Colour[frame_width * frame_height] };
 
-        for (int y{ y_start }; y != y_end; y += sprites_sheet.dy, sprites_sheet.fin.seekg((sprites_sheet.width - static_cast<int>(frame_width)) * sprites_sheet.pixel_size + sprites_sheet.padding, std::ifstream::cur))
+        for (int y{ y_start }; y != y_end; y += dy, sprites_sheet.fin.seekg((sprites_sheet.width - static_cast<int>(frame_width)) * sprites_sheet.pixel_size + sprites_sheet.padding, std::ifstream::cur))
         {
             for (int x{ 0 }; x != static_cast<int>(frame_width); ++x)
             {

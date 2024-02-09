@@ -20,34 +20,13 @@ namespace GameEngine
         fin.read(reinterpret_cast<char*>(&bmp_header), sizeof(bmp_header));
         fin.read(reinterpret_cast<char*>(&bmp_info), sizeof(bmp_info));
 
-        int width = bmp_info.biWidth;
-        int height{ };
-
-        int y_start{ };
-        int y_end{ };
-        int dy{ };
-        if (bmp_info.biHeight < 0)
-        {
-            height = -bmp_info.biHeight;
-            y_start = 0;
-            y_end = height;
-            dy = 1;
-        }
-        else
-        {
-            height = bmp_info.biHeight;
-            y_start = height - 1U;
-            y_end = 0;
-            dy = -1;
-        }
-
         int const pixel_size{ bmp_info.biBitCount / 8 };
         if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES))
             throw std::runtime_error{ "Not supported colour depth" };
         int const padding{ (4 - (bmp_info.biWidth * pixel_size % 4)) % 4 };
         fin.seekg(bmp_header.bfOffBits, std::ifstream::beg);
 
-        return IMG_info{ std::move(fin), width, height, y_start, y_end, dy, padding, pixel_size};
+        return IMG_info{ std::move(fin), bmp_info.biWidth, (bmp_info.biHeight < 0 ? -bmp_info.biHeight : bmp_info.biHeight), bmp_info.biHeight < 0, padding, pixel_size};
     }
 
     Surface::Surface(std::filesystem::path const& img_src)
@@ -60,7 +39,23 @@ namespace GameEngine
         this->height = static_cast<size_t>(img.height);
         auto buffer { std::shared_ptr<Colour[]>(new Colour[this->width * this->height]) };
         
-        for (int y{ img.y_start }; y != img.y_end; y += img.dy)
+        int y_start{ };
+        int y_end{ };
+        int dy{ };
+        if (img.is_reversed)
+        {
+            y_start = 0;
+            y_end = height;
+            dy = 1;
+        }
+        else
+        {
+            y_start = height - 1U;
+            y_end = 0;
+            dy = -1;
+        }
+
+        for (int y{ y_start }; y != y_end; y += dy)
         {
             for (int x{ 0 }; x != img.width; ++x)
             {

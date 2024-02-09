@@ -22,10 +22,12 @@ namespace GameEngine
 
             int const width{ };
             int const height{ };
+            
+            bool const is_reversed{ };
 
-            int const y_start{ };
-            int const y_end{ };
-            int const dy{ };
+            //int const y_start{ };
+            //int const y_end{ };
+            //int const dy{ };
 
             int const padding{ };
 
