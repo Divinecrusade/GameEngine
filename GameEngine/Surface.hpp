@@ -16,8 +16,26 @@ namespace GameEngine
     {
     public:
 
+        struct IMG_info
+        {
+            std::ifstream fin{ };
+
+            int width{ };
+            int height{ };
+
+            int y_start{ };
+            int y_end{ };
+            int dy{ };
+
+            int padding{ };
+
+            int pixel_size{ };
+        };
+
         static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
         static constexpr int                     SUPPORTED_COLOUR_DEPTHS[]{ 24, 32 };
+
+        static inline IMG_info go_to_pixels(std::filesystem::path const& img_src);
 
     private:
 

@@ -36,8 +36,8 @@ void Arkanoid::update_start_stage()
 
     switch (get_wnd().get_last_pressed_functional_key())
     {
-    case GameEngine::WinKey::ENTER: cur_stage = GameStage::IN_PROGRESS; break;
-    default: break;
+        case GameEngine::WinKey::ENTER: cur_stage = GameStage::IN_PROGRESS; break;
+        default: break;
     }
 }
 

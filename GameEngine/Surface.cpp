@@ -3,15 +3,15 @@
 
 namespace GameEngine
 {
-    Surface::Surface(std::filesystem::path const& img_src)
+    inline Surface::IMG_info Surface::go_to_pixels(std::filesystem::path const& img_src)
     {
         if (!std::filesystem::exists(img_src)) throw std::runtime_error{ "Image not found" };
-        if (std::find_if(std::cbegin(SUPPORTED_EXTENSIONS), std::cend(SUPPORTED_EXTENSIONS), 
+        if (std::find_if(std::cbegin(SUPPORTED_EXTENSIONS), std::cend(SUPPORTED_EXTENSIONS),
             [ext = img_src.extension().native()](wchar_t const* const& s)
             {
                 return wcscmp(ext.c_str(), s) == 0;
             }) == std::cend(SUPPORTED_EXTENSIONS)) throw std::runtime_error{ "Unsupported image extension" };
-        
+
         std::ifstream fin{ img_src, std::ifstream::binary };
 
         BITMAPFILEHEADER bmp_header{ };
@@ -39,32 +39,50 @@ namespace GameEngine
             y_start = height - 1U;
             dy = -1;
         }
-        assert(width > 0);
-        this->width = static_cast<size_t>(width);
-        assert(height > 0);
-        this->height = static_cast<size_t>(height);
-        auto buffer { std::shared_ptr<Colour[]>(new Colour[this->width * this->height]) };
-        
+
         int const pixel_size{ bmp_info.biBitCount / 8 };
-        if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES)) 
+        if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES))
             throw std::runtime_error{ "Not supported colour depth" };
         int const padding{ (4 - (bmp_info.biWidth * pixel_size % 4)) % 4 };
         fin.seekg(bmp_header.bfOffBits, std::ifstream::beg);
-        for (int y{ y_start }; y != y_end; y += dy)
+
+        return IMG_info{ std::move(fin), width, height, y_start, y_end, dy, padding, pixel_size};
+    }
+
+    Surface::Surface(std::filesystem::path const& img_src)
+    {
+        IMG_info img{ };
+
+        try
         {
-            for (int x{ 0 }; x != width; ++x)
+            img = go_to_pixels(img_src);
+        }
+        catch (std::exception const& e)
+        {
+            throw e;
+        }
+
+        assert(img.width > 0);
+        this->width = static_cast<size_t>(img.width);
+        assert(img.height > 0);
+        this->height = static_cast<size_t>(img.height);
+        auto buffer { std::shared_ptr<Colour[]>(new Colour[this->width * this->height]) };
+        
+        for (int y{ img.y_start }; y != img.y_end; y += img.dy)
+        {
+            for (int x{ 0 }; x != img.width; ++x)
             {
                 uint32_t rgba{ };
 
-                if (pixel_size == 4) fin.read(reinterpret_cast<char*>(&rgba), sizeof(rgba));
-                else if (pixel_size == 3) rgba = Colour::encode(fin.get(), fin.get(), fin.get(), Colour::MAX_COLOUR_DEPTH);
+                if (img.pixel_size == 4) img.fin.read(reinterpret_cast<char*>(&rgba), sizeof(rgba));
+                else if (img.pixel_size == 3) rgba = Colour::encode(img.fin.get(), img.fin.get(), img.fin.get(), Colour::MAX_COLOUR_DEPTH);
             #ifdef _DEBUG
                 else assert(false);
             #endif // DEBUG
 
                 buffer[static_cast<size_t>(y) * width + x] = Colour{ rgba };
             }
-            fin.seekg(padding, std::ifstream::cur);
+            img.fin.seekg(img.padding, std::ifstream::cur);
         }
         this->buffer = std::move(buffer);
     }
