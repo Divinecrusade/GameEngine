@@ -20,16 +20,16 @@ namespace GameEngine
         {
             std::ifstream fin{ };
 
-            int width{ };
-            int height{ };
+            int const width{ };
+            int const height{ };
 
-            int y_start{ };
-            int y_end{ };
-            int dy{ };
+            int const y_start{ };
+            int const y_end{ };
+            int const dy{ };
 
-            int padding{ };
+            int const padding{ };
 
-            int pixel_size{ };
+            int const pixel_size{ };
         };
 
         static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };

@@ -3,6 +3,9 @@
 #include "IWindow.hpp"
 #include "IFramableGraphics2D.hpp"
 
+#include "Animation.hpp"
+#include "FrameTimer.hpp"
+
 
 namespace GameEngine
 {
@@ -37,5 +40,10 @@ namespace GameEngine
     protected:
 
         Interfaces::IFramableGraphics2D& gfx;
+
+    private:
+
+        FrameTimer ft{ };
+        Animation test{ L"link90x90.bmp", 90U, 90U, 0.5f };
     };
 }

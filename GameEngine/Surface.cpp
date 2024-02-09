@@ -37,6 +37,7 @@ namespace GameEngine
         {
             height = bmp_info.biHeight;
             y_start = height - 1U;
+            y_end = 0;
             dy = -1;
         }
 
@@ -51,16 +52,7 @@ namespace GameEngine
 
     Surface::Surface(std::filesystem::path const& img_src)
     {
-        IMG_info img{ };
-
-        try
-        {
-            img = go_to_pixels(img_src);
-        }
-        catch (std::exception const& e)
-        {
-            throw e;
-        }
+        IMG_info img{ go_to_pixels(img_src) };
 
         assert(img.width > 0);
         this->width = static_cast<size_t>(img.width);

@@ -502,6 +502,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Animation.hpp" />
     <ClInclude Include="..\Auxiliry.hpp" />
     <ClInclude Include="..\Direct2DFactory.hpp" />
     <ClInclude Include="..\Game.hpp" />
@@ -520,6 +521,7 @@
     <ClInclude Include="PlayField.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Animation.cpp" />
     <ClCompile Include="..\Direct2DFactory.cpp" />
     <ClCompile Include="..\Game.cpp" />
     <ClCompile Include="..\GraphicsDirect2D.cpp" />
