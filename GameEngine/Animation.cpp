@@ -77,12 +77,25 @@ void GameEngine::Animation::update(float dt)
     }
 }
 
-void GameEngine::Animation::draw(Interfaces::IGraphics2D& gfx, Geometry::Vector2D<int> const& pos, Colour chroma) const
+bool GameEngine::Animation::is_finished() const noexcept
 {
-    gfx.draw_sprite_excluding_color(pos, frames[cur_frame_index], chroma);
+    return finished;
+}
+
+void GameEngine::Animation::reset() noexcept
+{
+    finished = false;
+    elapsed_duration = 0.f;
+    cur_frame_index = 0U;
+}
+
+GameEngine::Surface const& GameEngine::Animation::get_cur_frame() const noexcept
+{
+    return frames[cur_frame_index];
 }
 
 void GameEngine::Animation::toggle_frame() noexcept
 {
     cur_frame_index = (cur_frame_index + 1U) % frames.size();
+    if (cur_frame_index == 0U) finished = true;
 }

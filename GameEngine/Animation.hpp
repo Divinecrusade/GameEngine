@@ -23,7 +23,9 @@ namespace GameEngine
         Animation(std::filesystem::path const& sprites_sheet_src, size_t frame_width, size_t frame_height, float frame_duration, size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
 
         void update(float dt);
-        void draw(Interfaces::IGraphics2D& gfx, Geometry::Vector2D<int> const& pos, Colour chroma) const;
+        bool is_finished() const noexcept;
+        void reset() noexcept;
+        Surface const& get_cur_frame() const noexcept;
 
         ~Animation() = default;
 
@@ -32,6 +34,8 @@ namespace GameEngine
         __forceinline void toggle_frame() noexcept;
 
     private:
+
+        bool finished{ false };
 
         float const frame_duration;
         float elapsed_duration{ 0.f };
