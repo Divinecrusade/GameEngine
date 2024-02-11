@@ -71,7 +71,7 @@ private:
     static constexpr float BALL_INIT_SPEED{ 400.f };
     static constexpr GameEngine::Geometry::Vector2D<int>   BALL_INIT_POS{ PADDLE_INIT_POS.x, PADDLE_INIT_POS.y - 100 };
 
-    static constexpr float MISSILE_SPEED{ 200.f };
+    static constexpr float MISSILE_SPEED{ 300.f };
 
     GameStage cur_stage{ GameStage::START };
 

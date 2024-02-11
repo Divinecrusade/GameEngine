@@ -84,8 +84,10 @@ void Arkanoid::update_in_progress_stage(float dt)
     {
         missile->get()->update(dt);
 
-        if (missile->get()->is_collided_with(field) || missile->get()->is_collided_with(ball) || missile->get()->is_collided_with(pad))
+        if (missile->get()->is_collided_with(ball) || missile->get()->is_collided_with(field) || missile->get()->is_collided_with(pad))
         {
+            if (missile->get()->is_collided_with(ball)) collision_happended = true;
+
             destroyed_missiles.push_back(missile);
             blows.emplace_back(std::make_shared<Blow>(missile->get()->get_pos(), blow_effect, GameEngine::Colours::WHITE));
 

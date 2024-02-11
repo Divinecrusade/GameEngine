@@ -27,29 +27,6 @@ chroma{ other_tmp.chroma }
 {
     swap(std::move(other_tmp));
 }
-/*
-Missile& Missile::operator=(Missile const& other)
-{
-    if (this != &other)
-    {
-        destroyed = other.destroyed;
-        cur_speed = other.cur_speed;
-        cur_pos = other.cur_vel;
-    }
-
-    return *this;
-}
-
-Missile& Missile::operator=(Missile&& other_tmp)
-{
-    if (this != &other_tmp)
-    {
-        swap(std::move(other_tmp));
-    }
-
-    return *this;
-}
-*/
 
 void Missile::draw(GameEngine::Interfaces::IGraphics2D & gfx)
 {
@@ -88,14 +65,3 @@ void Missile::swap(Missile&& other_tmp) noexcept
     std::swap(cur_speed, other_tmp.cur_speed);
     std::swap(cur_vel, other_tmp.cur_vel);
 }
-/*
-bool operator==(Missile const& lhs, Missile const& rhs)
-{
-    return lhs.cur_pos == rhs.cur_pos;
-}
-
-bool operator!=(Missile const& lhs, Missile const& rhs)
-{
-    return !(lhs == rhs);
-}
-*/
