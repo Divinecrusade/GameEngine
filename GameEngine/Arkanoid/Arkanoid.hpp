@@ -4,11 +4,13 @@
 #include "../GraphicsDirect2D.hpp"
 #include "../IWindow.hpp"
 #include "../FrameTimer.hpp"
-#include "../Surface.hpp"
+#include "../Animation.hpp"
 
 #include "Paddle.hpp"
 #include "PlayField.hpp"
 #include "Brick.hpp"
+#include "Missile.hpp"
+#include "Blow.hpp"
 
 
 class Arkanoid final : public GameEngine::Game
@@ -69,6 +71,8 @@ private:
     static constexpr float BALL_INIT_SPEED{ 400.f };
     static constexpr GameEngine::Geometry::Vector2D<int>   BALL_INIT_POS{ PADDLE_INIT_POS.x, PADDLE_INIT_POS.y - 100 };
 
+    static constexpr float MISSILE_SPEED{ 200.f };
+
     GameStage cur_stage{ GameStage::START };
 
     PlayField field;
@@ -79,4 +83,9 @@ private:
 
     GameEngine::Surface gamestart_img;
     GameEngine::Surface gameover_img;
+    GameEngine::Surface rocket;
+    GameEngine::Animation blow_effect;
+
+    std::vector<std::shared_ptr<Missile>> missiles;
+    std::vector<std::shared_ptr<Blow>> blows;
 };

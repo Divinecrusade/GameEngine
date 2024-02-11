@@ -25,10 +25,6 @@ namespace GameEngine
             
             bool const is_reversed{ };
 
-            //int const y_start{ };
-            //int const y_end{ };
-            //int const dy{ };
-
             int const padding{ };
 
             int const pixel_size{ };

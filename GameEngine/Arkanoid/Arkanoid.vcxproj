@@ -516,7 +516,9 @@
     <ClInclude Include="..\Surface.hpp" />
     <ClInclude Include="Arkanoid.hpp" />
     <ClInclude Include="Ball.hpp" />
+    <ClInclude Include="Blow.hpp" />
     <ClInclude Include="Brick.hpp" />
+    <ClInclude Include="Missile.hpp" />
     <ClInclude Include="Paddle.hpp" />
     <ClInclude Include="PlayField.hpp" />
   </ItemGroup>
@@ -529,7 +531,11 @@
     <ClCompile Include="..\Surface.cpp" />
     <ClCompile Include="Arkanoid.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Blow.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="Missile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PlayField.cpp" />
     <ClCompile Include="WinMain.cpp" />

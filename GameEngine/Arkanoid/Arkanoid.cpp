@@ -8,7 +8,9 @@ field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW_WIDTH - PADDI
 pad{ PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball{ BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) },
-gameover_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gameover.bmp" }}) }
+gameover_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gameover.bmp" }}) },
+rocket{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"missile.bmp" }}) },
+blow_effect{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"blow.bmp" }}), 50U, 70U, 0.125f }
 { 
     GameEngine::Geometry::Vector2D<int> const brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -51,12 +53,12 @@ void Arkanoid::update_in_progress_stage(float dt)
     Paddle::Direction new_dir{ pad.get_direction() };
     switch (get_wnd().get_last_pressed_functional_key())
     {
-    case GameEngine::WinKey::ARROW_LEFT: new_dir = Paddle::Direction::LEFT; break;
-    case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
-    default:
+        case GameEngine::WinKey::ARROW_LEFT: new_dir = Paddle::Direction::LEFT; break;
+        case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
+        default:
 
-        if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
-            new_dir = Paddle::Direction::STOP;
+            if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
+                new_dir = Paddle::Direction::STOP;
 
         break;
     }
@@ -75,6 +77,57 @@ void Arkanoid::update_in_progress_stage(float dt)
         collision_happended = true;
     }
     if (pad.is_collided_with(ball)) pad.handle_collision(ball);
+
+
+    std::vector<std::vector<std::shared_ptr<Missile>>::iterator> destroyed_missiles{ };
+    for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
+    {
+        missile->get()->update(dt);
+
+        if (missile->get()->is_collided_with(field) || missile->get()->is_collided_with(ball) || missile->get()->is_collided_with(pad))
+        {
+            destroyed_missiles.push_back(missile);
+            blows.emplace_back(std::make_shared<Blow>(missile->get()->get_pos(), blow_effect, GameEngine::Colours::WHITE));
+
+            if (blows.back().get()->is_collided_with(pad))
+            {
+                cur_stage = GameStage::GAMEOVER;
+               
+                return;
+            }
+            else if (blows.back().get()->is_collided_with(ball))
+            {
+                blows.back().get()->throw_ball(ball);
+            }
+        }
+    }
+
+    std::vector<std::shared_ptr<Missile>>::iterator destroyed_missile_beg{ missiles.end() };
+    for (auto& destroyed_missile : destroyed_missiles)
+    {
+        auto tmp{ std::remove_if(missiles.begin(), missiles.end(), [&destroyed_missile](std::shared_ptr<Missile> const& val){ return val.get() == destroyed_missile->get(); })};
+        if (destroyed_missile_beg == missiles.end()) destroyed_missile_beg = tmp;
+    }
+    if (destroyed_missile_beg != missiles.end()) missiles.erase(destroyed_missile_beg);
+
+    std::vector<std::vector<std::shared_ptr<Blow>>::iterator> ended_blows{};
+    for (auto blow{ blows.begin() }; blow != blows.end(); ++blow)
+    {
+        blow->get()->update(dt);
+        if (blow->get()->is_ended())
+        {
+            ended_blows.push_back(blow);
+        }
+    }
+
+    std::vector<std::shared_ptr<Blow>>::iterator ended_blows_beg{ blows.end() };
+    for (auto& ended_blow : ended_blows)
+    {
+        auto tmp{ std::remove_if(blows.begin(), blows.end(), [&ended_blow](std::shared_ptr<Blow>const& val){ return val.get() == ended_blow->get(); }) };
+        if (ended_blows_beg == blows.end()) ended_blows_beg = tmp;
+    }
+    if (ended_blows_beg != blows.end()) blows.erase(ended_blows_beg);
+
 
     auto collided_brick{ bricks.end() };
     int distance{ };
@@ -103,6 +156,7 @@ void Arkanoid::update_in_progress_stage(float dt)
     if (collided_brick != bricks.end())
     {
         collided_brick->handle_collision(ball);
+        missiles.emplace_back(std::make_shared<Missile>(GameEngine::Geometry::Vector2D<int>{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE));
         bricks.erase(std::remove(bricks.begin(), bricks.end(), *collided_brick), bricks.end());
         if (bricks.size() == 0U)
         {
@@ -128,6 +182,14 @@ void Arkanoid::render_full_scene()
     for (auto const& brick : bricks)
     {
         brick.draw(gfx);
+    }
+    for (auto& missile : missiles)
+    {
+        missile.get()->draw(gfx);
+    }
+    for (auto& blow : blows)
+    {
+        blow.get()->draw(gfx);
     }
     ball.draw(gfx);
 }

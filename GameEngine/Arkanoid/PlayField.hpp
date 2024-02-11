@@ -26,6 +26,8 @@ public:
     bool is_in_lose_zone(Ball const& ball) const noexcept;
     void handle_collision(Ball& ball) const noexcept;
 
+    GameEngine::Geometry::Rectangle2D<int> get_collision_box() const noexcept;
+
 private:
 
     static constexpr GameEngine::Colour inner_border_colour{ GameEngine::Colours::ROYAL_BLUE };

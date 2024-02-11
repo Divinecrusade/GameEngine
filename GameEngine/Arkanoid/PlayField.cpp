@@ -73,3 +73,8 @@ void PlayField::handle_collision(Ball& ball) const noexcept
         ball.inverse_y();
     }
 }
+
+GameEngine::Geometry::Rectangle2D<int> PlayField::get_collision_box() const noexcept
+{
+    return collision_frame;
+}
