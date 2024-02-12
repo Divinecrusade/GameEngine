@@ -9,6 +9,11 @@ class Ball final
 {
 public:
 
+    static constexpr float MIN_ABS_X_VEL{ 60.f };
+    static constexpr float MIN_ABS_Y_VEL{ 60.f };
+
+public:
+
     Ball() noexcept = delete;
     Ball(GameEngine::Geometry::Vector2D<int> init_pos, GameEngine::Geometry::Vector2D<float> init_dir, float init_speed) noexcept;
     Ball(Ball const&) = delete;
