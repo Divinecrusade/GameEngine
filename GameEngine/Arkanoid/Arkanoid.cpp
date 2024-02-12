@@ -91,7 +91,7 @@ void Arkanoid::update_in_progress_stage(float dt)
             destroyed_missiles.push_back(missile);
             blows.emplace_back(std::make_shared<Blow>(missile->get()->get_pos(), blow_effect, GameEngine::Colours::WHITE));
 
-            if (blows.back().get()->is_collided_with(pad))
+            if (missile->get()->is_collided_with(pad) || blows.back().get()->is_collided_with(pad))
             {
                 cur_stage = GameStage::GAMEOVER;
                
@@ -104,13 +104,16 @@ void Arkanoid::update_in_progress_stage(float dt)
         }
     }
 
-    std::vector<std::shared_ptr<Missile>>::iterator destroyed_missile_beg{ missiles.end() };
-    for (auto& destroyed_missile : destroyed_missiles)
+    if (destroyed_missiles.size() > 0U)
     {
-        auto tmp{ std::remove_if(missiles.begin(), missiles.end(), [&destroyed_missile](std::shared_ptr<Missile> const& val){ return val.get() == destroyed_missile->get(); })};
-        if (destroyed_missile_beg == missiles.end()) destroyed_missile_beg = tmp;
+        for (auto& destroyed_missile : destroyed_missiles)
+        {
+            std::remove_if(missiles.begin(), missiles.end(), [&destroyed_missile](std::shared_ptr<Missile> const& val){ return val.get() == destroyed_missile->get(); });
+        }
+        auto tmp{ missiles.begin() };
+        std::advance(tmp, missiles.size() - destroyed_missiles.size());
+        missiles.erase(tmp, missiles.end());
     }
-    if (destroyed_missile_beg != missiles.end()) missiles.erase(destroyed_missile_beg);
 
     std::vector<std::vector<std::shared_ptr<Blow>>::iterator> ended_blows{};
     for (auto blow{ blows.begin() }; blow != blows.end(); ++blow)
@@ -122,14 +125,16 @@ void Arkanoid::update_in_progress_stage(float dt)
         }
     }
 
-    std::vector<std::shared_ptr<Blow>>::iterator ended_blows_beg{ blows.end() };
-    for (auto& ended_blow : ended_blows)
+    if (ended_blows.size() > 0U)
     {
-        auto tmp{ std::remove_if(blows.begin(), blows.end(), [&ended_blow](std::shared_ptr<Blow>const& val){ return val.get() == ended_blow->get(); }) };
-        if (ended_blows_beg == blows.end()) ended_blows_beg = tmp;
+        for (auto& ended_blow : ended_blows)
+        {
+            std::remove_if(blows.begin(), blows.end(), [&ended_blow](std::shared_ptr<Blow>const& val){ return val.get() == ended_blow->get(); });
+        }
+        auto tmp{ blows.begin() };
+        std::advance(tmp, blows.size() - ended_blows.size());
+        blows.erase(tmp, blows.end());
     }
-    if (ended_blows_beg != blows.end()) blows.erase(ended_blows_beg);
-
 
     auto collided_brick{ bricks.end() };
     int distance{ };
