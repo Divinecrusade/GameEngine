@@ -10,6 +10,11 @@ class Blow
 {
 public:
 
+    static constexpr int COLLISION_HALF_WIDTH{ 20 };
+    static constexpr int COLLISION_HALF_HEIGHT{ 20 };
+
+public:
+
     Blow(GameEngine::Geometry::Vector2D<int> const& pos, GameEngine::Animation const& blow_effect, GameEngine::Colour chroma);
     Blow(Blow const& other) noexcept;
     Blow(Blow&& other_tmp) noexcept;
@@ -33,9 +38,6 @@ private:
 
     static constexpr float FRAME_DURATION{ 0.25f };
     static constexpr float BALL_ACCELERATION{ 20.f };
-
-    int const HALF_WIDTH_COLLISION;
-    int const HALF_HEIGHT_COLLISION;
 
     GameEngine::Geometry::Vector2D<int> const pos;
 

@@ -1,18 +1,14 @@
 #include "Blow.hpp"
 
 Blow::Blow(GameEngine::Geometry::Vector2D<int> const& pos, GameEngine::Animation const& blow_effect, GameEngine::Colour chroma)
-    :
-    HALF_WIDTH_COLLISION{ static_cast<int>(blow_effect.get_cur_frame().get_width()) },
-    HALF_HEIGHT_COLLISION{ static_cast<int>(blow_effect.get_cur_frame().get_height()) },
-    pos{ pos },
-    blow_effect{ blow_effect },
-    chroma{ chroma }
+:
+pos{ pos },
+blow_effect{ blow_effect },
+chroma{ chroma }
 { }
 
 Blow::Blow(Blow const& other) noexcept
 :
-HALF_WIDTH_COLLISION{ other.HALF_WIDTH_COLLISION },
-HALF_HEIGHT_COLLISION{ other.HALF_HEIGHT_COLLISION },
 pos{ other.pos },
 blow_effect{ other.blow_effect },
 chroma{ other.chroma }
@@ -20,8 +16,6 @@ chroma{ other.chroma }
 
 Blow::Blow(Blow && other_tmp) noexcept
 :
-HALF_WIDTH_COLLISION{ other_tmp.HALF_WIDTH_COLLISION },
-HALF_HEIGHT_COLLISION{ other_tmp.HALF_HEIGHT_COLLISION },
 pos{ other_tmp.pos },
 blow_effect{ other_tmp.blow_effect },
 chroma{ other_tmp.chroma }
@@ -45,12 +39,12 @@ bool Blow::is_ended() const noexcept
 
 bool Blow::is_collided_with(Ball const& ball) const
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(pos, HALF_WIDTH_COLLISION, HALF_HEIGHT_COLLISION).is_colided_with(ball.get_collision_box());
+    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(ball.get_collision_box());
 }
 
 bool Blow::is_collided_with(Paddle const& padd) const
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(pos, HALF_WIDTH_COLLISION, HALF_HEIGHT_COLLISION).is_colided_with(padd.get_collision_box());
+    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(padd.get_collision_box());
 }
 
 void Blow::throw_ball(Ball& ball) const

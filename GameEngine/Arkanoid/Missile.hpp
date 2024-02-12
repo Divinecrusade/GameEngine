@@ -19,9 +19,6 @@ public:
     Missile(Missile const& other) noexcept;
     Missile(Missile&& other_tmp) noexcept; 
 
-    //Missile& operator=(Missile const& other);
-    //Missile& operator=(Missile&& other_tmp);
-
     ~Missile() = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx);
@@ -34,9 +31,6 @@ public:
     bool is_collided_with(Paddle const& padd) const;
 
 private:
-
-    //friend bool operator==(Missile const& lhs, Missile const& rhs);
-    //friend bool operator!=(Missile const& lhs, Missile const& rhs);
 
     void swap(Missile&& other_tmp) noexcept;
 
@@ -54,6 +48,3 @@ private:
     GameEngine::Surface sprite;
     GameEngine::Colour const chroma;
 };
-
-//bool operator==(Missile const& lhs, Missile const& rhs);
-//bool operator!=(Missile const& lhs, Missile const& rhs);
