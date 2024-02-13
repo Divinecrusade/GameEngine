@@ -4,7 +4,7 @@
 Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics)
 :
 Game{ window, graphics },
-field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW_WIDTH - PADDING.right, WINDOW_HEIGHT - PADDING.bottom, 0 + PADDING.top } },
+field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_height() - PADDING.bottom, 0 + PADDING.top}},
 pad{ PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball{ BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) },
@@ -208,7 +208,7 @@ void Arkanoid::render()
     {
         case GameStage::START: 
 
-            gfx.draw_sprite({0, WINDOW_HEIGHT / 2 - static_cast<int>(gamestart_img.get_height() / 2U)}, gamestart_img, {0, WINDOW_WIDTH, WINDOW_HEIGHT, 0});
+            gfx.draw_sprite({ 0, WINDOW.get_height() / 2 - static_cast<int>(gamestart_img.get_height() / 2U) }, gamestart_img, WINDOW);
         
         break;
 
@@ -222,7 +222,7 @@ void Arkanoid::render()
 
             render_full_scene();
 
-            gfx.draw_sprite_excluding_color({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK, {0, WINDOW_WIDTH, WINDOW_HEIGHT, 0});
+            gfx.draw_sprite_excluding_color({ WINDOW.get_width() / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW.get_height() / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK, WINDOW);
 
         break;
     }
