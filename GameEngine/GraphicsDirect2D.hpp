@@ -45,12 +45,22 @@ namespace GameEngine
 
         std::shared_ptr<Colour const[]> make_mask(Interfaces::ISurface const& sprite, Colour c_req);
 
-        float get_dips_from_pixels(int px) const
+        __forceinline float get_dips_from_pixels(int px) const
         {
             return static_cast<float>(px) / (static_cast<float>(GetDpiForWindow(d2d_factory.get_render_target().GetHwnd())) / USER_DEFAULT_SCREEN_DPI);
         }
+        __forceinline D2D1_RECT_F convert(Geometry::Rectangle2D<int> const& source) const
+        {
+            return D2D1::RectF(get_dips_from_pixels(source.left), get_dips_from_pixels(source.top), get_dips_from_pixels(source.right), get_dips_from_pixels(source.bottom));
+        }
+        __forceinline D2D1_POINT_2F convert(Geometry::Vector2D<int> const& source) const
+        {
+            return D2D1::Point2F(get_dips_from_pixels(source.x), get_dips_from_pixels(source.y));
+        }
 
-        static Geometry::Rectangle2D<int> clip(Geometry::Rectangle2D<int> const& source, Geometry::Rectangle2D<int> const& clipping_area);
+
+        static Geometry::Rectangle2D<int> clip(Geometry::Rectangle2D<int> const& drawing_area, Geometry::Rectangle2D<int> const& clipping_area);
+
 
     private:
     
