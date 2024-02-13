@@ -35,8 +35,8 @@ namespace GameEngine
         virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
         virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
 
-        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite) override;
-        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma) override;
+        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
+        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
 
         virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
         virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
@@ -49,6 +49,8 @@ namespace GameEngine
         {
             return static_cast<float>(px) / (static_cast<float>(GetDpiForWindow(d2d_factory.get_render_target().GetHwnd())) / USER_DEFAULT_SCREEN_DPI);
         }
+
+        static Geometry::Rectangle2D<int> clip(Geometry::Rectangle2D<int> const& source, Geometry::Rectangle2D<int> const& clipping_area);
 
     private:
     

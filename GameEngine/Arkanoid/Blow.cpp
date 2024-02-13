@@ -21,10 +21,10 @@ blow_effect{ other_tmp.blow_effect },
 chroma{ other_tmp.chroma }
 { }
 
-void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx) const
+void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const
 {
     auto frame{ blow_effect.get_cur_frame() };
-    gfx.draw_sprite_excluding_color(GameEngine::Geometry::Vector2D<int>{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, chroma);
+    gfx.draw_sprite_excluding_color(GameEngine::Geometry::Vector2D<int>{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, chroma, clip);
 }
 
 void Blow::update(float dt)

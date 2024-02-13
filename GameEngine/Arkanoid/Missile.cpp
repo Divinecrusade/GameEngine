@@ -28,9 +28,9 @@ chroma{ other_tmp.chroma }
     swap(std::move(other_tmp));
 }
 
-void Missile::draw(GameEngine::Interfaces::IGraphics2D & gfx)
+void Missile::draw(GameEngine::Interfaces::IGraphics2D & gfx, GameEngine::Geometry::Rectangle2D<int> const& clip)
 {
-    gfx.draw_sprite_excluding_color(GameEngine::Geometry::Vector2D<int>{ cur_pos.x - static_cast<int>(sprite.get_width() / 2U), cur_pos.y - static_cast<int>(sprite.get_height() / 2U) }, sprite, chroma);
+    gfx.draw_sprite_excluding_color(GameEngine::Geometry::Vector2D<int>{ cur_pos.x - static_cast<int>(sprite.get_width() / 2U), cur_pos.y - static_cast<int>(sprite.get_height() / 2U) }, sprite, chroma, clip);
 }
 
 void Missile::update(float dt)

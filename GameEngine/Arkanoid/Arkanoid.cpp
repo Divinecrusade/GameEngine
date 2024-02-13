@@ -192,11 +192,11 @@ void Arkanoid::render_full_scene()
     }
     for (auto& missile : missiles)
     {
-        missile.get()->draw(gfx);
+        missile.get()->draw(gfx, field.get_collision_box());
     }
     for (auto& blow : blows)
     {
-        blow.get()->draw(gfx);
+        blow.get()->draw(gfx, field.get_collision_box());
     }
     ball.draw(gfx);
 }
@@ -208,7 +208,7 @@ void Arkanoid::render()
     {
         case GameStage::START: 
 
-            gfx.draw_sprite({0, WINDOW_HEIGHT / 2 - static_cast<int>(gamestart_img.get_height() / 2U)}, gamestart_img);
+            gfx.draw_sprite({0, WINDOW_HEIGHT / 2 - static_cast<int>(gamestart_img.get_height() / 2U)}, gamestart_img, {0, WINDOW_WIDTH, WINDOW_HEIGHT, 0});
         
         break;
 
@@ -222,7 +222,7 @@ void Arkanoid::render()
 
             render_full_scene();
 
-            gfx.draw_sprite_excluding_color({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK);
+            gfx.draw_sprite_excluding_color({ WINDOW_WIDTH / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW_HEIGHT / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK, {0, WINDOW_WIDTH, WINDOW_HEIGHT, 0});
 
         break;
     }

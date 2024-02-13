@@ -128,19 +128,28 @@ namespace GameEngine
         d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 
-    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite)
+    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Geometry::Rectangle2D<int> const& clipping_area)
     {
         assert(composing_frame);
 
         ID2D1Bitmap& bmp_img{ d2d_factory.get_bitmap(sprite) };
+
+        GameEngine::Geometry::Rectangle2D<int> const drawing_area
+        {
+                left_top_pos.x,
+                left_top_pos.x + static_cast<int>(sprite.get_width()),
+                left_top_pos.y + static_cast<int>(sprite.get_height()),
+                left_top_pos.y
+        };
+
+        GameEngine::Geometry::Rectangle2D<int> const part_to_draw{ clip(drawing_area, clipping_area) };
         
-        d2d_factory.get_render_target().DrawBitmap(&bmp_img, D2D1::RectF(get_dips_from_pixels(left_top_pos.x), 
-                                                                         get_dips_from_pixels(left_top_pos.y), 
-                                                                         get_dips_from_pixels(left_top_pos.x + sprite.get_width()), 
-                                                                         get_dips_from_pixels(left_top_pos.y + sprite.get_height())));
+        d2d_factory.get_render_target().DrawBitmap(&bmp_img, 
+                                                   D2D1::RectF(get_dips_from_pixels(part_to_draw.left), get_dips_from_pixels(part_to_draw.top), get_dips_from_pixels(part_to_draw.right), get_dips_from_pixels(part_to_draw.bottom)), 1.f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR, 
+                                                   D2D1::RectF(get_dips_from_pixels(max(part_to_draw.left - left_top_pos.x, 0)), get_dips_from_pixels(max(part_to_draw.top - left_top_pos.y, 0)), get_dips_from_pixels(max(part_to_draw.right - left_top_pos.x, 0)), get_dips_from_pixels(max(part_to_draw.bottom - left_top_pos.y, 0))));
     }
 
-    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma)
+    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area)
     {
         assert(composing_frame);
 
@@ -148,7 +157,17 @@ namespace GameEngine
         ID2D1Bitmap& bmp_mask{ d2d_factory.get_bitmap(Surface{ sprite.get_width(), sprite.get_height(), make_mask(sprite, chroma) }) };
         ID2D1BitmapBrush& brush{ d2d_factory.get_bitmapbrush(bmp_img) };
 
-        D2D1_RECT_F const drawing_area
+
+        GameEngine::Geometry::Rectangle2D<int> const drawing_area
+        {
+                left_top_pos.x,
+                left_top_pos.x + static_cast<int>(sprite.get_width()),
+                left_top_pos.y + static_cast<int>(sprite.get_height()),
+                left_top_pos.y
+        };
+        GameEngine::Geometry::Rectangle2D<int> const part_to_draw{ clip(drawing_area, clipping_area) };
+
+        /*D2D1_RECT_F const drawing_area
         {
             D2D1::RectF
             (
@@ -157,11 +176,13 @@ namespace GameEngine
                 get_dips_from_pixels(left_top_pos.x + sprite.get_width()),
                 get_dips_from_pixels(left_top_pos.y + sprite.get_height())
             )
-        };
+        };*/
 
         brush.SetTransform(D2D1::Matrix3x2F::Translation(D2D1::SizeF(get_dips_from_pixels(left_top_pos.x), get_dips_from_pixels(left_top_pos.y))));
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-        d2d_factory.get_render_target().FillOpacityMask(&bmp_mask, &brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &drawing_area);
+        d2d_factory.get_render_target().FillOpacityMask(&bmp_mask, &brush, D2D1_OPACITY_MASK_CONTENT_GRAPHICS, 
+        D2D1::RectF(get_dips_from_pixels(part_to_draw.left), get_dips_from_pixels(part_to_draw.top), get_dips_from_pixels(part_to_draw.right), get_dips_from_pixels(part_to_draw.bottom)), 
+            D2D1::RectF(get_dips_from_pixels(max(part_to_draw.left - left_top_pos.x, 0)), get_dips_from_pixels(max(part_to_draw.top - left_top_pos.y, 0)), get_dips_from_pixels(max(part_to_draw.right - left_top_pos.x, 0)), get_dips_from_pixels(max(part_to_draw.bottom - left_top_pos.y, 0))));
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
     }
 
@@ -188,6 +209,16 @@ namespace GameEngine
         }
 
         return mask;
+    }
+
+    Geometry::Rectangle2D<int> GraphicsDirect2D::clip(Geometry::Rectangle2D<int> const& drawing_area, Geometry::Rectangle2D<int> const& clipping_area)
+    {
+        int left{ max(drawing_area.left, clipping_area.left) };
+        int right{ min(drawing_area.right, clipping_area.right) };
+        int bottom{ min(drawing_area.bottom, clipping_area.bottom) };
+        int top{ max(drawing_area.top, clipping_area.top) };
+
+        return Geometry::Rectangle2D<int>{ left, right, bottom, top };
     }
 
     void GraphicsDirect2D::draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c)
