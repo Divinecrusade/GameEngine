@@ -64,14 +64,10 @@ namespace GameEngine
 
             constexpr T get_width() const noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()))
             {
-                assert(left < right);
-
-                return left - right;
+                return right - left;
             }
             constexpr T get_height() const noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()))
             {
-                assert(top < bottom);
-
                 return bottom - top;
             }
             constexpr Vector2D<T> get_center() const noexcept(noexcept(Vector2D<T>(std::declval<T const&>(), std::declval<T const&>())))
