@@ -213,7 +213,7 @@ void Arkanoid::render()
         break;
 
         case GameStage::IN_PROGRESS:
-
+        
             render_full_scene();
 
         break;

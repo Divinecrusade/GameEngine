@@ -30,7 +30,7 @@ namespace GameEngine
             virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, ISurface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) = 0;
             virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, ISurface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) = 0;
        
-            virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c);
+            virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c);
             virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c);
         };
     }

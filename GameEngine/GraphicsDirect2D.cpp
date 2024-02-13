@@ -175,8 +175,22 @@ namespace GameEngine
         return Geometry::Rectangle2D<int>{ max(drawing_area.left, clipping_area.left), min(drawing_area.right, clipping_area.right), min(drawing_area.bottom, clipping_area.bottom), max(drawing_area.top, clipping_area.top) };
     }
 
-    void GraphicsDirect2D::draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c)
+    void GraphicsDirect2D::draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c)
     {
+        ID2D1GeometrySink& sink{ d2d_factory.open_sink() };
+        
+        auto it{ points.cbegin() };
+        sink.BeginFigure(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)), D2D1_FIGURE_BEGIN_FILLED);
+
+        for (; it != points.cend(); ++it)
+        {
+            sink.AddLine(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)));
+        }
+        sink.EndFigure(D2D1_FIGURE_END_CLOSED);
+        d2d_factory.close_sink();
+
+        ID2D1SolidColorBrush& brush{ d2d_factory.get_brush(c) };
+        d2d_factory.get_render_target().DrawGeometry(&d2d_factory.get_geometry(), &brush, get_dips_from_pixels(stroke_width));
     }
 
     void GraphicsDirect2D::fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c)
