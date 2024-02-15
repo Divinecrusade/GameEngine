@@ -4,6 +4,7 @@
 
 #include "Ball.hpp"
 #include "Paddle.hpp"
+#include "Missile.hpp"
 
 
 class Blow
@@ -31,6 +32,7 @@ public:
 
     bool is_collided_with(Ball const& ball) const;
     bool is_collided_with(Paddle const& padd) const;
+    bool is_collided_with(Missile const& missile) const;
 
     void throw_ball(Ball& ball) const;
 

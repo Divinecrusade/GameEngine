@@ -30,6 +30,8 @@ public:
     bool is_collided_with(Ball const& ball) const;
     bool is_collided_with(Paddle const& padd) const;
 
+    GameEngine::Geometry::Rectangle2D<int> get_collision_box() const;
+
 private:
 
     void swap(Missile&& other_tmp) noexcept;

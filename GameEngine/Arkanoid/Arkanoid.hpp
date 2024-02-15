@@ -12,6 +12,8 @@
 #include "Missile.hpp"
 #include "Blow.hpp"
 
+#include <stack>
+
 
 class Arkanoid final : public GameEngine::Game
 {
@@ -27,8 +29,6 @@ private:
 public:
 
     static constexpr GameEngine::Geometry::Rectangle2D<int> WINDOW{ 0, 800, 600, 0 };
-    //static constexpr int WINDOW_WIDTH{ 800 };
-    //static constexpr int WINDOW_HEIGHT{ 600 };
     static constexpr bool RESIZABLE{ false };
 
 public:
@@ -53,6 +53,8 @@ private:
     void update_gameover_stage();
 
     void render_full_scene();
+
+    void kaboom(std::vector<std::shared_ptr<Missile>>::iterator const& missile, std::vector<std::vector<std::shared_ptr<Missile>>::iterator>& destroyed_missiles, std::stack<std::shared_ptr<Blow>>& blows_to_process);
 
 private:
     

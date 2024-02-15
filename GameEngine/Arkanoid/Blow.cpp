@@ -47,6 +47,11 @@ bool Blow::is_collided_with(Paddle const& padd) const
     return GameEngine::Geometry::Rectangle2D<int>::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(padd.get_collision_box());
 }
 
+bool Blow::is_collided_with(Missile const& missile) const
+{
+    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(missile.get_collision_box());
+}
+
 void Blow::throw_ball(Ball& ball) const
 {
     auto new_dir{ ball.get_center() - pos };

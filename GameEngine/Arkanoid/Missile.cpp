@@ -58,6 +58,11 @@ bool Missile::is_collided_with(Paddle const& padd) const
     return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(padd.get_collision_box());
 }
 
+GameEngine::Geometry::Rectangle2D<int> Missile::get_collision_box() const
+{
+    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT);
+}
+
 void Missile::swap(Missile&& other_tmp) noexcept
 {
     std::swap(destroyed, other_tmp.destroyed);

@@ -80,26 +80,38 @@ void Arkanoid::update_in_progress_stage(float dt)
 
 
     std::vector<std::vector<std::shared_ptr<Missile>>::iterator> destroyed_missiles{ };
+    std::stack<std::shared_ptr<Blow>> blows_to_process{ };
     for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
     {
+        if (std::find(destroyed_missiles.begin(), destroyed_missiles.end(), missile) != destroyed_missiles.end()) continue;
+        
         missile->get()->update(dt);
 
         if (missile->get()->is_collided_with(ball) || missile->get()->is_collided_with(field) || missile->get()->is_collided_with(pad))
         {
-            if (missile->get()->is_collided_with(ball)) collision_happended = true;
+            kaboom(missile, destroyed_missiles, blows_to_process);
+        }
+        if (cur_stage == GameStage::GAMEOVER) return;
 
-            destroyed_missiles.push_back(missile);
-            blows.emplace_back(std::make_shared<Blow>(missile->get()->get_pos(), blow_effect, GameEngine::Colours::WHITE));
+        while (!blows_to_process.empty())
+        {
+            auto blow{ blows_to_process.top() };
+            blows_to_process.pop();
 
-            if (missile->get()->is_collided_with(pad) || blows.back().get()->is_collided_with(pad))
-            {
-                cur_stage = GameStage::GAMEOVER;
-               
-                return;
-            }
-            else if (blows.back().get()->is_collided_with(ball))
+            if (blow.get()->is_collided_with(ball))
             {
                 blows.back().get()->throw_ball(ball);
+                collision_happended = true;
+            }
+            for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
+            {
+                if (std::find(destroyed_missiles.begin(), destroyed_missiles.end(), missile) != destroyed_missiles.end()) continue;
+
+                if (blow.get()->is_collided_with(**missile))
+                {
+                    kaboom(missile, destroyed_missiles, blows_to_process);
+                }
+                if (cur_stage == GameStage::GAMEOVER) return;
             }
         }
     }
@@ -199,6 +211,21 @@ void Arkanoid::render_full_scene()
         blow.get()->draw(gfx, field.get_collision_box());
     }
     ball.draw(gfx);
+}
+
+void Arkanoid::kaboom(std::vector<std::shared_ptr<Missile>>::iterator const& missile, std::vector<std::vector<std::shared_ptr<Missile>>::iterator>& destroyed_missiles, std::stack<std::shared_ptr<Blow>>& blows_to_process)
+{
+    destroyed_missiles.push_back(missile);
+    blows.emplace_back(std::make_shared<Blow>(missile->get()->get_pos(), blow_effect, GameEngine::Colours::WHITE));
+
+    if (missile->get()->is_collided_with(pad) || blows.back().get()->is_collided_with(pad))
+    {
+        cur_stage = GameStage::GAMEOVER;
+
+        return;
+    }
+
+    blows_to_process.push(blows.back());
 }
 
 void Arkanoid::render()
