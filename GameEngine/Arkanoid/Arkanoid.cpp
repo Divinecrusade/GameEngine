@@ -208,7 +208,7 @@ void Arkanoid::render_full_scene()
     }
     for (auto& blow : blows)
     {
-        blow.get()->draw(gfx, field.get_collision_box());
+        blow.get()->draw(gfx, WINDOW);
     }
     ball.draw(gfx);
 }

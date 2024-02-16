@@ -15,6 +15,7 @@ namespace GameEngine
         composing_frame = true;
         d2d_factory.get_render_target().BeginDraw();
         d2d_factory.get_render_target().Clear();
+        d2d_factory.invalidate_resources();
     }
 
     void GraphicsDirect2D::end_frame()

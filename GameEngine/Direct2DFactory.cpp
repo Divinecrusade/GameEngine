@@ -16,10 +16,7 @@ namespace GameEngine
         safe_release(render_target);
         std::for_each(brushes.begin(), brushes.end(), [](auto& pair) { safe_release(pair.second); });
         brushes.clear();
-        std::for_each(bitmapbrushes.begin(), bitmapbrushes.end(), [](auto& pair) { safe_release(pair.second); });
-        bitmapbrushes.clear();
-        std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); });
-        bitmaps.clear();
+        invalidate_resources();
         safe_release(d2d_factory);
         safe_release(geom);
         safe_release(sink);
@@ -145,5 +142,13 @@ namespace GameEngine
         assert(sink);
 
         return *sink;
+    }
+    
+    void Direct2DFactory::invalidate_resources()
+    {
+        std::for_each(bitmapbrushes.begin(), bitmapbrushes.end(), [](auto& pair) { safe_release(pair.second); });
+        bitmapbrushes.clear();
+        std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); });
+        bitmaps.clear();
     }
 }

@@ -105,6 +105,8 @@ namespace GameEngine
         void open_sink();
         void close_sink();
         ID2D1GeometrySink& get_sink();
+        
+        void invalidate_resources();
 
         D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
 
