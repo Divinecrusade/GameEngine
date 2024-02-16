@@ -7,12 +7,12 @@ namespace GameEngine
 {
     MainWindow* MainWindow::instance_{ nullptr };
 
-    MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
+    /*MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     {
         static MainWindow wnd{ hInstance, nCmdShow, window_name, resizable, init_width, init_height };
 
         return wnd;
-    }
+    }*/
 
     MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     :
@@ -52,7 +52,7 @@ namespace GameEngine
         return MESSAGE_HANDLED;
     }
 
-    HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring const& window_name, bool resizable, int init_width, int init_height)
+    HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     {
         assert(hInstance != NULL);
         assert(init_width > 0);
@@ -94,7 +94,7 @@ namespace GameEngine
             CreateWindowExW(
                 ex_style,
                 MainWindow::WND_CLASS_NAME,
-                window_name.c_str(),
+                window_name.data(),
                 style,
                 window_pos.left, window_pos.top,
                 window_pos.right - window_pos.left, window_pos.bottom - window_pos.top,
