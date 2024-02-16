@@ -14,6 +14,7 @@ namespace GameEngine
 
         composing_frame = true;
         d2d_factory.get_render_target().BeginDraw();
+        d2d_factory.get_render_target().Clear();
     }
 
     void GraphicsDirect2D::end_frame()
@@ -22,7 +23,6 @@ namespace GameEngine
 
         composing_frame = false;
         d2d_factory.get_render_target().EndDraw();
-        d2d_factory.free_resources();
     }
 
     int GraphicsDirect2D::get_screen_width() const noexcept
@@ -177,7 +177,8 @@ namespace GameEngine
 
     void GraphicsDirect2D::draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c)
     {
-        ID2D1GeometrySink& sink{ d2d_factory.open_sink() };
+        d2d_factory.open_sink();
+        ID2D1GeometrySink& sink{ d2d_factory.get_sink() };
         
         auto it{ points.cbegin() };
         sink.BeginFigure(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)), D2D1_FIGURE_BEGIN_FILLED);
@@ -195,7 +196,8 @@ namespace GameEngine
 
     void GraphicsDirect2D::fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c)
     {
-        ID2D1GeometrySink& sink{ d2d_factory.open_sink() };
+        d2d_factory.open_sink();
+        ID2D1GeometrySink& sink{ d2d_factory.get_sink() };
 
         auto it{ points.cbegin() };
         sink.BeginFigure(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)), D2D1_FIGURE_BEGIN_FILLED);

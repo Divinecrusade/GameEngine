@@ -13,10 +13,16 @@ namespace GameEngine
 
     Direct2DFactory::~Direct2DFactory()
     {
-        free_resources();
+        safe_release(render_target);
+        std::for_each(brushes.begin(), brushes.end(), [](auto& pair) { safe_release(pair.second); });
+        brushes.clear();
+        std::for_each(bitmapbrushes.begin(), bitmapbrushes.end(), [](auto& pair) { safe_release(pair.second); });
+        bitmapbrushes.clear();
+        std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); });
+        bitmaps.clear();
+        safe_release(d2d_factory);
         safe_release(geom);
         safe_release(sink);
-        safe_release(d2d_factory);
     }
 
     RECT Direct2DFactory::get_render_area_size() const noexcept
@@ -116,16 +122,14 @@ namespace GameEngine
         return *bitmapbrushes[&bitmap];
     }
 
-    ID2D1GeometrySink& Direct2DFactory::open_sink()
+    void Direct2DFactory::open_sink()
     {
-        if (sink)
-        {
-            close_sink();
-            safe_release(geom);
-        }
+        assert(!sink);
+
+        safe_release(geom);
         auto hr = get_geometry().Open(&sink);
 
-        return *sink;
+        assert(sink);
     }
 
     void Direct2DFactory::close_sink()
@@ -133,16 +137,13 @@ namespace GameEngine
         assert(sink);
 
         sink->Close();
+        safe_release(sink);
     }
 
-    void Direct2DFactory::free_resources()
+    ID2D1GeometrySink& GameEngine::Direct2DFactory::get_sink()
     {
-        safe_release(render_target);
-        std::for_each(brushes.begin(), brushes.end(), [](auto& pair) { safe_release(pair.second); } );
-        brushes.clear();
-        std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); } );
-        bitmaps.clear();
-        std::for_each(bitmapbrushes.begin(), bitmapbrushes.end(), [](auto& pair) { safe_release(pair.second); });
-        bitmapbrushes.clear();
+        assert(sink);
+
+        return *sink;
     }
 }

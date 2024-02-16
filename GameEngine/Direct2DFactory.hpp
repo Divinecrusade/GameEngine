@@ -102,10 +102,9 @@ namespace GameEngine
         ID2D1SolidColorBrush& get_brush(KeyColor const& key);
         ID2D1Bitmap& get_bitmap(GameEngine::Interfaces::ISurface const& srf);
         ID2D1BitmapBrush& get_bitmapbrush(ID2D1Bitmap& bitmap);
-        ID2D1GeometrySink& open_sink();
+        void open_sink();
         void close_sink();
-
-        void free_resources();
+        ID2D1GeometrySink& get_sink();
 
         D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
 
