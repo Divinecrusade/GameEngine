@@ -61,7 +61,7 @@ private:
     {
         for (auto const& item : container2)
         {
-            std::remove_if(container1.begin(), container1.end(), [&item](std::shared_ptr<F> const& val) { return val.get() == item->get(); });
+            std::remove_if(container1.begin(), container1.end(), [ptr=*item](std::shared_ptr<F> const& val) { return val == ptr; });
         }
         auto tmp{ container1.begin() };
         std::advance(tmp, container1.size() - container2.size());
