@@ -56,6 +56,18 @@ private:
 
     void kaboom(std::vector<std::shared_ptr<Missile>>::iterator const& missile, std::vector<std::vector<std::shared_ptr<Missile>>::iterator>& destroyed_missiles, std::stack<std::shared_ptr<Blow>>& blows_to_process);
 
+    template<class F, class A1, class A2, template<class T, class A> class C1, template<class T, class A> class C2>
+    static void delete_from_container(C1<std::shared_ptr<F>, A1>& container1, C2<typename C1<std::shared_ptr<F>, A1>::iterator, A2> const& container2)
+    {
+        for (auto const& item : container2)
+        {
+            std::remove_if(container1.begin(), container1.end(), [&item](std::shared_ptr<F> const& val) { return val.get() == item->get(); });
+        }
+        auto tmp{ container1.begin() };
+        std::advance(tmp, container1.size() - container2.size());
+        container1.erase(tmp, container1.end());
+    }
+
 private:
     
     static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 250, 30, 30, 30 };
@@ -79,16 +91,16 @@ private:
     GameStage cur_stage{ GameStage::START };
 
     PlayField field;
-    Paddle pad;
+    Paddle    pad;
     GameEngine::FrameTimer ft{ };
-    std::vector<Brick> bricks;
-    Ball ball;
+    std::vector<Brick>     bricks;
+    Ball      ball;
 
-    GameEngine::Surface gamestart_img;
-    GameEngine::Surface gameover_img;
-    GameEngine::Surface rocket;
+    GameEngine::Surface   gamestart_img;
+    GameEngine::Surface   gameover_img;
+    GameEngine::Surface   rocket;
     GameEngine::Animation blow_effect;
 
     std::vector<std::shared_ptr<Missile>> missiles;
-    std::vector<std::shared_ptr<Blow>> blows;
+    std::vector<std::shared_ptr<Blow>>    blows;
 };
