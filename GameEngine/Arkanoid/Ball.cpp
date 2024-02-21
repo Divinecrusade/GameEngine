@@ -3,7 +3,7 @@
 #include <cmath>
 
 
-Ball::Ball(GameEngine::Geometry::Vector2D<int> init_pos, GameEngine::Geometry::Vector2D<float> init_dir, float init_speed) noexcept
+Ball::Ball(Vec2i init_pos, GameEngine::Geometry::Vector2D<float> init_dir, float init_speed) noexcept
 :
 cur_pos{ init_pos },
 cur_speed{ init_speed }
@@ -27,12 +27,12 @@ void Ball::accelerate(float a) noexcept
     cur_speed += a;
 }
 
-GameEngine::Geometry::Rectangle2D<int> Ball::get_collision_box() const noexcept
+Ball::Rec2i Ball::get_collision_box() const noexcept
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, RADIUS, RADIUS);
+    return Rec2i::get_from_center(cur_pos, RADIUS, RADIUS);
 }
 
-GameEngine::Geometry::Vector2D<int> Ball::get_center() const noexcept
+Ball::Vec2i Ball::get_center() const noexcept
 {
     return cur_pos;
 }
@@ -49,7 +49,7 @@ void Ball::change_direction(GameEngine::Geometry::Vector2D<float> const& dir)
     if (std::fabs(cur_vel.y) <= MIN_ABS_Y_VEL) cur_vel.y = (std::signbit(cur_vel.y) ? -1.f : 1.f) * MIN_ABS_Y_VEL;
 }
 
-void Ball::move_by(GameEngine::Geometry::Vector2D<int> const& dpos) noexcept
+void Ball::move_by(Vec2i const& dpos) noexcept
 {
     cur_pos += dpos;
 }

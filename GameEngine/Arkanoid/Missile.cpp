@@ -1,11 +1,11 @@
 #include "Missile.hpp"
 
 
-Missile::Missile(GameEngine::Geometry::Vector2D<int> const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma)
+Missile::Missile(Vec2i const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma)
 :
-cur_pos{ init_pos },
+cur_pos  { init_pos },
 cur_speed{ init_speed },
-cur_vel{ DIR * cur_speed },
+cur_vel  { DIR * cur_speed },
 sprite{ sprite },
 chroma{ chroma }
 { }
@@ -13,9 +13,9 @@ chroma{ chroma }
 Missile::Missile(Missile const& other) noexcept
 :
 destroyed{ other.destroyed },
-cur_pos{ other.cur_pos },
+cur_pos  { other.cur_pos },
 cur_speed{ other.cur_speed },
-cur_vel{ other.cur_vel },
+cur_vel  { other.cur_vel },
 sprite{ other.sprite },
 chroma{ other.chroma }
 { }
@@ -30,7 +30,7 @@ chroma{ other_tmp.chroma }
 
 void Missile::draw(GameEngine::Interfaces::IGraphics2D & gfx, GameEngine::Geometry::Rectangle2D<int> const& clip)
 {
-    gfx.draw_sprite_excluding_color(GameEngine::Geometry::Vector2D<int>{ cur_pos.x - static_cast<int>(sprite.get_width() / 2U), cur_pos.y - static_cast<int>(sprite.get_height() / 2U) }, sprite, chroma, clip);
+    gfx.draw_sprite_excluding_color(Vec2i{ cur_pos.x - static_cast<int>(sprite.get_width() / 2U), cur_pos.y - static_cast<int>(sprite.get_height() / 2U) }, sprite, chroma, clip);
 }
 
 void Missile::update(float dt)
@@ -38,29 +38,29 @@ void Missile::update(float dt)
     cur_pos += dt * cur_vel;
 }
 
-GameEngine::Geometry::Vector2D<int> Missile::get_pos() const noexcept
+Missile::Vec2i Missile::get_pos() const noexcept
 {
     return cur_pos;
 }
 
-bool Missile::is_collided_with(PlayField const& border) const
+bool Missile::is_collided_with(PlayField const& border) const noexcept
 {
     return border.get_collision_box().bottom <= (cur_pos.y + COLLISION_HALF_HEIGHT);
 }
 
-bool Missile::is_collided_with(Ball const& ball) const
+bool Missile::is_collided_with(Ball const& ball) const noexcept
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(ball.get_collision_box());
+    return Rec2i::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(ball.get_collision_box());
 }
 
-bool Missile::is_collided_with(Paddle const& padd) const
+bool Missile::is_collided_with(Paddle const& padd) const noexcept
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(padd.get_collision_box());
+    return Rec2i::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(padd.get_collision_box());
 }
 
-GameEngine::Geometry::Rectangle2D<int> Missile::get_collision_box() const
+Missile::Rec2i Missile::get_collision_box() const
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT);
+    return Rec2i::get_from_center(cur_pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT);
 }
 
 void Missile::swap(Missile&& other_tmp) noexcept

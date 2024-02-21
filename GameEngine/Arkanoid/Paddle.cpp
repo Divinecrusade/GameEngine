@@ -1,7 +1,7 @@
 #include "Paddle.hpp"
 
 
-Paddle::Paddle(GameEngine::Geometry::Vector2D<int> init_pos, float init_speed, int init_half_width) noexcept
+Paddle::Paddle(Vec2i init_pos, float init_speed, int init_half_width) noexcept
 :
 cur_pos{ init_pos },
 cur_speed{ init_speed },
@@ -15,17 +15,17 @@ cur_half_width{ init_half_width }
 
 void Paddle::draw(GameEngine::Interfaces::IGraphics2D& gfx)
 {
-    GameEngine::Geometry::Rectangle2D<int> const pad_rect{ GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT) };
+    Rec2i const pad_rect{ Rec2i::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT) };
     gfx.fill_rectangle(pad_rect, MAIN_COLOUR);
-    GameEngine::Geometry::Rectangle2D<int> const left_wing{ pad_rect.left, pad_rect.left + WING_WIDTH, pad_rect.bottom, pad_rect.top };
-    GameEngine::Geometry::Rectangle2D<int> const right_wing{ pad_rect.right - WING_WIDTH, pad_rect.right, pad_rect.bottom, pad_rect.top };
+    Rec2i const left_wing{ pad_rect.left, pad_rect.left + WING_WIDTH, pad_rect.bottom, pad_rect.top };
+    Rec2i const right_wing{ pad_rect.right - WING_WIDTH, pad_rect.right, pad_rect.bottom, pad_rect.top };
     gfx.fill_rectangle(left_wing, WINGS_COLOUR);
     gfx.fill_rectangle(right_wing, WINGS_COLOUR);
 }
 
 void Paddle::update(float dt) noexcept
 {
-    cur_pos += GameEngine::Geometry::Vector2D<float>{ static_cast<float>(cur_dir), 0.f } * cur_speed * dt;
+    cur_pos += Vec2f{ static_cast<float>(cur_dir), 0.f } * cur_speed * dt;
 }
 
 Paddle::Direction Paddle::get_direction() const noexcept
@@ -38,7 +38,7 @@ void Paddle::set_direction(Direction dir) noexcept
     cur_dir = dir;
 }
 
-void Paddle::move_by(GameEngine::Geometry::Vector2D<int> const& dpos) noexcept
+void Paddle::move_by(Vec2i const& dpos) noexcept
 {
     assert(dpos.y == 0);
 
@@ -68,9 +68,9 @@ void Paddle::handle_collision(Ball& ball)
     }
 }
 
-GameEngine::Geometry::Rectangle2D<int> Paddle::get_collision_box() const noexcept
+Paddle::Rec2i Paddle::get_collision_box() const noexcept
 {
-    return GameEngine::Geometry::Rectangle2D<int>::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
+    return Rec2i::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT);
 }
 
 bool Paddle::is_cooldowned() const noexcept
@@ -129,12 +129,12 @@ void Paddle::deflect(Ball& ball, CollisionEdge edge) const
     }
 }
 
-GameEngine::Geometry::Vector2D<float> Paddle::calculate_deflect_direction(CollisionEdge edge, double dL, Direction ball_direction) const
+Paddle::Vec2f Paddle::calculate_deflect_direction(CollisionEdge edge, double dL, Direction ball_direction) const
 {
     assert(edge == CollisionEdge::BOTTOM || edge == CollisionEdge::TOP);
     assert(ball_direction == Direction::LEFT || ball_direction == Direction::RIGHT);
 
-    GameEngine::Geometry::Vector2D<float> new_dir{ 0, (edge == CollisionEdge::TOP ? -1.f : 1.f) };
+    Vec2f new_dir{ 0, (edge == CollisionEdge::TOP ? -1.f : 1.f) };
     Direction padd_collised_part{ dL < 0.f ? Direction::RIGHT : Direction::LEFT };
     double const abs_dL{ std::fabs(dL) };
     double const deflect_angle

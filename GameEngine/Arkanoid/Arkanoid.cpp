@@ -4,19 +4,19 @@
 Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics)
 :
 Game { window, graphics },
-field{ GameEngine::Geometry::Rectangle2D{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_height() - PADDING.bottom, 0 + PADDING.top }},
+field{ Rec2i{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_height() - PADDING.bottom, 0 + PADDING.top } },
 pad  { PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
-gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gamestart.bmp" }}) },
-gameover_img { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"gameover.bmp"  }}) },
-rocket       { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"missile.bmp"   }}) },
-blow_effect  { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ L"blow.bmp"      }}), 50U, 70U, 0.125f }
+gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
+gameover_img { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
+rocket       { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
+blow_effect  { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U, 0.125f }
 { 
-    constexpr GameEngine::Geometry::Vector2D<int> brick_size{ Brick::WIDTH, Brick::HEIGHT };
+    constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
     for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)
     {
-        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * GameEngine::Geometry::Vector2D<int>{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW] );
+        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * Vec2i{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW] );
     }
 }
 
@@ -170,7 +170,7 @@ void Arkanoid::update_in_progress_stage(float dt)
     if (collided_brick != bricks.end())
     {
         collided_brick->handle_collision(ball);
-        missiles.emplace_back(std::make_shared<Missile>(GameEngine::Geometry::Vector2D<int>{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE));
+        missiles.emplace_back(std::make_shared<Missile>(Vec2i{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE));
         bricks.erase(std::remove(bricks.begin(), bricks.end(), *collided_brick), bricks.end());
         if (bricks.size() == 0U)
         {
@@ -246,7 +246,16 @@ void Arkanoid::render()
 
             render_full_scene();
 
-            gfx.draw_sprite_excluding_color({ WINDOW.get_width() / 2 - static_cast<int>(gameover_img.get_width() / 2U), WINDOW.get_height() / 2 - static_cast<int>(gameover_img.get_height() / 2U)}, gameover_img, GameEngine::Colours::BLACK, WINDOW);
+            gfx.draw_sprite_excluding_color
+            (
+                { 
+                    WINDOW.get_width()  / 2 - static_cast<int>(gameover_img.get_width()  / 2U),
+                    WINDOW.get_height() / 2 - static_cast<int>(gameover_img.get_height() / 2U)
+                },
+                gameover_img,
+                GameEngine::Colours::BLACK,
+                WINDOW
+            );
 
         break;
     }

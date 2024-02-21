@@ -25,10 +25,18 @@ private:
     };
 
     static constexpr wchar_t const* const ASSETS_DIR{ L"data\\assets\\" };
+    static constexpr wchar_t const* const ASSET_GAMESTART_IMG { L"gamestart.bmp" };
+    static constexpr wchar_t const* const ASSET_GAMEOVER_IMG  { L"gameover.bmp" };
+    static constexpr wchar_t const* const ASSET_MISSILE_SPRITE{ L"missile.bmp" };
+    static constexpr wchar_t const* const ASSET_BLOW_ANIMATION{ L"blow.bmp" };
+
+    using Vec2f = GameEngine::Geometry::Vector2D<float>;
+    using Vec2i = GameEngine::Geometry::Vector2D<int>;
+    using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
 
 public:
 
-    static constexpr GameEngine::Geometry::Rectangle2D<int> WINDOW{ 0, 800, 600, 0 };
+    static constexpr Rec2i WINDOW  { 0, 800, 600, 0 };
     static constexpr bool RESIZABLE{ false };
 
 public:
@@ -70,21 +78,36 @@ private:
 
 private:
     
-    static constexpr GameEngine::Geometry::Rectangle2D<int> PADDING{ 250, 30, 30, 30 };
-    static constexpr GameEngine::Geometry::Vector2D<int> PADDLE_INIT_POS{ (WINDOW.get_width() - PADDING.left - PADDING.right) / 2 + PADDING.left, WINDOW.get_height() - PADDING.bottom - 60 };
+    static constexpr Rec2i PADDING{ 250, 30, 30, 30 };
+    static constexpr Vec2i PADDLE_INIT_POS
+    { 
+        (WINDOW.get_width() - PADDING.left - PADDING.right) / 2 + PADDING.left,
+        WINDOW.get_height() - PADDING.bottom - 60 
+    };
 
-    static constexpr int PADDLE_INIT_HALF_WIDTH{ 40 };
-    static constexpr float PADDLE_INIT_SPEED{ 250.f };
+    static constexpr int   PADDLE_INIT_HALF_WIDTH{  40   };
+    static constexpr float PADDLE_INIT_SPEED     { 250.f };
 
     static constexpr int N_ROWS_BRICKS{ 5 };
-    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]{ GameEngine::Colours::INDIGO, GameEngine::Colours::YELLOW, GameEngine::Colours::AZURE, GameEngine::Colours::STEEL_BLUE, GameEngine::Colours::CRIMSON };
+    static constexpr GameEngine::Colour ROW_COLOURS[N_ROWS_BRICKS]
+    { 
+        GameEngine::Colours::INDIGO, 
+        GameEngine::Colours::YELLOW,
+        GameEngine::Colours::AZURE,
+        GameEngine::Colours::STEEL_BLUE,
+        GameEngine::Colours::CRIMSON 
+    };
     static constexpr int N_BRICKS_IN_ROW{ (WINDOW.get_width() - PADDING.left - PADDING.right) / Brick::WIDTH };
     static constexpr int N_BRICKS_TOTAL { N_ROWS_BRICKS* N_BRICKS_IN_ROW };
-    static constexpr GameEngine::Geometry::Vector2D<int> GRID_BRICKS_BEG{ PADDING.left + (WINDOW.get_width() - PADDING.left - PADDING.right) % Brick::WIDTH / 2, PADDING.top + 50};
+    static constexpr Vec2i GRID_BRICKS_BEG
+    { 
+        PADDING.left + (WINDOW.get_width() - PADDING.left - PADDING.right) % Brick::WIDTH / 2,
+        PADDING.top + 50
+    };
 
-    static constexpr GameEngine::Geometry::Vector2D<float> BALL_INIT_DIR{ 0.f, 1.f };
+    static constexpr Vec2f BALL_INIT_DIR{ 0.f, 1.f };
     static constexpr float BALL_INIT_SPEED{ 400.f };
-    static constexpr GameEngine::Geometry::Vector2D<int>   BALL_INIT_POS{ PADDLE_INIT_POS.x, PADDLE_INIT_POS.y - 100 };
+    static constexpr Vec2i BALL_INIT_POS{ PADDLE_INIT_POS.x, PADDLE_INIT_POS.y - 100 };
 
     static constexpr float MISSILE_SPEED{ 300.f };
 

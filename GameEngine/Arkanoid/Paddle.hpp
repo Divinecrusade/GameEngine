@@ -12,6 +12,12 @@ using namespace GameEngine::Geometry::Literals;
 
 class Paddle final
 {
+private:
+
+    using Vec2i = GameEngine::Geometry::Vector2D<int>;
+    using Vec2f = GameEngine::Geometry::Vector2D<float>;
+    using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
+
 public:
 
     enum class Direction
@@ -20,29 +26,29 @@ public:
     };
 
     Paddle() = delete;
-    Paddle(GameEngine::Geometry::Vector2D<int> init_pos, float init_speed, int init_half_width) noexcept;
+    Paddle(Vec2i init_pos, float init_speed, int init_half_width) noexcept;
     Paddle(Paddle const&) = delete;
-    Paddle(Paddle&&) = delete;
+    Paddle(Paddle&&)      = delete;
 
     Paddle& operator=(Paddle const&) = delete;
-    Paddle& operator=(Paddle&&) = delete;
+    Paddle& operator=(Paddle&&)      = delete;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx);
     void update(float dt) noexcept;
 
-    Direction get_direction() const noexcept;
+    Direction get_direction() const   noexcept;
     void set_direction(Direction dir) noexcept;
 
-    void move_by(GameEngine::Geometry::Vector2D<int> const& dpos) noexcept;
-    void accelerate(float a) noexcept;
+    void move_by(Vec2i const& dpos) noexcept;
+    void accelerate(float a)        noexcept;
 
     bool is_collided_with(Ball const& ball) const noexcept;
     void handle_collision(Ball& ball);
 
-    GameEngine::Geometry::Rectangle2D<int> get_collision_box() const noexcept;
+    Rec2i get_collision_box() const noexcept;
 
     bool is_cooldowned() const noexcept;
-    void reset_cooldown() noexcept;
+    void reset_cooldown()      noexcept;
 
 private:
 
@@ -65,9 +71,10 @@ private:
     static constexpr auto   MAX_ANGLE_DEFLECT{ 80._deg };
     static constexpr auto   MIN_DEFLECT_ZONE_RATIO{ 5._percent };
     
-    GameEngine::Geometry::Vector2D<int> cur_pos;
+    Vec2i     cur_pos;
     Direction cur_dir{ Direction::STOP };
-    float cur_speed;
-    int cur_half_width;  
+    float     cur_speed;
+    int       cur_half_width;  
+
     bool cooldown{ false };
 };

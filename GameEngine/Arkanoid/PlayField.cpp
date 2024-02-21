@@ -2,7 +2,7 @@
 #include <cassert>
 
 
-PlayField::PlayField(GameEngine::Geometry::Rectangle2D<int> const& size_and_location) noexcept
+PlayField::PlayField(Rec2i const& size_and_location) noexcept
 :
 collision_frame{ size_and_location }
 {
@@ -18,8 +18,8 @@ void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx) const
 {
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness), inner_border_thickness, inner_border_colour);
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness + outer_border_thickness), outer_border_thickness, outer_border_colour);
-    gfx.draw_line(GameEngine::Geometry::Vector2D{ collision_frame.left, collision_frame.bottom },
-                  GameEngine::Geometry::Vector2D{ collision_frame.right, collision_frame.bottom }, 
+    gfx.draw_line(Vec2i{ collision_frame.left,  collision_frame.bottom },
+                  Vec2i{ collision_frame.right, collision_frame.bottom }, 
                   lose_zone_line_thickness, lose_zone_colour);
 }
 
@@ -44,7 +44,7 @@ bool PlayField::is_in_field(Ball const& ball) const noexcept
 
 bool PlayField::is_in_lose_zone(Ball const& ball) const noexcept
 {
-    return ball.get_collision_box().is_colided_with(GameEngine::Geometry::Rectangle2D<int>{{collision_frame.left, collision_frame.bottom}, {collision_frame.right, collision_frame.bottom}});
+    return ball.get_collision_box().is_colided_with(Rec2i{{collision_frame.left, collision_frame.bottom}, {collision_frame.right, collision_frame.bottom}});
 }
 
 void PlayField::handle_collision(Ball& ball) const noexcept
@@ -74,7 +74,7 @@ void PlayField::handle_collision(Ball& ball) const noexcept
     }
 }
 
-GameEngine::Geometry::Rectangle2D<int> PlayField::get_collision_box() const noexcept
+PlayField::Rec2i PlayField::get_collision_box() const noexcept
 {
     return collision_frame;
 }

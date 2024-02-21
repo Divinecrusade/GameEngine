@@ -7,26 +7,31 @@
 
 class PlayField final
 {
+private:
+
+    using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
+    using Vec2i = GameEngine::Geometry::Vector2D<int>;
+
 public:
 
     PlayField() = delete;
-    PlayField(GameEngine::Geometry::Rectangle2D<int> const& size_and_location) noexcept;
+    PlayField(Rec2i const& size_and_location) noexcept;
     PlayField(PlayField const&) = delete;
-    PlayField(PlayField&&) = delete;
+    PlayField(PlayField&&)      = delete;
 
     PlayField& operator=(PlayField const&) = delete;
-    PlayField& operator=(PlayField&&) = delete;
+    PlayField& operator=(PlayField&&)      = delete;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
     
     bool is_in_field(Paddle const& pad) const noexcept;
-    void handle_collision(Paddle& pad) const noexcept;
+    void handle_collision(Paddle& pad)  const noexcept;
 
-    bool is_in_field(Ball const& ball) const noexcept;
+    bool is_in_field(Ball const& ball)     const noexcept;
     bool is_in_lose_zone(Ball const& ball) const noexcept;
-    void handle_collision(Ball& ball) const noexcept;
+    void handle_collision(Ball& ball)      const noexcept;
 
-    GameEngine::Geometry::Rectangle2D<int> get_collision_box() const noexcept;
+    Rec2i get_collision_box() const noexcept;
 
 private:
 
@@ -37,5 +42,5 @@ private:
     static constexpr GameEngine::Colour lose_zone_colour{ GameEngine::Colours::RED };
     static constexpr int lose_zone_line_thickness{ 2 };
 
-    GameEngine::Geometry::Rectangle2D<int> const collision_frame;
+    Rec2i const collision_frame;
 };
