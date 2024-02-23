@@ -1,11 +1,5 @@
-#include "../GameEngine/Mouse.hpp"
-
+#include <Windows.h>
 #include <cwchar>
-
-
-using Vec2i = GameEngine::Geometry::Vector2D<int>;
-using GameEngine::Mouse;
-
 
 static constexpr wchar_t WINDOW_CLASS[] { L"DesktopApp" };
 static constexpr wchar_t WINDOW_TITLE[] { L"Rubber Thread" };
@@ -13,6 +7,24 @@ static constexpr wchar_t WINDOW_TITLE[] { L"Rubber Thread" };
 void show_error(wchar_t const* const msg)
 {
     MessageBoxW(NULL, msg, WINDOW_TITLE, NULL);
+}
+
+__forceinline static POINT get_global_pos() noexcept
+{
+    POINT global_cursor_pos{ };
+
+    GetCursorPos(&global_cursor_pos);
+
+    return global_cursor_pos;
+}
+
+__forceinline POINT get_cursor_pos(HWND hWnd) noexcept
+{
+    POINT cursor_pos{ get_global_pos() };
+
+    ScreenToClient(hWnd, &cursor_pos);
+
+    return cursor_pos;
 }
 
 __forceinline void draw_line_by_primitives();
@@ -30,9 +42,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
         case WM_LBUTTONDOWN:
         {
             LB_pressed = true; 
-            auto const tmp{ Mouse::get_cursor_pos(hWnd) };
-            line_beg.x = tmp.x;
-            line_beg.y = tmp.y;
+            line_beg = get_cursor_pos(hWnd);
         }
 
         break;
@@ -51,9 +61,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
         {
             if (LB_pressed)
             { 
-                auto const tmp{ Mouse::get_cursor_pos(hWnd) };
-                line_end.x = tmp.x;
-                line_end.y = tmp.y;
+                line_end = get_cursor_pos(hWnd);
                 InvalidateRect(hWnd, nullptr, TRUE);
             }
         }
