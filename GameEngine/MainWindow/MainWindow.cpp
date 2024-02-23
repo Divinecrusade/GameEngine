@@ -7,13 +7,6 @@ namespace GameEngine
 {
     MainWindow* MainWindow::instance_{ nullptr };
 
-    /*MainWindow& MainWindow::instance(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
-    {
-        static MainWindow wnd{ hInstance, nCmdShow, window_name, resizable, init_width, init_height };
-
-        return wnd;
-    }*/
-
     MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
     :
     H_INSTANCE{ hInstance == NULL ? (HINSTANCE)GetModuleHandleW(NULL) : hInstance },

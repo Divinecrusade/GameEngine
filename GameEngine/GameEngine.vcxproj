@@ -142,6 +142,7 @@
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />
     <ClInclude Include="MainWindow\MainWindow.hpp" />
+    <ClInclude Include="Mouse.hpp" />
     <ClInclude Include="Rectangle2D.hpp" />
     <ClInclude Include="Surface.hpp" />
     <ClInclude Include="Vector2D.hpp" />

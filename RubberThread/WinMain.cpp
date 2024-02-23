@@ -1,38 +1,96 @@
-#include <Windows.h>
-#include <WinUser.h>
+#include "../GameEngine/Mouse.hpp"
+
 #include <cwchar>
 
 
-static wchar_t const WINDOW_CLASS[] { L"DesktopApp" };
-static wchar_t const WINDOW_TITLE[] { L"Rubber Thread" };
+using Vec2i = GameEngine::Geometry::Vector2D<int>;
+using GameEngine::Mouse;
+
+static constexpr wchar_t WINDOW_CLASS[] { L"DesktopApp" };
+static constexpr wchar_t WINDOW_TITLE[] { L"Rubber Thread" };
+
 
 void show_error(wchar_t const* const msg)
 {
     MessageBoxW(NULL, msg, WINDOW_TITLE, NULL);
 }
 
+POINT get_pos_on_window(Vec2i const& pos_on_screen, HWND hWnd)
+{
+    POINT pos_on_window{ pos_on_screen.x, pos_on_screen.y };
+
+    ScreenToClient(hWnd, &pos_on_window);
+
+    return pos_on_window;
+}
+
+__forceinline void draw_line_by_primitives();
+
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
-    PAINTSTRUCT ps{ };
-    HDC hdc{ };
-    wchar_t const* greeting{ L"Hello World!" };
+    static PAINTSTRUCT ps{ };
+    static HDC hdc{ };
+    static bool LB_pressed{ false };
+    static POINT line_beg{ };
+    static POINT line_end{ };
 
     switch (message)
     {
-    case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
-        TextOutW(hdc, 5, 5, greeting, wcslen(greeting));
-
-        EndPaint(hWnd, &ps);
+        case WM_LBUTTONDOWN:
+        {
+            LB_pressed = true; 
+            line_beg = get_pos_on_window(Mouse::get_pos_on_screen(), hWnd);
+        }
 
         break;
 
-    case WM_DESTROY:
-        PostQuitMessage(EXIT_SUCCESS);
+        case WM_LBUTTONUP:
+        {
+            LB_pressed = false;
+            line_beg.x = line_end.x = line_beg.y = line_end.y = 0;
+
+            InvalidateRect(hWnd, nullptr, TRUE);
+        }
+
         break;
 
-    default:
-        return DefWindowProcW(hWnd, message, wParam, lParam);
+        case WM_MOUSEMOVE: 
+        {
+            if (LB_pressed)
+            { 
+                line_end = get_pos_on_window(Mouse::get_pos_on_screen(), hWnd);
+                InvalidateRect(hWnd, nullptr, TRUE);
+            }
+        }
+        
+        break;
+
+        case WM_PAINT:
+        {
+            hdc = BeginPaint(hWnd, &ps);
+            
+            HPEN const PEN{ CreatePen(PS_SOLID, 2, RGB(0, 0, 0)) };
+
+            MoveToEx(hdc, line_beg.x, line_beg.y, nullptr);
+            LineTo(hdc, line_end.x, line_end.y);
+
+            EndPaint(hWnd, &ps);
+        }
+
+        break;
+
+        case WM_DESTROY:
+        {
+            PostQuitMessage(EXIT_SUCCESS);
+        }
+  
+        break;
+
+        default: 
+        {
+            return DefWindowProcW(hWnd, message, wParam, lParam);
+        }
+
         break;
     }
 
@@ -43,6 +101,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCm
 {
     constexpr int WINDOW_WIDHT { 600 };
     constexpr int WINDOW_HEIGHT{ WINDOW_WIDHT };
+    constexpr int WINDOW_INIT_POS_X{ 300 };
+    constexpr int WINDOW_INIT_POS_Y{ 100 };
 
     WNDCLASSEX const wcex
     {
@@ -68,16 +128,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCm
     }
 
     RECT window_pos{ };
-    window_pos.left = 350;
-    window_pos.right = WINDOW_WIDHT + window_pos.left;
-    window_pos.top = 100;
+    window_pos.left   = WINDOW_INIT_POS_X;
+    window_pos.right  = WINDOW_WIDHT + window_pos.left;
+    window_pos.top    = WINDOW_INIT_POS_Y;
     window_pos.bottom = WINDOW_HEIGHT + window_pos.top;
-    DWORD const style{    static_cast<DWORD>(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX) };
+    DWORD const style   { static_cast<DWORD>(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX) };
     DWORD const ex_style{ static_cast<DWORD>(WS_EX_OVERLAPPEDWINDOW) };
     AdjustWindowRectEx(&window_pos, style, FALSE, ex_style);
     HWND const hWnd
     {
-        CreateWindowExW(
+        CreateWindowExW
+        (
             ex_style,
             WINDOW_CLASS,
             WINDOW_TITLE,
