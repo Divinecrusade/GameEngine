@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector2D.hpp"
+#include "IWindow.hpp"
 
 #include <Windows.h>
 
@@ -17,11 +18,11 @@ namespace GameEngine
             
             return { global_cursor_pos.x, global_cursor_pos.y };
         }
-        __forceinline static Geometry::Vector2D<int> get_cursor_pos(HWND hWnd) noexcept
+        __forceinline static Geometry::Vector2D<int> get_cursor_pos(Interfaces::IWindow const& wnd) noexcept
         {
             POINT cursor_pos{ get_global_pos() };
 
-            ScreenToClient(hWnd, &cursor_pos);
+            ScreenToClient(wnd.get_window_handler(), &cursor_pos);
 
             return { cursor_pos.x, cursor_pos.y };
         }
