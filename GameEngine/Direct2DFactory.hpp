@@ -11,6 +11,7 @@
 #include <cassert>
 #include <unordered_map>
 #include <algorithm>
+#include <functional>
 
 
 #ifndef HINST_THISCOMPONENT
@@ -50,8 +51,7 @@ namespace std
 namespace GameEngine
 {
     template<class Interface>
-    concept Releasable =
-        requires (Interface & instance)
+    concept Releasable = requires (Interface& instance)
     {
         instance.Release();
     };
@@ -68,6 +68,22 @@ namespace GameEngine
                 realising_resource->Release();
                 realising_resource = nullptr;
             }
+        }
+
+        template<class... Containers>
+        static void containers_safe_release(Containers&... container)
+        {
+            constexpr int DUMMY{ 0 };
+
+            (void)std::initializer_list<int>
+            { 
+                (
+                    std::for_each(container.begin(), container.end(), [](auto& val) { safe_release(val.second); }),
+                    container.clear(),
+                    DUMMY
+                )
+                ... 
+            };
         }
 
         __forceinline static D2D1::ColorF get_color(Colour c)

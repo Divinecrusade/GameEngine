@@ -14,8 +14,7 @@ namespace GameEngine
     Direct2DFactory::~Direct2DFactory()
     {
         safe_release(render_target);
-        std::for_each(brushes.begin(), brushes.end(), [](auto& pair) { safe_release(pair.second); });
-        brushes.clear();
+        containers_safe_release(brushes);
         invalidate_resources();
         safe_release(d2d_factory);
         safe_release(geom);
@@ -146,9 +145,6 @@ namespace GameEngine
     
     void Direct2DFactory::invalidate_resources()
     {
-        std::for_each(bitmapbrushes.begin(), bitmapbrushes.end(), [](auto& pair) { safe_release(pair.second); });
-        bitmapbrushes.clear();
-        std::for_each(bitmaps.begin(), bitmaps.end(), [](auto& pair) { safe_release(pair.second); });
-        bitmaps.clear();
+        containers_safe_release(bitmapbrushes, bitmaps);
     }
 }
