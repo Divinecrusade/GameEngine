@@ -27,7 +27,13 @@ __forceinline POINT get_cursor_pos(HWND hWnd) noexcept
     return cursor_pos;
 }
 
-__forceinline void draw_line_by_primitives();
+__forceinline void draw_line_by_primitives(HDC const& hdc, int x1, int y1, int x2, int y2)
+{
+    HPEN const PEN{ CreatePen(PS_SOLID, 2, RGB(0, 0, 0)) };
+
+    MoveToEx(hdc, x1, y1, nullptr);
+    LineTo(hdc, x2, y2);
+}
 
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
@@ -72,10 +78,7 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
         {
             hdc = BeginPaint(hWnd, &ps);
             
-            HPEN const PEN{ CreatePen(PS_SOLID, 2, RGB(0, 0, 0)) };
-
-            MoveToEx(hdc, line_beg.x, line_beg.y, nullptr);
-            LineTo(hdc, line_end.x, line_end.y);
+            draw_line_by_primitives(hdc, line_beg.x, line_beg.y, line_end.x, line_end.y);
 
             EndPaint(hWnd, &ps);
         }
