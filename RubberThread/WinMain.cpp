@@ -6,22 +6,13 @@
 using Vec2i = GameEngine::Geometry::Vector2D<int>;
 using GameEngine::Mouse;
 
+
 static constexpr wchar_t WINDOW_CLASS[] { L"DesktopApp" };
 static constexpr wchar_t WINDOW_TITLE[] { L"Rubber Thread" };
-
 
 void show_error(wchar_t const* const msg)
 {
     MessageBoxW(NULL, msg, WINDOW_TITLE, NULL);
-}
-
-POINT get_pos_on_window(Vec2i const& pos_on_screen, HWND hWnd)
-{
-    POINT pos_on_window{ pos_on_screen.x, pos_on_screen.y };
-
-    ScreenToClient(hWnd, &pos_on_window);
-
-    return pos_on_window;
 }
 
 __forceinline void draw_line_by_primitives();
@@ -39,7 +30,9 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
         case WM_LBUTTONDOWN:
         {
             LB_pressed = true; 
-            line_beg = get_pos_on_window(Mouse::get_pos_on_screen(), hWnd);
+            auto const tmp{ Mouse::get_cursor_pos(hWnd) };
+            line_beg.x = tmp.x;
+            line_beg.y = tmp.y;
         }
 
         break;
@@ -58,7 +51,9 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
         {
             if (LB_pressed)
             { 
-                line_end = get_pos_on_window(Mouse::get_pos_on_screen(), hWnd);
+                auto const tmp{ Mouse::get_cursor_pos(hWnd) };
+                line_end.x = tmp.x;
+                line_end.y = tmp.y;
                 InvalidateRect(hWnd, nullptr, TRUE);
             }
         }

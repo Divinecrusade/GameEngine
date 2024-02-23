@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\MainWindow\IWindow.hpp">
-      <Filter>Файлы заголовков\Window</Filter>
-    </ClInclude>
     <ClInclude Include="..\MainWindow\MainWindow.hpp">
       <Filter>Файлы заголовков\Window</Filter>
     </ClInclude>
@@ -83,6 +80,12 @@
     </ClInclude>
     <ClInclude Include="Blow.hpp">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IWindow.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Mouse.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

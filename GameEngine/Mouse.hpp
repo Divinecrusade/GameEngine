@@ -11,13 +11,30 @@ namespace GameEngine
     {
     public:
 
-        __forceinline static Geometry::Vector2D<int> get_pos_on_screen() noexcept
+        __forceinline static Geometry::Vector2D<int> get_cursor_pos() noexcept
         {
-            POINT mouse_pos{ };
+            POINT const global_cursor_pos{ get_global_pos() };
             
-            GetCursorPos(&mouse_pos);
+            return { global_cursor_pos.x, global_cursor_pos.y };
+        }
+        __forceinline static Geometry::Vector2D<int> get_cursor_pos(HWND hWnd) noexcept
+        {
+            POINT cursor_pos{ get_global_pos() };
 
-            return { mouse_pos.x, mouse_pos.y };
+            ScreenToClient(hWnd, &cursor_pos);
+
+            return { cursor_pos.x, cursor_pos.y };
+        }
+
+    private:
+
+        __forceinline static POINT get_global_pos() noexcept
+        {
+            POINT global_cursor_pos{ };
+
+            GetCursorPos(&global_cursor_pos);
+
+            return global_cursor_pos;
         }
     };
 }

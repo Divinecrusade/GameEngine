@@ -30,8 +30,6 @@ namespace GameEngine
         MainWindow& operator=(MainWindow const&) = delete;
         MainWindow& operator=(MainWindow&&) = delete;
 
-        //static MainWindow& instance(HINSTANCE hInstance = nullptr, int nCmdShow = 0, std::wstring_view window_name = L"", bool resizable = true, int init_width = DEFAULT_INIT_WIDTH, int init_height = DEFAULT_INIT_HEIGHT);
-    
         virtual bool is_fun_key_pressed(WinKey key) const override;
         virtual bool is_non_fun_key_pressed(int code) const override;
 
