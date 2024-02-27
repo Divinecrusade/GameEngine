@@ -5,10 +5,10 @@
 
 static constexpr wchar_t WINDOW_CLASS[] { L"DesktopApp" };
 static constexpr wchar_t WINDOW_TITLE[] { L"Rubber Thread" };
-static constexpr int WINDOW_WIDHT{ 600 };
-static constexpr int WINDOW_HEIGHT{ WINDOW_WIDHT };
+static constexpr int WINDOW_WIDTH{ 600 };
+static constexpr int WINDOW_HEIGHT{ WINDOW_WIDTH };
 
-static constexpr int BASE_X{ WINDOW_WIDHT / 2 };
+static constexpr int BASE_X{ WINDOW_WIDTH / 2 };
 static constexpr int BASE_Y{ WINDOW_HEIGHT / 2 };
 
 
@@ -67,7 +67,7 @@ auto get_line_function(int x1, int y1, int x2, int y2)
 {
     return [l = x2 - x1, m = y2 - y1, x1, y1](int x) 
     { 
-        if (l == 0)
+        if (l == 0 || m == 0)
         {
             return y1;
         }
@@ -83,31 +83,64 @@ auto get_line_function(int x1, int y1, int x2, int y2)
 __forceinline void draw_line_by_pixels(HDC const& hdc, int x1, int y1, int x2, int y2) noexcept
 {
     static COLORREF const PEN_C{ RGB(0, 0, 0) };
-    auto const fun
-    { 
-        get_line_function
-        (
-            convert_device_x_to_logic_x(x1),
-            convert_device_y_to_logic_y(y1),
-            convert_device_x_to_logic_x(x2),
-            convert_device_y_to_logic_y(y2)
-        )
-    };
 
-    for (int device_x{ min(x1, x2) }; device_x != max(x1, x2); ++device_x)
+    if (max(x1, x2) - min(x1, x2) <= max(y1, y2) - min(y1, y2))
     {
-        int const logic_x{ convert_device_x_to_logic_x(device_x) };
-        assert(logic_x >= -BASE_X);
-        assert(logic_x <= BASE_X);
-        int const logic_y{ fun(logic_x) };
-        assert(logic_y >= -BASE_Y);
-        assert(logic_y <= BASE_Y);
-        int const device_y{ convert_logic_y_to_device_y(logic_y) };
-        assert(device_y >= 0);
-        assert(device_y <= WINDOW_HEIGHT);
+        auto const fun
+        {
+            get_line_function
+            (
+                convert_device_y_to_logic_y(y1),
+                convert_device_x_to_logic_x(x1),
+                convert_device_y_to_logic_y(y2),
+                convert_device_x_to_logic_x(x2)
+            )
+        };
 
-        //COLORREF const CANVAS_C{ GetPixel(hdc, device_x, fun(x)) };
-        SetPixel(hdc, device_x, device_y, PEN_C);
+        for (int device_y{ max(y1, y2) }; device_y >= min(y1, y2); --device_y)
+        {
+            int const logic_y{ convert_device_y_to_logic_y(device_y) };
+            assert(logic_y >= -BASE_Y);
+            assert(logic_y <= BASE_Y);
+            int const logic_x{ fun(logic_y) };
+            assert(logic_x >= -BASE_X);
+            assert(logic_x <= BASE_X);
+            int const device_x{ convert_logic_x_to_device_x(logic_x) };
+            assert(device_x >= 0);
+            assert(device_x <= WINDOW_WIDTH);
+
+            //COLORREF const CANVAS_C{ GetPixel(hdc, device_x, fun(x)) };
+            SetPixel(hdc, device_x, device_y, PEN_C);
+        }
+    }
+    else
+    {
+        auto const fun
+        { 
+            get_line_function
+            (
+                convert_device_x_to_logic_x(x1),
+                convert_device_y_to_logic_y(y1),
+                convert_device_x_to_logic_x(x2),
+                convert_device_y_to_logic_y(y2)
+            )
+        };
+
+        for (int device_x{ min(x1, x2) }; device_x <= max(x1, x2); ++device_x)
+        {
+            int const logic_x{ convert_device_x_to_logic_x(device_x) };
+            assert(logic_x >= -BASE_X);
+            assert(logic_x <= BASE_X);
+            int const logic_y{ fun(logic_x) };
+            assert(logic_y >= -BASE_Y);
+            assert(logic_y <= BASE_Y);
+            int const device_y{ convert_logic_y_to_device_y(logic_y) };
+            assert(device_y >= 0);
+            assert(device_y <= WINDOW_HEIGHT);
+
+            //COLORREF const CANVAS_C{ GetPixel(hdc, device_x, fun(x)) };
+            SetPixel(hdc, device_x, device_y, PEN_C);
+        }
     }
 }
 
@@ -209,7 +242,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCm
 
     RECT window_pos{ };
     window_pos.left   = WINDOW_INIT_POS_X;
-    window_pos.right  = WINDOW_WIDHT + window_pos.left;
+    window_pos.right  = WINDOW_WIDTH + window_pos.left;
     window_pos.top    = WINDOW_INIT_POS_Y;
     window_pos.bottom = WINDOW_HEIGHT + window_pos.top;
     DWORD const style   { static_cast<DWORD>(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX) };
