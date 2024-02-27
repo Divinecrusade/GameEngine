@@ -80,9 +80,9 @@ auto get_line_function(int x1, int y1, int x2, int y2)
     };
 }
 
-__forceinline void draw_line_by_pixels(HDC const& hdc, int x1, int y1, int x2, int y2) noexcept
+__forceinline void draw_line_by_pixels(HDC const& hdc, int x1, int y1, int x2, int y2, bool is_xored = false) noexcept
 {
-    static COLORREF const PEN_C{ RGB(0, 0, 0) };
+    static COLORREF const PEN_C{ RGB(0, 255, 0) };
 
     if (max(x1, x2) - min(x1, x2) <= max(y1, y2) - min(y1, y2))
     {
@@ -109,8 +109,13 @@ __forceinline void draw_line_by_pixels(HDC const& hdc, int x1, int y1, int x2, i
             assert(device_x >= 0);
             assert(device_x <= WINDOW_WIDTH);
 
-            //COLORREF const CANVAS_C{ GetPixel(hdc, device_x, fun(x)) };
-            SetPixel(hdc, device_x, device_y, PEN_C);
+            COLORREF C{ PEN_C };
+            if (is_xored)
+            {
+                COLORREF const CANVAS_C{ GetPixel(hdc, device_x, device_y) };
+                C = PEN_C ^ CANVAS_C;
+            }
+            SetPixel(hdc, device_x, device_y, C);
         }
     }
     else
@@ -138,26 +143,47 @@ __forceinline void draw_line_by_pixels(HDC const& hdc, int x1, int y1, int x2, i
             assert(device_y >= 0);
             assert(device_y <= WINDOW_HEIGHT);
 
-            //COLORREF const CANVAS_C{ GetPixel(hdc, device_x, fun(x)) };
-            SetPixel(hdc, device_x, device_y, PEN_C);
+            COLORREF C{ PEN_C };
+            if (is_xored)
+            {
+                COLORREF const CANVAS_C{ GetPixel(hdc, device_x, device_y) };
+                C = PEN_C ^ CANVAS_C;
+            }
+            SetPixel(hdc, device_x, device_y, C);
         }
     }
 }
 
 LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
+    static constexpr POINT NOT_INITILIZED{ 0, 0 };
     static PAINTSTRUCT ps{ };
     static HDC hdc{ };
     static bool LB_pressed{ false };
-    static POINT line_beg{ };
-    static POINT line_end{ };
+    static POINT line_beg{ NOT_INITILIZED };
+    static POINT line_end{ NOT_INITILIZED };
+    static POINT prev_line_beg{ NOT_INITILIZED };
+    static POINT prev_line_end{ NOT_INITILIZED };
 
     switch (message)
     {
         case WM_LBUTTONDOWN:
         {
             LB_pressed = true; 
-            line_beg = get_cursor_pos(hWnd);
+            prev_line_beg = line_beg = line_end = get_cursor_pos(hWnd);
+        }
+
+        break;
+
+        case WM_MOUSEMOVE:
+        {
+            if (LB_pressed)
+            {
+                prev_line_end = line_end;
+                line_end = get_cursor_pos(hWnd);
+
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
         }
 
         break;
@@ -165,29 +191,19 @@ LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, 
         case WM_LBUTTONUP:
         {
             LB_pressed = false;
-            line_beg.x = line_end.x = line_beg.y = line_end.y = 0;
-
-            InvalidateRect(hWnd, nullptr, TRUE);
+            prev_line_beg = line_beg;
+            prev_line_end = line_end;
+            line_beg = line_end = NOT_INITILIZED;
         }
 
-        break;
-
-        case WM_MOUSEMOVE: 
-        {
-            if (LB_pressed)
-            { 
-                line_end = get_cursor_pos(hWnd);
-                InvalidateRect(hWnd, nullptr, TRUE);
-            }
-        }
-        
         break;
 
         case WM_PAINT:
         {
             hdc = BeginPaint(hWnd, &ps);
             
-            draw_line_by_pixels(hdc, line_beg.x, line_beg.y, line_end.x, line_end.y);
+            draw_line_by_pixels(hdc, prev_line_beg.x, prev_line_beg.y, prev_line_end.x, prev_line_end.y, true);
+            draw_line_by_pixels(hdc, line_beg.x, line_beg.y, line_end.x, line_end.y, true);
             
             EndPaint(hWnd, &ps);
         }
