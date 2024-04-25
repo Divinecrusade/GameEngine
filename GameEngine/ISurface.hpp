@@ -6,18 +6,15 @@
 #include <memory>
 
 
-namespace GameEngine
+namespace GameEngine::Interfaces
 {
-    namespace Interfaces
+    __interface ISurface
     {
-        __interface ISurface
-        {
-        public:
+    public:
 
-            virtual std::shared_ptr<Colour const[] > get_pixels() const = 0;
+        virtual std::shared_ptr<Colour const[] > get_pixels() const = 0;
 
-            virtual size_t get_width() const = 0;
-            virtual size_t get_height() const = 0;
-        };
-    }
+        virtual size_t get_width() const = 0;
+        virtual size_t get_height() const = 0;
+    };
 }

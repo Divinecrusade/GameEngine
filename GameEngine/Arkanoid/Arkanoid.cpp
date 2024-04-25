@@ -141,7 +141,7 @@ void Arkanoid::render_full_scene()
     {
         brick.draw(gfx);
     }
-    for (auto& missile : missiles)
+    for (auto const& missile : missiles)
     {
         missile.draw(gfx, field.get_collision_box());
     }
