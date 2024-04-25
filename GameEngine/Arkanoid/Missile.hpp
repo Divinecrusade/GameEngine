@@ -27,7 +27,7 @@ public:
 
     ~Missile() = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, GameEngine::Geometry::Rectangle2D<int> const& clip);
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const;
     void update(float dt);
 
     Vec2i get_pos() const noexcept;

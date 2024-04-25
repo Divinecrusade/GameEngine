@@ -50,31 +50,31 @@ void Arkanoid::update_in_progress_stage(float dt)
     bool collision_happended{ false };
 
 
-    ball.update(dt);
-
-
-    Paddle::Direction new_dir{ pad.get_direction() };
-    switch (get_wnd().get_last_pressed_functional_key())
     {
-        case GameEngine::WinKey::ARROW_LEFT:  new_dir = Paddle::Direction::LEFT;  break;
-        case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
-        default:
+        Paddle::Direction new_dir{ pad.get_direction() };
+        switch (get_wnd().get_last_pressed_functional_key())
+        {
+            case GameEngine::WinKey::ARROW_LEFT:  new_dir = Paddle::Direction::LEFT;  break;
+            case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
+            default:
 
-            if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
-                new_dir = Paddle::Direction::STOP;
+                if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
+                    new_dir = Paddle::Direction::STOP;
 
-        break;
+            break;
+        }
+        pad.set_direction(new_dir);
+        pad.update(dt);
     }
-    pad.set_direction(new_dir);
-    pad.update(dt);
 
 
+    ball.update(dt);
     if (!field.is_in_field(pad)) field.handle_collision(pad);
     if (!field.is_in_field(ball))
     {
         if (field.is_in_lose_zone(ball))
         {
-            cur_stage = GameStage::GAMEOVER;
+            //cur_stage = GameStage::GAMEOVER;
 
             return;
         }
@@ -84,102 +84,44 @@ void Arkanoid::update_in_progress_stage(float dt)
     if (pad.is_collided_with(ball)) pad.handle_collision(ball);
 
 
-    std::vector<std::vector<std::shared_ptr<Missile>>::iterator> destroyed_missiles{ };
-    std::stack<std::shared_ptr<Blow>> blows_to_process{ };
-    for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
     {
-        if (std::find(destroyed_missiles.begin(), destroyed_missiles.end(), missile) != destroyed_missiles.end()) 
-            continue;
-        
-        missile->get()->update(dt);
-
-        if (missile->get()->is_collided_with(ball) || missile->get()->is_collided_with(field) || missile->get()->is_collided_with(pad))
+        auto collided_brick{ bricks.end() };
+        int distance{ };
+        for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
         {
-            kaboom(missile, destroyed_missiles, blows_to_process);
-        }
-        if (cur_stage == GameStage::GAMEOVER) return;
-
-        while (!blows_to_process.empty())
-        {
-            auto blow{ blows_to_process.top() };
-            blows_to_process.pop();
-
-            if (blow.get()->is_collided_with(ball))
+            if (brick->is_colided_with(ball))
             {
-                blows.back().get()->throw_ball(ball);
-                collision_happended = true;
-            }
-            for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
-            {
-                if (std::find(destroyed_missiles.begin(), destroyed_missiles.end(), missile) != destroyed_missiles.end()) 
-                    continue;
-
-                if (blow.get()->is_collided_with(**missile))
+                if (collided_brick == bricks.end())
                 {
-                    kaboom(missile, destroyed_missiles, blows_to_process);
+                    collided_brick = brick;
+                    distance = collided_brick->get_sqr_distance(ball);
+
+                    continue;
                 }
-                if (cur_stage == GameStage::GAMEOVER) return;
+                int const tmp_distance{ brick->get_sqr_distance(ball) };
+                if (distance > tmp_distance)
+                {
+                    collided_brick = brick;
+                    distance = tmp_distance;
+
+                    break;
+                }
             }
         }
-    }
-
-    if (destroyed_missiles.size() > 0U)
-    {
-        delete_from_container(missiles, destroyed_missiles);
-    }
-
-    std::vector<std::vector<std::shared_ptr<Blow>>::iterator> ended_blows{};
-    for (auto blow{ blows.begin() }; blow != blows.end(); ++blow)
-    {
-        blow->get()->update(dt);
-        if (blow->get()->is_ended())
+        if (collided_brick != bricks.end())
         {
-            ended_blows.push_back(blow);
-        }
-    }
-
-    if (ended_blows.size() > 0U)
-    {
-        delete_from_container(blows, ended_blows);
-    }
-
-    auto collided_brick{ bricks.end() };
-    int distance{ };
-    for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
-    {
-        if (brick->is_colided_with(ball))
-        {
-            if (collided_brick == bricks.end())
+            collided_brick->handle_collision(ball);
+            missiles.emplace_back(Vec2i{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+            bricks.erase(collided_brick);
+            if (bricks.size() == 0U)
             {
-                collided_brick = brick;
-                distance = collided_brick->get_sqr_distance(ball);
+                cur_stage = GameStage::GAMEOVER;
 
-                continue;
+                return;
             }
-            int const tmp_distance{ brick->get_sqr_distance(ball) };
-            if (distance > tmp_distance)
-            {
-                collided_brick = brick;
-                distance = tmp_distance;
 
-                break;
-            }
+            collision_happended = true;
         }
-    }
-
-    if (collided_brick != bricks.end())
-    {
-        collided_brick->handle_collision(ball);
-        missiles.emplace_back(std::make_shared<Missile>(Vec2i{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE));
-        bricks.erase(std::remove(bricks.begin(), bricks.end(), *collided_brick), bricks.end());
-        if (bricks.size() == 0U)
-        {
-            cur_stage = GameStage::GAMEOVER;
-
-            return;
-        }
-
-        collision_happended = true;
     }
 
 
@@ -201,28 +143,13 @@ void Arkanoid::render_full_scene()
     }
     for (auto& missile : missiles)
     {
-        missile.get()->draw(gfx, field.get_collision_box());
+        missile.draw(gfx, field.get_collision_box());
     }
-    for (auto& blow : blows)
+    for (auto const& blow : blows)
     {
-        blow.get()->draw(gfx, WINDOW);
+        blow.draw(gfx, WINDOW);
     }
     ball.draw(gfx);
-}
-
-void Arkanoid::kaboom(std::vector<std::shared_ptr<Missile>>::iterator const& missile, std::vector<std::vector<std::shared_ptr<Missile>>::iterator>& destroyed_missiles, std::stack<std::shared_ptr<Blow>>& blows_to_process)
-{
-    destroyed_missiles.push_back(missile);
-    blows.emplace_back(std::make_shared<Blow>(missile->get()->get_pos(), blow_effect, GameEngine::Colours::WHITE));
-     
-    if (missile->get()->is_collided_with(pad) || blows.back().get()->is_collided_with(pad))
-    {
-        cur_stage = GameStage::GAMEOVER;
-
-        return;
-    }
-
-    blows_to_process.push(blows.back());
 }
 
 void Arkanoid::render()
