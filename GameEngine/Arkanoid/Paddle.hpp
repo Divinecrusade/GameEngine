@@ -2,6 +2,7 @@
 
 #include "../Rectangle2D.hpp"
 #include "../IGraphics2D.hpp"
+#include "../Collidable.hpp"
 
 #include "Ball.hpp"
 #include "../Auxiliry.hpp"
@@ -10,7 +11,7 @@
 using namespace GameEngine::Geometry::Literals;
 
 
-class Paddle final
+class Paddle final : public GameEngine::Abstract::Collidable
 {
 private:
 
@@ -42,10 +43,8 @@ public:
     void move_by(Vec2i const& dpos) noexcept;
     void accelerate(float a)        noexcept;
 
-    bool is_collided_with(Ball const& ball) const noexcept;
-    void handle_collision(Ball& ball);
-
-    Rec2i get_collision_box() const noexcept;
+    Rec2i get_collision_box() const noexcept override;
+    void deflect(Ball& ball);
 
     bool is_cooldowned() const noexcept;
     void reset_cooldown()      noexcept;

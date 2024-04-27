@@ -3,9 +3,10 @@
 #include "../Rectangle2D.hpp"
 #include "../KeyColor.hpp"
 #include "../IGraphics2D.hpp"
+#include "../Collidable.hpp"
 
 
-class Ball final
+class Ball final : public GameEngine::Abstract::Collidable
 {
 private:
 
@@ -16,6 +17,8 @@ public:
 
     static constexpr float MIN_ABS_X_VEL{ 60.f };
     static constexpr float MIN_ABS_Y_VEL{ 60.f };
+
+    static constexpr int RADIUS{ 8 };
 
 public:
 
@@ -34,8 +37,8 @@ public:
     
     void accelerate(float a) noexcept;
 
-    Rec2i get_collision_box() const noexcept;
-    Vec2i get_center()        const noexcept;
+    Rec2i get_collision_box() const noexcept override;
+    
     GameEngine::Geometry::Vector2D<float> get_velocity() const noexcept;
 
     void change_direction(GameEngine::Geometry::Vector2D<float> const& dir);
@@ -48,7 +51,6 @@ public:
 private:
 
     static constexpr GameEngine::Colour c{ GameEngine::Colours::LIGHT_GOLDEN_ROD_YELLOW };
-    static constexpr int RADIUS{ 8 };
 
     Vec2i cur_pos;
     float cur_speed;

@@ -505,6 +505,7 @@
   <ItemGroup>
     <ClInclude Include="..\Animation.hpp" />
     <ClInclude Include="..\Auxiliry.hpp" />
+    <ClInclude Include="..\Collidable.hpp" />
     <ClInclude Include="..\Direct2DFactory.hpp" />
     <ClInclude Include="..\Game.hpp" />
     <ClInclude Include="..\GraphicsDirect2D.hpp" />

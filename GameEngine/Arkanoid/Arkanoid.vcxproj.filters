@@ -87,6 +87,9 @@
     <ClInclude Include="..\Mouse.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Collidable.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainWindow\MainWindow.cpp">

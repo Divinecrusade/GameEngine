@@ -115,19 +115,14 @@ void Brick::draw(GameEngine::Interfaces::IGraphics2D & gfx) const
     );
 }
 
-bool Brick::is_colided_with(Ball const& ball) const noexcept
+void Brick::deflect(Ball& ball) const noexcept
 {
-    return ball.get_collision_box().is_colided_with(collision_box);
-}
+    assert(is_collided_with(ball));
 
-void Brick::handle_collision(Ball& ball) const noexcept
-{
-    assert(is_colided_with(ball));
-
-    auto const ball_position{ ball.get_center() };
-    if ((ball_position.x >= collision_box.left && ball_position.x <= collision_box.right)
+    if (Vec2i const ball_position{ ball.get_collision_box().get_center() }; 
+        (ball_position.x >= collision_box.left && ball_position.x <= collision_box.right)
         ||
-        (std::signbit(ball.get_velocity().x) == GameEngine::Geometry::Auxiliry::signbit((ball.get_center() - collision_box.get_center()).x)))
+        (std::signbit(ball.get_velocity().x) == GameEngine::Geometry::Auxiliry::signbit((ball_position - collision_box.get_center()).x)))
     {
         ball.inverse_y();
     }
@@ -135,18 +130,17 @@ void Brick::handle_collision(Ball& ball) const noexcept
     {
         ball.inverse_x();
     }
-    // TODO: add ball pushout
-}
-
-int Brick::get_sqr_distance(Ball const& ball) const noexcept
-{
-    return (ball.get_center() - collision_box.get_center()).get_square_length();
 }
 
 void Brick::swap(Brick&& b) noexcept
 {
     std::swap(collision_box, b.collision_box);
     std::swap(c, b.c);
+}
+
+GameEngine::Geometry::Rectangle2D<int> Brick::get_collision_box() const
+{
+    return collision_box;
 }
 
 bool operator==(Brick const& lhs, Brick const& rhs) noexcept

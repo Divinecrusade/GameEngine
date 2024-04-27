@@ -31,6 +31,9 @@
     <Filter Include="Файлы заголовков\Geometry">
       <UniqueIdentifier>{80143320-a45d-4ae6-9524-4fc17dd384a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Abstract">
+      <UniqueIdentifier>{512707b1-8610-4309-99f2-860ad17610ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow\MainWindow.hpp">
@@ -84,8 +87,8 @@
     <ClInclude Include="Mouse.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="IDrawable.hpp">
-      <Filter>Файлы заголовков\Interfaces</Filter>
+    <ClInclude Include="Collidable.hpp">
+      <Filter>Файлы заголовков\Abstract</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

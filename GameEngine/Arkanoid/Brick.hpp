@@ -3,11 +3,12 @@
 #include "../Rectangle2D.hpp"
 #include "../KeyColor.hpp"
 #include "../IGraphics2D.hpp"
+#include "../Collidable.hpp"
 
 #include "Ball.hpp"
 
 
-class Brick final
+class Brick final : public GameEngine::Abstract::Collidable
 {
 private:
 
@@ -33,10 +34,9 @@ public:
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
 
-    bool is_colided_with(Ball const& ball) const noexcept;
-    void handle_collision(Ball& ball)      const noexcept;
+    Rec2i get_collision_box() const override;
 
-    int get_sqr_distance(Ball const& ball) const noexcept;
+    void deflect(Ball& ball) const noexcept;
 
 private:
 

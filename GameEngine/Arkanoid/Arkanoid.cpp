@@ -64,12 +64,12 @@ void Arkanoid::update_in_progress_stage(float dt)
             break;
         }
         pad.set_direction(new_dir);
-        pad.update(dt);
     }
+    pad.update(dt);
+    if (!field.is_in_field(pad)) field.handle_collision(pad);
 
 
     ball.update(dt);
-    if (!field.is_in_field(pad)) field.handle_collision(pad);
     if (!field.is_in_field(ball))
     {
         if (field.is_in_lose_zone(ball))
@@ -81,15 +81,15 @@ void Arkanoid::update_in_progress_stage(float dt)
         field.handle_collision(ball);
         collision_happended = true;
     }
-    if (pad.is_collided_with(ball)) pad.handle_collision(ball);
+    if (pad.is_collided_with(ball)) pad.deflect(ball);
 
 
     {
         auto collided_brick{ bricks.end() };
-        int distance{ };
+        int distance{ Ball::RADIUS * Ball::RADIUS / 2 };
         for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
         {
-            if (brick->is_colided_with(ball))
+            if (brick->is_collided_with(ball))
             {
                 if (collided_brick == bricks.end())
                 {
@@ -110,10 +110,9 @@ void Arkanoid::update_in_progress_stage(float dt)
         }
         if (collided_brick != bricks.end())
         {
-            collided_brick->handle_collision(ball);
-            missiles.emplace_back(Vec2i{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-            bricks.erase(collided_brick);
-            if (bricks.size() == 0U)
+            collided_brick->deflect(ball);
+            //missiles.emplace_back(Vec2i{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+            if (bricks.erase(collided_brick); bricks.empty())
             {
                 cur_stage = GameStage::GAMEOVER;
 

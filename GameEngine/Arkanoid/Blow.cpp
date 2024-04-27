@@ -54,7 +54,7 @@ bool Blow::is_collided_with(Missile const& missile) const noexcept
 
 void Blow::throw_ball(Ball& ball) const
 {
-    auto new_dir{ ball.get_center() - pos };
+    auto new_dir{ ball.get_collision_box().get_center() - pos };
     ball.change_direction(new_dir);
     ball.accelerate(BALL_ACCELERATION);
 }

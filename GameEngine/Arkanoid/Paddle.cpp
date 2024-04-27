@@ -50,12 +50,7 @@ void Paddle::accelerate(float a) noexcept
     cur_speed += a;
 }
 
-bool Paddle::is_collided_with(Ball const& ball) const noexcept
-{
-    return get_collision_box().is_colided_with(ball.get_collision_box());
-}
-
-void Paddle::handle_collision(Ball& ball)
+void Paddle::deflect(Ball& ball)
 {
     assert(is_collided_with(ball));
 
@@ -91,7 +86,7 @@ Paddle::CollisionEdge Paddle::process(Ball& ball) const noexcept
     CollisionEdge edge{ };
     
     auto const ball_collision_box{ ball.get_collision_box() };
-    auto const ball_center{ ball.get_center() };
+    auto const ball_center{ ball.get_collision_box().get_center() };
     auto const padd_collision_box{ get_collision_box() };
     if (ball_center.x >= padd_collision_box.left && ball_center.x <= padd_collision_box.right)
     {
@@ -116,7 +111,7 @@ void Paddle::deflect(Ball& ball, CollisionEdge edge) const
         case CollisionEdge::BOTTOM:
         case CollisionEdge::TOP:
         
-            ball.change_direction(calculate_deflect_direction(edge, ball.get_center().x - cur_pos.x, (ball.get_velocity().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
+            ball.change_direction(calculate_deflect_direction(edge, ball.get_collision_box().get_center().x - cur_pos.x, (ball.get_velocity().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
 
         break;
 
