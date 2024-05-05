@@ -18,13 +18,18 @@ namespace GameEngine
     public:
 
         static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
-        static constexpr int                     SUPPORTED_COLOUR_DEPTHS[]{ 24, 32 };
+        static constexpr int                     SUPPORTED_COLOUR_DEPTHS[]{ 24 };
+        static constexpr int                     SUPPORTED_COLOUR_CHANNEL{ 8 };
 
-        static std::tuple<std::ifstream, size_t const, size_t const, bool, int, int> go_to_pixels(std::filesystem::path const& img_src);
+        static std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const> parse_img(std::filesystem::path const& img_src);
 
     private:
 
-        static constexpr int SUPPORTED_PIXEL_SIZES[]{ SUPPORTED_COLOUR_DEPTHS[0] / 8, SUPPORTED_COLOUR_DEPTHS[1] / 8 };
+        static constexpr int                     BYTE_SIZE{ 8 };
+        static constexpr int                     SUPPORTED_PIXEL_SIZES[]
+        {
+            SUPPORTED_COLOUR_DEPTHS[0U] / BYTE_SIZE
+        };
 
     public:
 
@@ -34,8 +39,8 @@ namespace GameEngine
         Surface(Surface const& srf);
         Surface(Surface&& tmp) noexcept;
 
-        Surface& operator=(Surface const& srf);
-        Surface& operator=(Surface&& tmp) noexcept;
+        Surface& operator=(Surface const&) = delete;
+        Surface& operator=(Surface&&) = delete;
 
         virtual ~Surface() noexcept = default;
 
