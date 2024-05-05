@@ -159,13 +159,13 @@ namespace GameEngine
         for (size_t y{ 0U }; y != height; ++y)
         for (size_t x{ 0U }; x != width; ++x)
         {
-            Colour c_cur{ img[y * width + x] };
+            Colour c_cur{ img[static_cast<ptrdiff_t>(y * width + x)] };
             if (Colour::is_equal_except_one_component(c_cur, c_req))
             {
                 c_cur[Colour::ComponentIndex::A] = Colour::MIN_COLOUR_DEPTH; 
             }
             
-            mask[y * width + x] = (c_cur);
+            mask[static_cast<ptrdiff_t>(y * width + x)] = (c_cur);
         }
 
         return mask;

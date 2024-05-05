@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../Rectangle2D.hpp"
-#include "../IGraphics2D.hpp"
-#include "../Collidable.hpp"
+#include <Rectangle2D.hpp>
+#include <IGraphics2D.hpp>
+#include <Collidable.hpp>
 
 #include "Ball.hpp"
-#include "../Auxiliry.hpp"
+#include <Auxiliry.hpp>
 
 
 using namespace GameEngine::Geometry::Literals;

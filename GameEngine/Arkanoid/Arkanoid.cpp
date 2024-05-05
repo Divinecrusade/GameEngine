@@ -38,8 +38,30 @@ void Arkanoid::update_start_stage()
 
     switch (get_wnd().get_last_pressed_functional_key())
     {
+        case GameEngine::WinKey::MOUSE_LEFT_BUTTON:   break;
+        case GameEngine::WinKey::MOUSE_RIGHT_BUTTON:  break;
+        case GameEngine::WinKey::MOUSE_MIDDLE_BUTTON: break;
+        case GameEngine::WinKey::CTRL_BREAK:          break;
+        case GameEngine::WinKey::CTRL:                break;
+        case GameEngine::WinKey::CTRL_LEFT:           break;
+        case GameEngine::WinKey::CTRL_RIGHT:          break;
+        case GameEngine::WinKey::BACKSPACE:           break;
+        case GameEngine::WinKey::TAB:                 break;
         case GameEngine::WinKey::ENTER: cur_stage = GameStage::IN_PROGRESS; break;
-        default: break;
+        case GameEngine::WinKey::SHIFT:               break;
+        case GameEngine::WinKey::SHIFT_LEFT:          break;
+        case GameEngine::WinKey::SHIFT_RIGHT:         break;
+        case GameEngine::WinKey::ALT:                 break;
+        case GameEngine::WinKey::ALT_LEFT:            break;
+        case GameEngine::WinKey::ALT_RIGHT:           break;
+        case GameEngine::WinKey::CAPS_LOCK:           break;
+        case GameEngine::WinKey::SPACEBAR:            break;
+        case GameEngine::WinKey::ARROW_LEFT:          break;
+        case GameEngine::WinKey::ARROW_RIGHT:         break;
+        case GameEngine::WinKey::ARROW_DOWN:          break;
+        case GameEngine::WinKey::ARROW_UP:            break;
+        case GameEngine::WinKey::NOT_PRESSED:         break;
+        default:                                      break;
     }
 }
 
@@ -56,6 +78,27 @@ void Arkanoid::update_in_progress_stage(float dt)
         {
             case GameEngine::WinKey::ARROW_LEFT:  new_dir = Paddle::Direction::LEFT;  break;
             case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
+            case GameEngine::WinKey::MOUSE_LEFT_BUTTON:   
+            case GameEngine::WinKey::MOUSE_RIGHT_BUTTON:  
+            case GameEngine::WinKey::MOUSE_MIDDLE_BUTTON: 
+            case GameEngine::WinKey::CTRL_BREAK:          
+            case GameEngine::WinKey::CTRL:                
+            case GameEngine::WinKey::CTRL_LEFT:           
+            case GameEngine::WinKey::CTRL_RIGHT:          
+            case GameEngine::WinKey::BACKSPACE:           
+            case GameEngine::WinKey::TAB:                 
+            case GameEngine::WinKey::ENTER:               
+            case GameEngine::WinKey::SHIFT:               
+            case GameEngine::WinKey::SHIFT_LEFT:          
+            case GameEngine::WinKey::SHIFT_RIGHT:         
+            case GameEngine::WinKey::ALT:                 
+            case GameEngine::WinKey::ALT_LEFT:            
+            case GameEngine::WinKey::ALT_RIGHT:           
+            case GameEngine::WinKey::CAPS_LOCK:           
+            case GameEngine::WinKey::SPACEBAR:            
+            case GameEngine::WinKey::ARROW_DOWN:          
+            case GameEngine::WinKey::ARROW_UP:            
+            case GameEngine::WinKey::NOT_PRESSED:         
             default:
 
                 if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))

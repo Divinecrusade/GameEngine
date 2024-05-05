@@ -30,7 +30,7 @@ namespace GameEngine
 
     LRESULT MainWindow::message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept
     {
-        static constexpr int MESSAGE_HANDLED{ 0 };
+        constexpr int MESSAGE_HANDLED{ 0 };
 
         switch (message)
         {

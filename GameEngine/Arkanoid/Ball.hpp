@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Rectangle2D.hpp"
-#include "../KeyColor.hpp"
-#include "../IGraphics2D.hpp"
-#include "../Collidable.hpp"
+#include <Rectangle2D.hpp>
+#include <KeyColor.hpp>
+#include <IGraphics2D.hpp>
+#include <Collidable.hpp>
 
 
 class Ball final : public GameEngine::Abstract::Collidable

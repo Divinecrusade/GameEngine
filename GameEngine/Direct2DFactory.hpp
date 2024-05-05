@@ -34,7 +34,7 @@ namespace std
     {
         size_t operator() (GameEngine::KeyColor const* arg) const
         {
-            return hash<unsigned long>{}(reinterpret_cast<unsigned long>(arg));
+            return hash<unsigned long long>{}(reinterpret_cast<unsigned long long>(arg));
         }
     };
 
@@ -42,7 +42,7 @@ namespace std
     {
         size_t operator() (ID2D1Bitmap* arg) const
         {
-            return hash<unsigned long>{}(reinterpret_cast<unsigned long>(arg));
+            return hash<unsigned long long>{}(reinterpret_cast<unsigned long long>(arg));
         }
     };
 }

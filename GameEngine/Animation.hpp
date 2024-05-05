@@ -20,7 +20,11 @@ namespace GameEngine
             HORIZONTAL, VERTICAL
         };
 
+        Animation() = delete;
         Animation(std::filesystem::path const& sprites_sheet_src, size_t frame_width, size_t frame_height, float frame_duration, size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
+        Animation(Animation const&) = default;
+        Animation& operator=(Animation const&) = default;
+        Animation& operator=(Animation&&) = default;
 
         void update(float dt);
         bool is_finished() const noexcept;

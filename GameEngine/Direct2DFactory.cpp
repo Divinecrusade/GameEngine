@@ -82,9 +82,9 @@ namespace GameEngine
 
             render_target->CreateBitmap
             (
-                D2D1::SizeU(srf.get_width(), srf.get_height()),
+                D2D1::SizeU(static_cast<UINT32>(srf.get_width()), static_cast<UINT32>(srf.get_height())),
                 reinterpret_cast<void const*>(img.get()),
-                srf.get_width() * sizeof(GameEngine::Colour),
+                static_cast<UINT32>(srf.get_width()) * sizeof(GameEngine::Colour),
                 D2D1_BITMAP_PROPERTIES{ PIXEL_FORMAT, dpiX, dpiY },
                 &bmp_img
             );
@@ -123,7 +123,7 @@ namespace GameEngine
         assert(!sink);
 
         safe_release(geom);
-        auto hr = get_geometry().Open(&sink);
+        get_geometry().Open(&sink);
 
         assert(sink);
     }

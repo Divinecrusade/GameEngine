@@ -1,4 +1,5 @@
 #include "Ball.hpp"
+
 #include <cassert>
 #include <cmath>
 

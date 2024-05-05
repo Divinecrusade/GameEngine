@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Game.hpp"
-#include "../GraphicsDirect2D.hpp"
-#include "../IWindow.hpp"
-#include "../FrameTimer.hpp"
-#include "../Animation.hpp"
+#include <Game.hpp>
+#include <GraphicsDirect2D.hpp>
+#include <IWindow.hpp>
+#include <FrameTimer.hpp>
+#include <Animation.hpp>
 
 #include "Paddle.hpp"
 #include "PlayField.hpp"

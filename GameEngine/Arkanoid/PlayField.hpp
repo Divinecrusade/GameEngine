@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Rectangle2D.hpp"
-#include "../IGraphics2D.hpp"
+#include <Rectangle2D.hpp>
+#include <IGraphics2D.hpp>
 
 #include "Paddle.hpp"
 

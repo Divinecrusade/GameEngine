@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Animation.hpp"
+#include <Animation.hpp>
 
 #include "PlayField.hpp"
-#include "../Rectangle2D.hpp"
+#include <Rectangle2D.hpp>
 
 
 class Missile final
@@ -24,6 +24,9 @@ public:
     Missile(Vec2i const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma);
     Missile(Missile const& other) noexcept;
     Missile(Missile&& other_tmp)  noexcept; 
+
+    Missile& operator=(Missile const&) = delete;
+    Missile& operator=(Missile&&) = delete;
 
     ~Missile() = default;
 

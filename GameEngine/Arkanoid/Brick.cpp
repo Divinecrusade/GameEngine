@@ -1,4 +1,5 @@
 #include "Brick.hpp"
+
 #include <algorithm>
 #include <cmath>
 

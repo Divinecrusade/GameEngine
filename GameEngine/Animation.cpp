@@ -1,12 +1,11 @@
 #include "Animation.hpp"
 
 
-// TODO: test with reversed bmp
 GameEngine::Animation::Animation(std::filesystem::path const& sprites_sheet_src, size_t frame_width, size_t frame_height, float frame_duration, size_t n, FramesAlignment direction, Geometry::Vector2D<int> start_point)
 :
 frame_duration{ frame_duration }
 {
-    auto sprites_sheet{ Surface::go_to_pixels(sprites_sheet_src) };
+    /*auto sprites_sheet{Surface::go_to_pixels(sprites_sheet_src)};
 
     if (n == UNKNOWN_N)
     {
@@ -34,20 +33,20 @@ frame_duration{ frame_duration }
     }
 
     frames.reserve(n);
-    sprites_sheet.fin.seekg((start_point.x + start_point.y * (sprites_sheet.width)) * sprites_sheet.pixel_size + start_point.y * sprites_sheet.padding, std::ifstream::cur);
+    sprites_sheet.fin.seekg((start_point.x + static_cast<std::basic_istream<char, std::char_traits<char>>::off_type>(start_point.y) * (sprites_sheet.width)) * sprites_sheet.pixel_size + static_cast<long long>(start_point.y) * sprites_sheet.padding, std::ifstream::cur);
     auto frame_beg{ sprites_sheet.fin.tellg() };
     for (size_t i{ 0U }; i != n; ++i)
     {
         std::shared_ptr<Colour[]> frame{ new Colour[frame_width * frame_height] };
 
-        for (int y{ y_start }; y != y_end; y += dy, sprites_sheet.fin.seekg((sprites_sheet.width - static_cast<int>(frame_width)) * sprites_sheet.pixel_size + sprites_sheet.padding, std::ifstream::cur))
+        for (int y{ y_start }; y != y_end; y += dy, sprites_sheet.fin.seekg((static_cast<std::basic_istream<char, std::char_traits<char>>::off_type>(sprites_sheet.width) - static_cast<int>(frame_width)) * sprites_sheet.pixel_size + sprites_sheet.padding, std::ifstream::cur))
         {
             for (int x{ 0 }; x != static_cast<int>(frame_width); ++x)
             {
                 uint32_t rgba{ };
 
                 if (sprites_sheet.pixel_size == 4) sprites_sheet.fin.read(reinterpret_cast<char*>(&rgba), sizeof(rgba));
-                else if (sprites_sheet.pixel_size == 3) rgba = Colour::encode(sprites_sheet.fin.get(), sprites_sheet.fin.get(), sprites_sheet.fin.get(), Colour::MAX_COLOUR_DEPTH);
+                else if (sprites_sheet.pixel_size == 3) rgba = Colour::encode(static_cast<uint8_t>(sprites_sheet.fin.get()), static_cast<uint8_t>(sprites_sheet.fin.get()), static_cast<uint8_t>(sprites_sheet.fin.get()), Colour::MAX_COLOUR_DEPTH);
             #ifdef _DEBUG
                 else assert(false);
             #endif // DEBUG
@@ -59,12 +58,12 @@ frame_duration{ frame_duration }
         
         switch (direction)
         {
-            case FramesAlignment::HORIZONTAL: frame_beg += static_cast<int>(frame_width) * sprites_sheet.pixel_size; break;
-            case FramesAlignment::VERTICAL: frame_beg += static_cast<int>(frame_width) * static_cast<int>(frame_height) * sprites_sheet.pixel_size + sprites_sheet.padding * static_cast<int>(frame_height); break;
+            case FramesAlignment::HORIZONTAL: frame_beg += static_cast<std::streamoff>(frame_width) * sprites_sheet.pixel_size; break;
+            case FramesAlignment::VERTICAL: frame_beg += static_cast<std::streamoff>(frame_width) * static_cast<int>(frame_height) * sprites_sheet.pixel_size + sprites_sheet.padding * static_cast<std::streamoff>(frame_height); break;
         }
         sprites_sheet.fin.seekg(frame_beg, std::ifstream::beg);
     }
-    cur_frame_index = 0U;
+    cur_frame_index = 0U;*/
 }
 
 void GameEngine::Animation::update(float dt)

@@ -1,6 +1,6 @@
 #include "Arkanoid.hpp"
-#include "../MainWindow/MainWindow.hpp"
-#include "../GraphicsDirect2D.hpp"
+#include <MainWindow/MainWindow.hpp>
+#include <GraphicsDirect2D.hpp>
 
 #ifdef _DEBUG
 #define __CRTDBG_MAP_ALLOC
