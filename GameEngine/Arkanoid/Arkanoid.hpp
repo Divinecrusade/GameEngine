@@ -51,14 +51,19 @@ public:
     Arkanoid& operator=(Arkanoid const&) = delete;
     Arkanoid& operator=(Arkanoid&&) = delete;
 
-    virtual void update() override;
-    virtual void render() override;
+    void update() override;
+    void render() override;
 
 private:
 
     void update_start_stage();
     void update_in_progress_stage(float dt);
     void update_gameover_stage();
+
+    void update_paddle(float dt);
+    void update_ball(float dt);
+    void update_bricks();
+    void update_missiles(float dt);
 
     void render_full_scene();
 

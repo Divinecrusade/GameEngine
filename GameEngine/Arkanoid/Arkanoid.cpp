@@ -22,9 +22,7 @@ blow_effect  { std::filesystem::current_path() / (std::filesystem::path{std::wst
 
 void Arkanoid::update()
 {
-    float const dt{ ft.mark() };
-
-    switch (cur_stage)
+    switch (float const dt{ ft.mark() }; cur_stage)
     {
         case Arkanoid::GameStage::START:       update_start_stage();         break;        
         case Arkanoid::GameStage::IN_PROGRESS: update_in_progress_stage(dt); break;
@@ -69,49 +67,60 @@ void Arkanoid::update_in_progress_stage(float dt)
 {
     assert(cur_stage == GameStage::IN_PROGRESS);
 
-    bool collision_happended{ false };
+    update_paddle(dt);
+    update_ball(dt);
+    update_bricks();
+    update_missiles(dt);
+}
 
+void Arkanoid::update_gameover_stage()
+{
+    assert(cur_stage == GameStage::GAMEOVER);
+}
 
+void Arkanoid::update_paddle(float dt)
+{
+    Paddle::Direction new_dir{ pad.get_direction() };
+    switch (get_wnd().get_last_pressed_functional_key())
     {
-        Paddle::Direction new_dir{ pad.get_direction() };
-        switch (get_wnd().get_last_pressed_functional_key())
-        {
-            case GameEngine::WinKey::ARROW_LEFT:  new_dir = Paddle::Direction::LEFT;  break;
-            case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
-            case GameEngine::WinKey::MOUSE_LEFT_BUTTON:   
-            case GameEngine::WinKey::MOUSE_RIGHT_BUTTON:  
-            case GameEngine::WinKey::MOUSE_MIDDLE_BUTTON: 
-            case GameEngine::WinKey::CTRL_BREAK:          
-            case GameEngine::WinKey::CTRL:                
-            case GameEngine::WinKey::CTRL_LEFT:           
-            case GameEngine::WinKey::CTRL_RIGHT:          
-            case GameEngine::WinKey::BACKSPACE:           
-            case GameEngine::WinKey::TAB:                 
-            case GameEngine::WinKey::ENTER:               
-            case GameEngine::WinKey::SHIFT:               
-            case GameEngine::WinKey::SHIFT_LEFT:          
-            case GameEngine::WinKey::SHIFT_RIGHT:         
-            case GameEngine::WinKey::ALT:                 
-            case GameEngine::WinKey::ALT_LEFT:            
-            case GameEngine::WinKey::ALT_RIGHT:           
-            case GameEngine::WinKey::CAPS_LOCK:           
-            case GameEngine::WinKey::SPACEBAR:            
-            case GameEngine::WinKey::ARROW_DOWN:          
-            case GameEngine::WinKey::ARROW_UP:            
-            case GameEngine::WinKey::NOT_PRESSED:         
-            default:
+        case GameEngine::WinKey::ARROW_LEFT:  new_dir = Paddle::Direction::LEFT;  break;
+        case GameEngine::WinKey::ARROW_RIGHT: new_dir = Paddle::Direction::RIGHT; break;
+        case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
+        case GameEngine::WinKey::MOUSE_RIGHT_BUTTON:
+        case GameEngine::WinKey::MOUSE_MIDDLE_BUTTON:
+        case GameEngine::WinKey::CTRL_BREAK:
+        case GameEngine::WinKey::CTRL:
+        case GameEngine::WinKey::CTRL_LEFT:
+        case GameEngine::WinKey::CTRL_RIGHT:
+        case GameEngine::WinKey::BACKSPACE:
+        case GameEngine::WinKey::TAB:
+        case GameEngine::WinKey::ENTER:
+        case GameEngine::WinKey::SHIFT:
+        case GameEngine::WinKey::SHIFT_LEFT:
+        case GameEngine::WinKey::SHIFT_RIGHT:
+        case GameEngine::WinKey::ALT:
+        case GameEngine::WinKey::ALT_LEFT:
+        case GameEngine::WinKey::ALT_RIGHT:
+        case GameEngine::WinKey::CAPS_LOCK:
+        case GameEngine::WinKey::SPACEBAR:
+        case GameEngine::WinKey::ARROW_DOWN:
+        case GameEngine::WinKey::ARROW_UP:
+        case GameEngine::WinKey::NOT_PRESSED:
+        default:
 
-                if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
-                    new_dir = Paddle::Direction::STOP;
+            if (!get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT) && !get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
+                new_dir = Paddle::Direction::STOP;
 
-            break;
-        }
-        pad.set_direction(new_dir);
+        break;
     }
+    pad.set_direction(new_dir);
+    
     pad.update(dt);
     if (!field.is_in_field(pad)) field.handle_collision(pad);
+}
 
-
+void Arkanoid::update_ball(float dt)
+{
     ball.update(dt);
     if (!field.is_in_field(ball))
     {
@@ -122,57 +131,70 @@ void Arkanoid::update_in_progress_stage(float dt)
             return;
         }
         field.handle_collision(ball);
-        collision_happended = true;
+        pad.reset_cooldown();
     }
     if (pad.is_collided_with(ball)) pad.deflect(ball);
-
-
-    {
-        auto collided_brick{ bricks.end() };
-        int distance{ Ball::RADIUS * Ball::RADIUS / 2 };
-        for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
-        {
-            if (brick->is_collided_with(ball))
-            {
-                if (collided_brick == bricks.end())
-                {
-                    collided_brick = brick;
-                    distance = collided_brick->get_sqr_distance(ball);
-
-                    continue;
-                }
-                int const tmp_distance{ brick->get_sqr_distance(ball) };
-                if (distance > tmp_distance)
-                {
-                    collided_brick = brick;
-                    distance = tmp_distance;
-
-                    break;
-                }
-            }
-        }
-        if (collided_brick != bricks.end())
-        {
-            collided_brick->deflect(ball);
-            //missiles.emplace_back(Vec2i{ ball.get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-            if (bricks.erase(collided_brick); bricks.empty())
-            {
-                cur_stage = GameStage::GAMEOVER;
-
-                return;
-            }
-
-            collision_happended = true;
-        }
-    }
-
-
-    if (collision_happended) pad.reset_cooldown();
 }
 
-void Arkanoid::update_gameover_stage()
+void Arkanoid::update_bricks()
 {
-    assert(cur_stage == GameStage::GAMEOVER);
+    auto collided_brick{ bricks.end() };
+    int distance{ Ball::RADIUS * Ball::RADIUS / 2 };
+    for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
+    {
+        if (brick->is_collided_with(ball))
+        {
+            if (collided_brick == bricks.end())
+            {
+                collided_brick = brick;
+                distance = collided_brick->get_sqr_distance(ball);
+
+                continue;
+            }
+            int const tmp_distance{ brick->get_sqr_distance(ball) };
+            if (distance > tmp_distance)
+            {
+                collided_brick = brick;
+                distance = tmp_distance;
+
+                break;
+            }
+        }
+    }
+    if (collided_brick != bricks.end())
+    {
+        collided_brick->deflect(ball);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x - 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 - 10 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x + 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 - 10 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        if (bricks.erase(collided_brick); bricks.empty())
+        {
+            cur_stage = GameStage::GAMEOVER;
+
+            return;
+        }
+
+        pad.reset_cooldown();
+    }
+}
+
+void Arkanoid::update_missiles(float dt)
+{
+    for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
+    {
+        missile->update(dt);
+
+        if (missile->is_collided_with(ball) || 
+            missile->is_collided_with(pad) || 
+            field.get_collision_box().bottom < missile->get_collision_box().bottom)
+        {
+            missile->destroy();
+        }
+    }
+    std::erase_if(missiles, [](Missile const& missile)
+        {
+            return missile.is_destroyed();
+        });
 }
 
 void Arkanoid::render_full_scene()

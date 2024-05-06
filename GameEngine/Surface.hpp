@@ -39,8 +39,8 @@ namespace GameEngine
         Surface(Surface const& srf);
         Surface(Surface&& tmp) noexcept;
 
-        Surface& operator=(Surface const&) = delete;
-        Surface& operator=(Surface&&) = delete;
+        Surface& operator=(Surface const& other);
+        Surface& operator=(Surface&& other_tmp) noexcept;
 
         virtual ~Surface() noexcept = default;
 

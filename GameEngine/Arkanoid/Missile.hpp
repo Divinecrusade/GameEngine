@@ -4,9 +4,10 @@
 
 #include "PlayField.hpp"
 #include <Rectangle2D.hpp>
+#include <Collidable.hpp>
 
 
-class Missile final
+class Missile final : public GameEngine::Abstract::Collidable
 {
 private:
 
@@ -21,25 +22,24 @@ public:
 
 public:
 
+    Missile() = delete;
     Missile(Vec2i const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma);
-    Missile(Missile const& other) noexcept;
-    Missile(Missile&& other_tmp)  noexcept; 
+    Missile(Missile const& other);
+    Missile(Missile&& other_tmp) noexcept;
 
-    Missile& operator=(Missile const&) = delete;
-    Missile& operator=(Missile&&) = delete;
+    Missile& operator=(Missile const& other);
+    Missile& operator=(Missile&& other_tmp) noexcept;
 
     ~Missile() = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const;
     void update(float dt);
 
+    Rec2i get_collision_box() const noexcept override;
     Vec2i get_pos() const noexcept;
 
-    bool is_collided_with(PlayField const& border) const noexcept;
-    bool is_collided_with(Ball const& ball)        const noexcept;
-    bool is_collided_with(Paddle const& padd)      const noexcept;
-
-    Rec2i get_collision_box() const;
+    void destroy() noexcept;
+    bool is_destroyed() const noexcept;
 
 private:
 
@@ -57,5 +57,5 @@ private:
     Vec2f cur_vel;
 
     GameEngine::Surface sprite;
-    GameEngine::Colour const chroma;
+    GameEngine::Colour chroma;
 };

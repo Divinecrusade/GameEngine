@@ -63,7 +63,7 @@ namespace GameEngine
 
         for (size_t y{ y_start }; y != y_end; y += dy)
         {
-            for (size_t x{ 0 }; x != width; ++x)
+            for (size_t x{ 0U }; x != width; ++x)
             {
                 tmp_buffer[static_cast<ptrdiff_t>(y * width + x)] = Colour
                 { 
@@ -98,6 +98,23 @@ namespace GameEngine
     Surface::Surface(Surface&& tmp) noexcept
     {
         this->swap(std::move(tmp));
+    }
+
+    Surface& Surface::operator=(Surface const& other)
+    {
+        if (&other != this)
+        {
+            width = other.width;
+            height = other.height;
+            buffer = other.buffer;
+        }
+        return *this;
+    }
+
+    Surface& Surface::operator=(Surface&& other_tmp) noexcept
+    {
+        this->swap(std::move(other_tmp));
+        return *this;
     }
 
     std::shared_ptr<Colour const[]> Surface::get_pixels() const
