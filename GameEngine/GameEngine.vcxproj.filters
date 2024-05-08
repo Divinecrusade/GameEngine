@@ -78,9 +78,6 @@
     <ClInclude Include="Surface.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ISurface.hpp">
-      <Filter>Файлы заголовков\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>

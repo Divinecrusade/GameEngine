@@ -35,15 +35,15 @@ namespace GameEngine
         virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
         virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
 
-        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
-        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
+        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
+        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
 
         virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c) override;
         virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
 
     private:
 
-        std::shared_ptr<Colour const[]> make_mask(Interfaces::ISurface const& sprite, Colour c_req);
+        Surface make_mask(Surface const& sprite, Colour c_req);
 
         __forceinline float get_dips_from_pixels(int px) const
         {
@@ -59,7 +59,6 @@ namespace GameEngine
         }
 
         static Geometry::Rectangle2D<int> clip(Geometry::Rectangle2D<int> const& drawing_area, Geometry::Rectangle2D<int> const& clipping_area);
-
 
     private:
     

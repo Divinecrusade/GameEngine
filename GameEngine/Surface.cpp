@@ -3,6 +3,34 @@
 
 namespace GameEngine
 {
+    Surface::iterator Surface::begin() noexcept
+    {
+        return iterator{ buffer.get() };
+    }
+
+    Surface::iterator Surface::end() noexcept
+    {
+        return iterator{ buffer.get() + n_cols * n_rows };
+    }
+
+    Surface::iterator Surface::begin() const noexcept
+    {
+        return iterator{ buffer.get() };
+    }
+
+    Surface::iterator Surface::end() const noexcept
+    {
+        return iterator{ buffer.get() + n_cols * n_rows };
+    }
+
+    std::pair<Surface::iterator const, Surface::iterator const> Surface::operator[](size_t i_row) noexcept
+    {
+        iterator const begin{ buffer.get() + n_cols + i_row };
+        iterator const end  { begin + n_cols };
+
+        return std::make_pair(begin, end);
+    }
+
     std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const> Surface::parse_img(std::filesystem::path const& img_src)
     {
         if (!std::filesystem::exists(img_src)) throw std::runtime_error{ "Image not found" };
@@ -30,7 +58,7 @@ namespace GameEngine
         return std::make_tuple(std::move(fin), static_cast<size_t>(bmp_info.biWidth), static_cast<size_t>(bmp_info.biHeight < 0 ? -bmp_info.biHeight : bmp_info.biHeight), bmp_info.biHeight < 0L, padding, pixel_size);
     }
 
-    Surface::Surface(std::filesystem::path const& img_src)
+    std::tuple<std::unique_ptr<Colour[]>, size_t, size_t> Surface::read_img(std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const>&& img)
     {
         constexpr int IMG_FIN{ 0 };
         constexpr int IMG_WIDTH{ 1 };
@@ -39,103 +67,187 @@ namespace GameEngine
         constexpr int IMG_PADDING{ 4 };
         constexpr int IMG_PIXEL_SIZE{ 5 };
 
-        auto img{ parse_img(img_src) };
+        std::unique_ptr<Colour[]> tmp_buffer{ new Colour[std::get<IMG_WIDTH>(img) * std::get<IMG_HEIGHT>(img)] };
 
-        this->width = std::get<IMG_WIDTH>(img);
-        this->height = std::get<IMG_HEIGHT>(img);
-        std::shared_ptr<Colour[]> tmp_buffer{ new Colour[this->width * this->height] };
-        
         size_t y_start{ };
         size_t y_end{ };
         int dy{ };
         if (std::get<IMG_IS_REVERSED>(img))
         {
             y_start = 0U;
-            y_end = height;
+            y_end = std::get<IMG_HEIGHT>(img);
             dy = 1;
         }
         else
         {
-            y_start = height - 1U;
+            y_start = std::get<IMG_HEIGHT>(img) - 1U;
             y_end = 0U;
             dy = -1;
         }
 
         for (size_t y{ y_start }; y != y_end; y += dy)
         {
-            for (size_t x{ 0U }; x != width; ++x)
+            for (size_t x{ 0U }; x != std::get<IMG_WIDTH>(img); ++x)
             {
-                tmp_buffer[static_cast<ptrdiff_t>(y * width + x)] = Colour
-                { 
+                tmp_buffer[static_cast<ptrdiff_t>(y * std::get<IMG_WIDTH>(img) + x)] = Colour
+                {
                     Colour::encode
                     (
-                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()), 
-                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()), 
-                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()), 
+                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()),
+                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()),
+                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()),
                         Colour::MAX_COLOUR_DEPTH
                     )
                 };
             }
             std::get<IMG_FIN>(img).seekg(std::get<IMG_PADDING>(img), std::ifstream::cur);
         }
-        this->buffer = std::move(tmp_buffer);
+
+        return std::make_tuple(std::move(tmp_buffer), std::get<IMG_HEIGHT>(img), std::get<IMG_WIDTH>(img));
     }
 
-    GameEngine::Surface::Surface(size_t width, size_t height, std::shared_ptr<Colour const[]> buffer)
+    Surface::Surface(std::filesystem::path const& img_src)
     :
-    width{ width },
-    height{ height },
-    buffer{ buffer }
+    Surface{ std::move(std::make_from_tuple<Surface>(read_img(parse_img(img_src)))) }
     { }
 
-    Surface::Surface(Surface const& srf)
+    Surface::Surface(std::unique_ptr<Colour[]> buffer, size_t n_rows, size_t n_cols)
     :
-    width { srf.width  },
-    height{ srf.height },
-    buffer{ srf.buffer }
+    buffer{ std::move(buffer) },
+    n_rows{ n_rows },
+    n_cols{ n_cols }
     { }
 
-    Surface::Surface(Surface&& tmp) noexcept
+    Surface::Surface(Surface const& other)
+    :
+    buffer{ new Colour[other.n_rows * other.n_cols] },
+    n_rows{ other.n_rows },
+    n_cols{ other.n_cols }
     {
-        this->swap(std::move(tmp));
+        std::copy(other.begin(), other.end(), this->begin());
     }
 
-    Surface& Surface::operator=(Surface const& other)
-    {
-        if (&other != this)
-        {
-            width = other.width;
-            height = other.height;
-            buffer = other.buffer;
-        }
-        return *this;
-    }
-
-    Surface& Surface::operator=(Surface&& other_tmp) noexcept
-    {
-        this->swap(std::move(other_tmp));
-        return *this;
-    }
-
-    std::shared_ptr<Colour const[]> Surface::get_pixels() const
-    {
-        return buffer;
-    }
+    Surface::Surface(Surface&& other_tmp) noexcept
+    :
+    buffer{ other_tmp.buffer.release() },
+    n_rows{ other_tmp.n_rows },
+    n_cols{ other_tmp.n_cols }
+    { }
 
     size_t Surface::get_width() const noexcept
     {
-        return width;
+        return n_cols;
     }
 
     size_t Surface::get_height() const noexcept
     {
-        return height;
+        return n_rows;
     }
 
-    void Surface::swap(Surface&& tmp) noexcept
+    Surface::iterator::iterator(Colour* buffer) noexcept
+    :
+    data{ buffer }
+    { }
+    
+    Surface::iterator::pointer Surface::iterator::operator->() const noexcept
     {
-        std::swap(width, tmp.width);
-        std::swap(height, tmp.height);
-        std::swap(buffer, tmp.buffer);
+        return &(*data);
+    }
+
+    Surface::iterator::reference Surface::iterator::operator*() const noexcept
+    {
+        return *data;
+    }
+
+    Surface::iterator::reference Surface::iterator::operator[](difference_type delta) const noexcept
+    {
+        return *(*this + delta);
+    }
+
+    Surface::iterator& Surface::iterator::operator+=(difference_type delta) noexcept
+    {
+        this->data += delta;
+        return *this;
+    }
+
+    Surface::iterator& Surface::iterator::operator-=(difference_type delta) noexcept
+    {
+        this->data -= delta;
+        return *this;
+    }
+
+    Surface::iterator& Surface::iterator::operator++() noexcept
+    {
+        return (*this += static_cast<difference_type>(1));
+    }
+
+    Surface::iterator Surface::iterator::operator++(int) noexcept
+    {
+        return std::exchange(*this, *this + static_cast<difference_type>(1));
+    }
+
+    Surface::iterator& Surface::iterator::operator--() noexcept
+    {
+        return (*this -= static_cast<difference_type>(1));
+    }
+
+    Surface::iterator Surface::iterator::operator--(int) noexcept
+    {
+        return std::exchange(*this, *this - static_cast<difference_type>(1));
+    }
+
+    Surface::iterator operator+(Surface::iterator const& lhs, Surface::iterator::difference_type rhs) noexcept
+    {
+        return Surface::iterator{ lhs } += rhs;
+    }
+    
+    Surface::iterator operator+(Surface::iterator::difference_type lhs, Surface::iterator const& rhs) noexcept
+    {
+        return Surface::iterator{ rhs } += lhs;
+    }
+    
+    Surface::iterator operator-(Surface::iterator const& lhs, Surface::iterator::difference_type rhs) noexcept
+    {
+        return Surface::iterator{ lhs } -= rhs;
+    }
+
+    Surface::iterator operator-(Surface::iterator::difference_type lhs, Surface::iterator const& rhs) noexcept
+    {
+        return Surface::iterator{ rhs } -= lhs;
+    }
+    
+    Surface::iterator::difference_type operator-(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return lhs.data - rhs.data;
+    }
+    
+    bool operator==(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return lhs.data == rhs.data;
+    }
+
+    bool operator!=(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return !(lhs == rhs);
+    }
+    
+    bool operator<(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return lhs.data < rhs.data;
+    }
+    
+    bool operator>(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return (lhs < rhs) && lhs != rhs;
+    }
+
+    bool operator<=(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return lhs < rhs || lhs == rhs;
+    }
+
+    bool operator>=(Surface::iterator const& lhs, Surface::iterator const& rhs) noexcept
+    {
+        return lhs > rhs || lhs == rhs;
     }
 }

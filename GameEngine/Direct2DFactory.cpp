@@ -68,12 +68,12 @@ namespace GameEngine
         return *brushes[key];
     }
 
-    ID2D1Bitmap& Direct2DFactory::get_bitmap(GameEngine::Interfaces::ISurface const& srf)
+    ID2D1Bitmap& Direct2DFactory::get_bitmap(Surface const& srf)
     {
         assert(render_target);
 
-        auto img{ srf.get_pixels() };
-        if (!bitmaps.contains(img.get()))
+        KeyColor const* const raw_ptr_to_srf{ std::to_address(srf.begin()) };
+        if (!bitmaps.contains(std::to_address(raw_ptr_to_srf)))
         {
             ID2D1Bitmap* bmp_img{ nullptr };
             FLOAT dpiX{ };
@@ -83,15 +83,15 @@ namespace GameEngine
             render_target->CreateBitmap
             (
                 D2D1::SizeU(static_cast<UINT32>(srf.get_width()), static_cast<UINT32>(srf.get_height())),
-                reinterpret_cast<void const*>(img.get()),
+                reinterpret_cast<void const*>(std::to_address(raw_ptr_to_srf)),
                 static_cast<UINT32>(srf.get_width()) * sizeof(GameEngine::Colour),
                 D2D1_BITMAP_PROPERTIES{ PIXEL_FORMAT, dpiX, dpiY },
                 &bmp_img
             );
-            bitmaps.insert({ img.get(), bmp_img});
+            bitmaps.insert({ raw_ptr_to_srf, bmp_img});
         }
 
-        return *bitmaps[img.get()];
+        return *bitmaps[raw_ptr_to_srf];
     }
 
     ID2D1BitmapBrush& GameEngine::Direct2DFactory::get_bitmapbrush(ID2D1Bitmap& bitmap)

@@ -10,34 +10,12 @@ sprite{ sprite },
 chroma{ chroma }
 { }
 
-Missile::Missile(Missile const& other)
-:
-cur_pos{ other.cur_pos },
-cur_speed{ other.cur_speed },
-cur_vel{ other.cur_vel },
-sprite{ other.sprite },
-chroma{ other.chroma }
-{ }
-
 Missile::Missile(Missile&& other_tmp) noexcept
     :
     sprite{ other_tmp.sprite },
     chroma{ other_tmp.chroma }
 {
     swap(std::move(other_tmp));
-}
-
-Missile& Missile::operator=(Missile const& other)
-{
-    if (&other != this)
-    {
-        cur_pos = other.cur_pos;
-        cur_speed = other.cur_speed;
-        cur_vel = other.cur_vel;
-        sprite = other.sprite;
-        chroma = other.chroma;
-    }
-    return *this;
 }
 
 Missile& Missile::operator=(Missile&& other_tmp) noexcept

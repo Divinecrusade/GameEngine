@@ -24,10 +24,10 @@ public:
 
     Missile() = delete;
     Missile(Vec2i const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma);
-    Missile(Missile const& other);
+    Missile(Missile const&) = delete;
     Missile(Missile&& other_tmp) noexcept;
 
-    Missile& operator=(Missile const& other);
+    Missile& operator=(Missile const&) = delete;
     Missile& operator=(Missile&& other_tmp) noexcept;
 
     ~Missile() = default;

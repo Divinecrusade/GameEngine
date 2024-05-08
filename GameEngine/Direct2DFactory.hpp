@@ -3,7 +3,7 @@
 #pragma comment(lib, "d2d1.lib")
 
 #include "KeyColor.hpp"
-#include "ISurface.hpp"
+#include "Surface.hpp"
 
 #include <d2d1.h>
 #include <wincodec.h>
@@ -114,12 +114,13 @@ namespace GameEngine
         RECT get_render_area_size() const noexcept;
 
         ID2D1HwndRenderTarget& get_render_target();
-        ID2D1PathGeometry& get_geometry();
-        ID2D1SolidColorBrush& get_brush(KeyColor const& key);
-        ID2D1Bitmap& get_bitmap(GameEngine::Interfaces::ISurface const& srf);
-        ID2D1BitmapBrush& get_bitmapbrush(ID2D1Bitmap& bitmap);
-        void open_sink();
-        void close_sink();
+        ID2D1PathGeometry&     get_geometry();
+        ID2D1SolidColorBrush&  get_brush(KeyColor const& key);
+        ID2D1Bitmap&           get_bitmap(Surface const& srf);
+        ID2D1BitmapBrush&      get_bitmapbrush(ID2D1Bitmap& bitmap);
+        
+        void               open_sink();
+        void               close_sink();
         ID2D1GeometrySink& get_sink();
         
         void invalidate_resources();

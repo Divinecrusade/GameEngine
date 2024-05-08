@@ -139,7 +139,7 @@ Paddle::Vec2f Paddle::calculate_deflect_direction(CollisionEdge edge, double dL,
         (abs_dL <= cur_half_width * MIN_DEFLECT_ZONE_RATIO ?
         MIN_ANGLE_DEFLECT
         :
-        std::min(MAX_ANGLE_DEFLECT, (MIN_ANGLE_DEFLECT + (MAX_ANGLE_DEFLECT - MIN_ANGLE_DEFLECT) * (abs_dL / cur_half_width))))
+        min(MAX_ANGLE_DEFLECT, (MIN_ANGLE_DEFLECT + (MAX_ANGLE_DEFLECT - MIN_ANGLE_DEFLECT) * (abs_dL / cur_half_width))))
     };
     new_dir.rotate(deflect_angle);
 

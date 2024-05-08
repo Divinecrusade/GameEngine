@@ -102,7 +102,7 @@ namespace GameEngine
         d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 
-    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Geometry::Rectangle2D<int> const& clipping_area)
+    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area)
     {
         assert(composing_frame);
 
@@ -121,12 +121,12 @@ namespace GameEngine
                                                    D2D1::RectF(get_dips_from_pixels(max(part_to_draw.left - left_top_pos.x, 0)), get_dips_from_pixels(max(part_to_draw.top - left_top_pos.y, 0)), get_dips_from_pixels(max(part_to_draw.right - left_top_pos.x, 0)), get_dips_from_pixels(max(part_to_draw.bottom - left_top_pos.y, 0))));
     }
 
-    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Interfaces::ISurface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area)
+    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area)
     {
         assert(composing_frame);
 
         ID2D1Bitmap& bmp_img { d2d_factory.get_bitmap(sprite) };
-        ID2D1Bitmap& bmp_mask{ d2d_factory.get_bitmap(Surface{ sprite.get_width(), sprite.get_height(), make_mask(sprite, chroma) }) };
+        ID2D1Bitmap& bmp_mask{ d2d_factory.get_bitmap(make_mask(sprite, chroma)) };
         ID2D1BitmapBrush& brush{ d2d_factory.get_bitmapbrush(bmp_img) };
 
 
@@ -146,26 +146,20 @@ namespace GameEngine
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
     }
 
-    std::shared_ptr<Colour const []> GameEngine::GraphicsDirect2D::make_mask(Interfaces::ISurface const& sprite, Colour c_req)
+    Surface GameEngine::GraphicsDirect2D::make_mask(Surface const& sprite, Colour c_req)
     {
         size_t const width{ sprite.get_width() };
         size_t const height{ sprite.get_height() };
         size_t const n_pixels{ width * height };
 
-        auto const img{ sprite.get_pixels() };
+        Surface mask{ sprite };
 
-        std::shared_ptr<Colour[]> mask{ new Colour[n_pixels] };
-        
-        for (size_t y{ 0U }; y != height; ++y)
-        for (size_t x{ 0U }; x != width; ++x)
+        for (auto& c_cur : mask)
         {
-            Colour c_cur{ img[static_cast<ptrdiff_t>(y * width + x)] };
             if (Colour::is_equal_except_one_component(c_cur, c_req))
             {
-                c_cur[Colour::ComponentIndex::A] = Colour::MIN_COLOUR_DEPTH; 
+                c_cur[Colour::ComponentIndex::A] = Colour::MIN_COLOUR_DEPTH;
             }
-            
-            mask[static_cast<ptrdiff_t>(y * width + x)] = (c_cur);
         }
 
         return mask;

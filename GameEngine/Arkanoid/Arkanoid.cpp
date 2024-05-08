@@ -165,8 +165,10 @@ void Arkanoid::update_bricks()
     {
         collided_brick->deflect(ball);
         missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x - 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 - 10 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x + 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 - 10 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x - 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x - 60, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x + 60, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x + 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
         if (bricks.erase(collided_brick); bricks.empty())
         {
             cur_stage = GameStage::GAMEOVER;
