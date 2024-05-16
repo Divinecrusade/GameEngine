@@ -34,6 +34,9 @@
     <Filter Include="Файлы заголовков\Abstract">
       <UniqueIdentifier>{512707b1-8610-4309-99f2-860ad17610ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Auxiliary">
+      <UniqueIdentifier>{d5235f4b-c0a9-48f6-8140-8b0a9afe6a6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow\MainWindow.hpp">
@@ -86,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="Collidable.hpp">
       <Filter>Файлы заголовков\Abstract</Filter>
+    </ClInclude>
+    <ClInclude Include="ContiguousIterator.hpp">
+      <Filter>Файлы заголовков\Auxiliary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

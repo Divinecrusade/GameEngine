@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KeyColor.hpp"
+#include "ContiguousIterator.hpp"
 
 #include <Windows.h>
 #include <filesystem>
@@ -9,8 +10,6 @@
 #include <algorithm>
 #include <cwchar>
 #include <tuple>
-#include <iterator>
-#include <concepts>
 
 
 namespace GameEngine
@@ -19,77 +18,13 @@ namespace GameEngine
     {
     public:
 
-        struct iterator;
+        using iterator = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface>;
 
         iterator begin() noexcept;
         iterator end()   noexcept;
         iterator begin() const noexcept;
         iterator end()   const noexcept;
         std::pair<iterator const, iterator const> operator[](size_t i_row) noexcept;
-        
-        struct iterator final
-        {
-        private:
-
-            friend iterator Surface::begin() noexcept;
-            friend iterator Surface::end()   noexcept;
-            friend iterator Surface::begin() const noexcept;
-            friend iterator Surface::end()   const noexcept;
-            friend std::pair<iterator const, iterator const> Surface::operator[](size_t i_row) noexcept;
-            iterator(Colour* buffer) noexcept;
-
-        public:
-
-            using value_type        = Colour;
-            using element_type      = Colour;
-            using iterator_category = std::contiguous_iterator_tag;
-            using difference_type   = ptrdiff_t;
-
-            using pointer           = Colour*;
-            using reference         = Colour&;
-
-            iterator() noexcept                = default;
-            iterator(iterator const&) noexcept = default;
-            iterator(iterator&&)      noexcept = default;
-
-            iterator& operator=(iterator const&) noexcept = default;
-            iterator& operator=(iterator&&)      noexcept = default;
-
-            ~iterator() noexcept = default;
-
-            pointer   operator->() const noexcept;
-            reference operator*()  const noexcept;
-            reference operator[](difference_type delta) const noexcept;
-
-            iterator& operator+=(difference_type delta) noexcept;
-            iterator& operator-=(difference_type delta) noexcept;
-
-            iterator& operator++()    noexcept;
-            iterator  operator++(int) noexcept;
-
-            iterator& operator--()    noexcept;
-            iterator  operator--(int) noexcept;
-
-            friend iterator operator+(iterator const& lhs, difference_type rhs) noexcept;
-            friend iterator operator+(difference_type lhs, iterator const& rhs) noexcept;
-
-            friend iterator operator-(iterator const& lhs, difference_type rhs) noexcept;
-            friend iterator operator-(difference_type lhs, iterator const& rhs) noexcept;
-            friend difference_type operator-(iterator const& lhs, iterator const& rhs) noexcept;
-
-            friend bool operator==(iterator const& lhs, iterator const& rhs) noexcept;
-            friend bool operator!=(iterator const& lhs, iterator const& rhs) noexcept;
-
-            friend bool operator< (iterator const& lhs, iterator const& rhs) noexcept;
-            friend bool operator> (iterator const& lhs, iterator const& rhs) noexcept;
-            friend bool operator<=(iterator const& lhs, iterator const& rhs) noexcept;
-            friend bool operator>=(iterator const& lhs, iterator const& rhs) noexcept;
-
-        private:
-
-            Colour* data{ nullptr };
-        };
-        static_assert(std::contiguous_iterator<iterator>);
 
     public:
 
