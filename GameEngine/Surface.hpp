@@ -18,8 +18,17 @@ namespace GameEngine
     {
     public:
 
-        using iterator = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface>;
+        using iterator       = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface>;
         using const_iterator = GameEngine::Auxiliary::ContiguousIterator<Colour const, Surface>;
+
+        using reverse_iterator       = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface,
+                                       GameEngine::Auxiliary::PointerFunctions::plus_backward<Colour>,
+                                       GameEngine::Auxiliary::PointerFunctions::minus_backward<Colour>>;
+
+        using const_reverse_iterator = GameEngine::Auxiliary::ContiguousIterator<Colour const, Surface,
+                                       GameEngine::Auxiliary::PointerFunctions::plus_backward<Colour const>,
+                                       GameEngine::Auxiliary::PointerFunctions::minus_backward<Colour const>>;
+
 
         iterator begin() noexcept;
         iterator end()   noexcept;
@@ -30,6 +39,13 @@ namespace GameEngine
         const_iterator cbegin() const noexcept;
         const_iterator cend()   const noexcept;
         std::pair<const_iterator const, const_iterator const> operator[](size_t i_row) const noexcept;
+
+        reverse_iterator rbegin()              noexcept;
+        reverse_iterator rend()                noexcept;
+        const_reverse_iterator rbegin()  const noexcept;
+        const_reverse_iterator rend()    const noexcept;
+        const_reverse_iterator crbegin() const noexcept;
+        const_reverse_iterator crend()   const noexcept;
 
     public:
 

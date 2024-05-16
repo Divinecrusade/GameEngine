@@ -15,7 +15,7 @@ namespace GameEngine
 
     std::pair<Surface::iterator const, Surface::iterator const> Surface::operator[](size_t i_row) noexcept
     {
-        iterator const begin{ buffer.get() + n_cols + i_row };
+        iterator const begin{ buffer.get() + n_cols * i_row };
         iterator const end{ begin + n_cols };
 
         return std::make_pair(begin, end);
@@ -43,10 +43,40 @@ namespace GameEngine
 
     std::pair<Surface::const_iterator const, Surface::const_iterator const> Surface::operator[](size_t i_row) const noexcept
     {
-        const_iterator const begin{ buffer.get() + n_cols + i_row };
+        const_iterator const begin{ buffer.get() + n_cols * i_row };
         const_iterator const end  { begin + n_cols };
 
         return std::make_pair(begin, end);
+    }
+
+    Surface::reverse_iterator Surface::rbegin() noexcept
+    {
+        return reverse_iterator{ buffer.get() + n_cols * n_rows - 1U };
+    }
+
+    Surface::reverse_iterator Surface::rend() noexcept
+    {
+        return reverse_iterator{ buffer.get() - 1U };
+    }
+
+    Surface::const_reverse_iterator Surface::rbegin() const noexcept
+    {
+        return crbegin();
+    }
+
+    Surface::const_reverse_iterator Surface::rend() const noexcept
+    {
+        return crend();
+    }
+
+    Surface::const_reverse_iterator Surface::crbegin() const noexcept
+    {
+        return const_reverse_iterator{ buffer.get() + n_cols * n_rows - 1U };
+    }
+
+    Surface::const_reverse_iterator Surface::crend() const noexcept
+    {
+        return const_reverse_iterator{ buffer.get() - 1U };
     }
 
     std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const> Surface::parse_img(std::filesystem::path const& img_src)
