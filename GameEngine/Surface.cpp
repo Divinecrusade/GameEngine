@@ -13,20 +13,38 @@ namespace GameEngine
         return iterator{ buffer.get() + n_cols * n_rows };
     }
 
-    Surface::iterator Surface::begin() const noexcept
-    {
-        return iterator{ buffer.get() };
-    }
-
-    Surface::iterator Surface::end() const noexcept
-    {
-        return iterator{ buffer.get() + n_cols * n_rows };
-    }
-
     std::pair<Surface::iterator const, Surface::iterator const> Surface::operator[](size_t i_row) noexcept
     {
         iterator const begin{ buffer.get() + n_cols + i_row };
-        iterator const end  { begin + n_cols };
+        iterator const end{ begin + n_cols };
+
+        return std::make_pair(begin, end);
+    }
+
+    Surface::const_iterator Surface::begin() const noexcept
+    {
+        return this->cbegin();
+    }
+
+    Surface::const_iterator Surface::end() const noexcept
+    {
+        return this->cend();
+    }
+
+    Surface::const_iterator Surface::cbegin() const noexcept
+    {
+        return const_iterator{ buffer.get() };
+    }
+
+    Surface::const_iterator Surface::cend() const noexcept
+    {
+        return const_iterator{ buffer.get() + n_cols * n_rows };
+    }
+
+    std::pair<Surface::const_iterator const, Surface::const_iterator const> Surface::operator[](size_t i_row) const noexcept
+    {
+        const_iterator const begin{ buffer.get() + n_cols + i_row };
+        const_iterator const end  { begin + n_cols };
 
         return std::make_pair(begin, end);
     }

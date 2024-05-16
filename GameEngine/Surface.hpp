@@ -19,12 +19,17 @@ namespace GameEngine
     public:
 
         using iterator = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface>;
+        using const_iterator = GameEngine::Auxiliary::ContiguousIterator<Colour const, Surface>;
 
         iterator begin() noexcept;
         iterator end()   noexcept;
-        iterator begin() const noexcept;
-        iterator end()   const noexcept;
         std::pair<iterator const, iterator const> operator[](size_t i_row) noexcept;
+
+        const_iterator begin()  const noexcept;
+        const_iterator end()    const noexcept;
+        const_iterator cbegin() const noexcept;
+        const_iterator cend()   const noexcept;
+        std::pair<const_iterator const, const_iterator const> operator[](size_t i_row) const noexcept;
 
     public:
 
