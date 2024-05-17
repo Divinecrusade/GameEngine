@@ -96,9 +96,6 @@
     <ClInclude Include="IteratorCommonTraits.hpp">
       <Filter>Файлы заголовков\Auxiliary</Filter>
     </ClInclude>
-    <ClInclude Include="PointerFunctions.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">

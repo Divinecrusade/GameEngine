@@ -1,6 +1,5 @@
 #pragma once
 
-#include "PointerFunctions.hpp"
 #include "IteratorCommonTraits.hpp"
 
 #include <iterator>
@@ -12,8 +11,7 @@ namespace GameEngine::Auxiliary
 {
     template<class T, 
              class Container, 
-             T*(*CombinedPlus) (T*, IteratorCommonTraits::difference_type) = PointerFunctions::plus_forward<T>,
-             T*(*CombinedMinus)(T*, IteratorCommonTraits::difference_type) = PointerFunctions::minus_forward<T>>
+             bool reversed = false>
     struct ContiguousIterator final
     {
     public:
@@ -63,12 +61,14 @@ namespace GameEngine::Auxiliary
 
         ContiguousIterator& operator+=(difference_type delta) noexcept
         {
-            this->data = CombinedPlus(this->data, delta);
+            if constexpr(reversed) --this->data;
+            else                   ++this->data;
             return *this;
         }
         ContiguousIterator& operator-=(difference_type delta) noexcept
         {
-            this->data = CombinedMinus(this->data, delta);
+            if constexpr(reversed) ++this->data;
+            else                   --this->data;
             return *this;
         }
 

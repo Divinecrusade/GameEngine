@@ -21,13 +21,8 @@ namespace GameEngine
         using iterator       = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface>;
         using const_iterator = GameEngine::Auxiliary::ContiguousIterator<Colour const, Surface>;
 
-        using reverse_iterator       = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface,
-                                       GameEngine::Auxiliary::PointerFunctions::plus_backward<Colour>,
-                                       GameEngine::Auxiliary::PointerFunctions::minus_backward<Colour>>;
-
-        using const_reverse_iterator = GameEngine::Auxiliary::ContiguousIterator<Colour const, Surface,
-                                       GameEngine::Auxiliary::PointerFunctions::plus_backward<Colour const>,
-                                       GameEngine::Auxiliary::PointerFunctions::minus_backward<Colour const>>;
+        using reverse_iterator       = GameEngine::Auxiliary::ContiguousIterator<Colour, Surface, true>;
+        using const_reverse_iterator = GameEngine::Auxiliary::ContiguousIterator<Colour const, Surface, true>;
 
 
         iterator begin() noexcept;
@@ -49,9 +44,9 @@ namespace GameEngine
 
     public:
 
-        static constexpr wchar_t const* const    SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
-        static constexpr int                     SUPPORTED_COLOUR_DEPTHS[]{ 24 };
-        static constexpr int                     SUPPORTED_COLOUR_CHANNEL{ 8 };
+        static constexpr wchar_t const* const SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
+        static constexpr int                  SUPPORTED_COLOUR_DEPTHS[]{ 24 };
+        static constexpr int                  SUPPORTED_COLOUR_CHANNEL {  8 };
 
         static std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const> parse_img(std::filesystem::path const& img_src);
         
@@ -61,8 +56,8 @@ namespace GameEngine
 
     private:
 
-        static constexpr int                     BYTE_SIZE{ 8 };
-        static constexpr int                     SUPPORTED_PIXEL_SIZES[]
+        static constexpr int BYTE_SIZE{ 8 };
+        static constexpr int SUPPORTED_PIXEL_SIZES[]
         {
             SUPPORTED_COLOUR_DEPTHS[0U] / BYTE_SIZE
         };
@@ -76,7 +71,7 @@ namespace GameEngine
         Surface(Surface&& other_tmp) noexcept;
 
         Surface& operator=(Surface const&) = delete;
-        Surface& operator=(Surface&&) = delete;
+        Surface& operator=(Surface&&)      = delete;
 
         ~Surface() noexcept = default;
 
