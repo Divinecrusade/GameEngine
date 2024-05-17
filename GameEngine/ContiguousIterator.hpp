@@ -41,8 +41,30 @@ namespace GameEngine::Auxiliary
         ContiguousIterator(ContiguousIterator const&) noexcept = default;
         ContiguousIterator(ContiguousIterator&&)      noexcept = default;
 
+        template<class AnyContainer>
+        ContiguousIterator(ContiguousIterator<T, AnyContainer, !reversed> const& it) noexcept
+        :
+        data{ it.data     + static_cast<difference_type>(reversed ? -1 : 1) }
+        { }
+        template<class AnyContainer>
+        ContiguousIterator(ContiguousIterator<T, AnyContainer, !reversed>&& it_tmp)  noexcept
+        :
+        data{ it_tmp.data + static_cast<difference_type>(reversed ? -1 : 1) }
+        { }
+
         ContiguousIterator& operator=(ContiguousIterator const&) noexcept = default;
         ContiguousIterator& operator=(ContiguousIterator&&)      noexcept = default;
+
+        template<class AnyContainer>
+        ContiguousIterator& operator=(ContiguousIterator<T, AnyContainer, !reversed> const& it) noexcept
+        { 
+            data = it.data    + static_cast<difference_type>(reversed ? -1 : 1);
+        }
+        template<class AnyContainer>
+        ContiguousIterator& operator=(ContiguousIterator<T, AnyContainer, !reversed>&& it_tmp)  noexcept
+        { 
+            data = it_tmp.data + static_cast<difference_type>(reversed ? -1 : 1);
+        }
 
         ~ContiguousIterator() = default;
 
