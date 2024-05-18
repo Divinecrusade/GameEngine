@@ -64,6 +64,7 @@ private:
     void update_ball(float dt);
     void update_bricks();
     void update_missiles(float dt);
+    void update_blows(float dt);
 
     void render_full_scene();
 
@@ -110,10 +111,10 @@ private:
     std::vector<Brick>     bricks;
     Ball      ball;
 
-    GameEngine::Surface   gamestart_img;
-    GameEngine::Surface   gameover_img;
-    GameEngine::Surface   rocket;
-    GameEngine::Animation blow_effect;
+    GameEngine::Surface gamestart_img;
+    GameEngine::Surface gameover_img;
+    std::shared_ptr<GameEngine::Surface> rocket;
+    std::shared_ptr<std::vector<GameEngine::Surface>> blow_frames;
 
     std::vector<Missile> missiles;
     std::vector<Blow>    blows;

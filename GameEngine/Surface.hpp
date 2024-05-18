@@ -48,8 +48,19 @@ namespace GameEngine
         static constexpr int                  SUPPORTED_COLOUR_DEPTHS[]{ 24 };
         static constexpr int                  SUPPORTED_COLOUR_CHANNEL {  8 };
 
+        static constexpr size_t IMG_FIN        { 0U };
+        static constexpr size_t IMG_WIDTH      { 1U };
+        static constexpr size_t IMG_HEIGHT     { 2U };
+        static constexpr size_t IMG_REVERSED{ 3U };
+        static constexpr size_t IMG_PADDING    { 4U };
+        static constexpr size_t IMG_PIXEL_SIZE { 5U };
         static std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const> parse_img(std::filesystem::path const& img_src);
         
+        static constexpr size_t PIXEL_TABLE_INFO_Y_START{ 0U };
+        static constexpr size_t PIXEL_TABLE_INFO_Y_END  { 1U };
+        static constexpr size_t PIXEL_TABLE_INFO_DY     { 2U };
+        static std::tuple<size_t const, size_t const, int const> get_pixel_table_info(bool reversed, size_t height);
+
     private:
 
         static std::tuple<std::unique_ptr<Colour[]>, size_t, size_t> read_img(std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const>&& img);

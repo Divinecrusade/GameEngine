@@ -1,35 +1,19 @@
 #include "Missile.hpp"
 
 
-Missile::Missile(Vec2i const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma)
+Missile::Missile(Vec2i const& init_pos, float init_speed, std::shared_ptr<GameEngine::Surface const> const& sprite, GameEngine::Colour chroma)
 :
 cur_pos  { init_pos },
 cur_speed{ init_speed },
 cur_vel  { DIR * cur_speed },
-sprite{ sprite },
-chroma{ chroma }
+sprite{ std::make_pair(sprite, chroma) }
 { }
-
-Missile::Missile(Missile&& other_tmp) noexcept
-    :
-    sprite{ other_tmp.sprite },
-    chroma{ other_tmp.chroma }
-{
-    swap(std::move(other_tmp));
-}
-
-Missile& Missile::operator=(Missile&& other_tmp) noexcept
-{
-    this->swap(std::move(other_tmp));
-
-    return *this;
-}
 
 void Missile::draw(GameEngine::Interfaces::IGraphics2D & gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const
 {
     assert(!is_destroyed());
 
-    gfx.draw_sprite_excluding_color(Vec2i{ cur_pos.x - static_cast<int>(sprite.get_width() / 2U), cur_pos.y - static_cast<int>(sprite.get_height() / 2U) }, sprite, chroma, clip);
+    gfx.draw_sprite_excluding_color(Vec2i{ cur_pos.x - static_cast<int>(sprite.first->get_width() / 2U), cur_pos.y - static_cast<int>(sprite.first->get_height() / 2U) }, *sprite.first, sprite.second, clip);
 }
 
 void Missile::update(float dt)
@@ -57,12 +41,4 @@ void Missile::destroy() noexcept
 bool Missile::is_destroyed() const noexcept
 {
     return destroyed;
-}
-
-void Missile::swap(Missile&& other_tmp) noexcept
-{
-    std::swap(destroyed, other_tmp.destroyed);
-    std::swap(cur_pos, other_tmp.cur_pos);
-    std::swap(cur_speed, other_tmp.cur_speed);
-    std::swap(cur_vel, other_tmp.cur_vel);
 }

@@ -9,8 +9,8 @@ pad  { PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
 gameover_img { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
-rocket       { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
-blow_effect  { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U, 0.125f }
+rocket       { std::make_shared<GameEngine::Surface>(std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }})) },
+blow_frames  { std::make_shared<std::vector<GameEngine::Surface>>(GameEngine::Animation::get_frames_from_sprites_sheet(std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U)) }
 { 
     constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -71,6 +71,7 @@ void Arkanoid::update_in_progress_stage(float dt)
     update_ball(dt);
     update_bricks();
     update_missiles(dt);
+    update_blows(dt);
 }
 
 void Arkanoid::update_gameover_stage()
@@ -165,10 +166,6 @@ void Arkanoid::update_bricks()
     {
         collided_brick->deflect(ball);
         missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x - 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x - 60, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x + 60, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x + 30, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
         if (bricks.erase(collided_brick); bricks.empty())
         {
             cur_stage = GameStage::GAMEOVER;
@@ -191,11 +188,24 @@ void Arkanoid::update_missiles(float dt)
             field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
+            blows.emplace_back(missile->get_pos(), blow_frames, GameEngine::Colours::WHITE);
         }
     }
     std::erase_if(missiles, [](Missile const& missile)
         {
             return missile.is_destroyed();
+        });
+}
+
+void Arkanoid::update_blows(float dt)
+{
+    for (auto& blow : blows)
+    {
+        blow.update(dt);
+    }
+    std::erase_if(blows, [](Blow const& blow)
+        {
+            return blow.is_ended();
         });
 }
 

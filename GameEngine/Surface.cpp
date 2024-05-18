@@ -106,34 +106,33 @@ namespace GameEngine
         return std::make_tuple(std::move(fin), static_cast<size_t>(bmp_info.biWidth), static_cast<size_t>(bmp_info.biHeight < 0 ? -bmp_info.biHeight : bmp_info.biHeight), bmp_info.biHeight < 0L, padding, pixel_size);
     }
 
-    std::tuple<std::unique_ptr<Colour[]>, size_t, size_t> Surface::read_img(std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const>&& img)
+    std::tuple<size_t const, size_t const, int const> Surface::get_pixel_table_info(bool reversed, size_t height)
     {
-        constexpr int IMG_FIN{ 0 };
-        constexpr int IMG_WIDTH{ 1 };
-        constexpr int IMG_HEIGHT{ 2 };
-        constexpr int IMG_IS_REVERSED{ 3 };
-        constexpr int IMG_PADDING{ 4 };
-        constexpr int IMG_PIXEL_SIZE{ 5 };
-
-        std::unique_ptr<Colour[]> tmp_buffer{ new Colour[std::get<IMG_WIDTH>(img) * std::get<IMG_HEIGHT>(img)] };
-
         size_t y_start{ };
         size_t y_end{ };
         int dy{ };
-        if (std::get<IMG_IS_REVERSED>(img))
+        if (reversed)
         {
             y_start = 0U;
-            y_end = std::get<IMG_HEIGHT>(img);
+            y_end = height;
             dy = 1;
         }
         else
         {
-            y_start = std::get<IMG_HEIGHT>(img) - 1U;
+            y_start = height - 1U;
             y_end = 0U;
             dy = -1;
         }
 
-        for (size_t y{ y_start }; y != y_end; y += dy)
+        return std::make_tuple(y_start, y_end, dy);
+    }
+
+    std::tuple<std::unique_ptr<Colour[]>, size_t, size_t> Surface::read_img(std::tuple<std::ifstream, size_t const, size_t const, bool const, std::streamoff const, int const>&& img)
+    {
+        std::unique_ptr<Colour[]> tmp_buffer{ new Colour[std::get<IMG_WIDTH>(img) * std::get<IMG_HEIGHT>(img)] };
+        auto const pixel_table_info{ get_pixel_table_info(std::get<IMG_REVERSED>(img), std::get<IMG_HEIGHT>(img)) };
+
+        for (size_t y{ std::get<PIXEL_TABLE_INFO_Y_START>(pixel_table_info) }; y != std::get<PIXEL_TABLE_INFO_Y_END>(pixel_table_info); y += std::get<PIXEL_TABLE_INFO_DY>(pixel_table_info))
         {
             for (size_t x{ 0U }; x != std::get<IMG_WIDTH>(img); ++x)
             {
@@ -182,7 +181,7 @@ namespace GameEngine
     n_cols{ other_tmp.n_cols }
     { }
 
-    size_t Surface::get_width() const noexcept
+    size_t Surface::get_width()  const noexcept
     {
         return n_cols;
     }

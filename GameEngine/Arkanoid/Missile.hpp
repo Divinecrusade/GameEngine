@@ -23,14 +23,14 @@ public:
 public:
 
     Missile() = delete;
-    Missile(Vec2i const& init_pos, float init_speed, GameEngine::Surface const& sprite, GameEngine::Colour chroma);
-    Missile(Missile const&) = delete;
-    Missile(Missile&& other_tmp) noexcept;
+    Missile(Vec2i const& init_pos, float init_speed, std::shared_ptr<GameEngine::Surface const> const& sprite, GameEngine::Colour chroma);
+    Missile(Missile const&) noexcept = default;
+    Missile(Missile&&)      noexcept = default;
 
-    Missile& operator=(Missile const&) = delete;
-    Missile& operator=(Missile&& other_tmp) noexcept;
+    Missile& operator=(Missile const&) noexcept = default;
+    Missile& operator=(Missile&&)      noexcept = default;
 
-    ~Missile() = default;
+    ~Missile() noexcept = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const;
     void update(float dt);
@@ -43,19 +43,14 @@ public:
 
 private:
 
-    void swap(Missile&& other_tmp) noexcept;
-
-private:
-
     static constexpr Vec2f DIR{ 0.f, 1.f };
 
-    bool destroyed{ false };
+    bool  destroyed{ false };
 
     Vec2i cur_pos;
 
     float cur_speed;
     Vec2f cur_vel;
 
-    GameEngine::Surface sprite;
-    GameEngine::Colour chroma;
+    std::pair<std::shared_ptr<GameEngine::Surface const>, GameEngine::Colour> sprite;
 };

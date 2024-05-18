@@ -7,7 +7,7 @@
 #include "Missile.hpp"
 
 
-class Blow final
+class Blow final //: public GameEngine::Abstract::Collidable
 {
 private:
 
@@ -16,38 +16,33 @@ private:
 
 public:
 
-    static constexpr int COLLISION_HALF_WIDTH { 20 };
-    static constexpr int COLLISION_HALF_HEIGHT{ 20 };
+    static constexpr int   COLLISION_HALF_WIDTH { 20 };
+    static constexpr int   COLLISION_HALF_HEIGHT{ 20 };
+    static constexpr float DURATION{ 5.f };
 
 public:
 
-    Blow(Vec2i const& pos, GameEngine::Animation const& blow_effect, GameEngine::Colour chroma);
-    Blow(Blow const& other) noexcept;
-    Blow(Blow&& other_tmp)  noexcept;
+    Blow(Vec2i const& pos, std::shared_ptr<std::vector<GameEngine::Surface> const> const& frames, GameEngine::Colour chroma);
+    Blow(Blow const&) noexcept = default;
+    Blow(Blow&&)      noexcept = default;
 
-    Blow& operator=(Blow const&) = delete;
-    Blow& operator=(Blow&&)      = delete;
+    Blow& operator=(Blow const&) noexcept = default;
+    Blow& operator=(Blow&&)      noexcept = default;
     
-    ~Blow() = default;
+    ~Blow() noexcept = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const;
     void update(float dt);
 
     bool is_ended() const noexcept;
 
-    bool is_collided_with(Ball const& ball)       const noexcept;
-    bool is_collided_with(Paddle const& padd)     const noexcept;
-    bool is_collided_with(Missile const& missile) const noexcept;
-
     void throw_ball(Ball& ball) const;
 
 private:
 
-    static constexpr float FRAME_DURATION   { 0.25f };
-    static constexpr float BALL_ACCELERATION{ 20.0f };
+    static constexpr float BALL_ACCELERATION{ 10.0f };
 
-    Vec2i const pos;
+    Vec2i pos;
 
-    GameEngine::Animation blow_effect;
-    GameEngine::Colour const chroma;
+    std::pair<GameEngine::Animation, GameEngine::Colour> blow_effect;
 };

@@ -1,60 +1,31 @@
 #include "Blow.hpp"
 
-Blow::Blow(Vec2i const& pos, GameEngine::Animation const& blow_effect, GameEngine::Colour chroma)
+
+Blow::Blow(Vec2i const& pos, std::shared_ptr<std::vector<GameEngine::Surface> const> const& frames, GameEngine::Colour chroma)
 :
 pos{ pos },
-blow_effect{ blow_effect },
-chroma{ chroma }
-{ }
-
-Blow::Blow(Blow const& other) noexcept
-:
-pos{ other.pos },
-blow_effect{ other.blow_effect },
-chroma{ other.chroma }
-{ }
-
-Blow::Blow(Blow && other_tmp) noexcept
-:
-pos{ other_tmp.pos },
-blow_effect{ other_tmp.blow_effect },
-chroma{ other_tmp.chroma }
+blow_effect{ std::make_pair(GameEngine::Animation{ frames, DURATION / frames->size() }, chroma) }
 { }
 
 void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const
 {
-    auto frame{ blow_effect.get_cur_frame() };
-    gfx.draw_sprite_excluding_color(Vec2i{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, chroma, clip);
+    auto frame{ blow_effect.first.get_cur_frame() };
+    gfx.draw_sprite_excluding_color(Vec2i{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, blow_effect.second, clip);
 }
 
 void Blow::update(float dt)
 {
-    blow_effect.update(dt);
+    blow_effect.first.update(dt);
 }
 
 bool Blow::is_ended() const noexcept
 {
-    return blow_effect.is_finished();
-}
-
-bool Blow::is_collided_with(Ball const& ball) const noexcept
-{
-    return Rec2i::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(ball.get_collision_box());
-}
-
-bool Blow::is_collided_with(Paddle const& padd) const noexcept
-{
-    return Rec2i::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(padd.get_collision_box());
-}
-
-bool Blow::is_collided_with(Missile const& missile) const noexcept
-{
-    return Rec2i::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT).is_colided_with(missile.get_collision_box());
+    return blow_effect.first.is_finished();
 }
 
 void Blow::throw_ball(Ball& ball) const
 {
-    auto new_dir{ ball.get_collision_box().get_center() - pos };
+    auto new_dir{ ball.get_collision_box().get_center() + pos };
     ball.change_direction(new_dir);
     ball.accelerate(BALL_ACCELERATION);
 }
