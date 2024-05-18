@@ -24,7 +24,7 @@ namespace std
 {
     template<> struct hash<GameEngine::KeyColor> 
     {
-        size_t operator() (GameEngine::KeyColor const& arg) const
+        std::size_t operator() (GameEngine::KeyColor const& arg) const
         {           
             return hash<uint32_t>{}(arg.get_encoded());
         }
@@ -32,7 +32,7 @@ namespace std
 
     template<> struct hash<GameEngine::KeyColor const*>
     {
-        size_t operator() (GameEngine::KeyColor const* arg) const
+        std::size_t operator() (GameEngine::KeyColor const* arg) const
         {
             return hash<unsigned long long>{}(reinterpret_cast<unsigned long long>(arg));
         }
@@ -40,7 +40,7 @@ namespace std
 
     template<> struct hash<ID2D1Bitmap*>
     {
-        size_t operator() (ID2D1Bitmap* arg) const
+        std::size_t operator() (ID2D1Bitmap* arg) const
         {
             return hash<unsigned long long>{}(reinterpret_cast<unsigned long long>(arg));
         }

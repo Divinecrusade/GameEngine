@@ -2,5 +2,5 @@
 
 namespace GameEngine::Auxiliary::IteratorCommonTraits
 {
-    using difference_type = ptrdiff_t;
+    using difference_type = std::ptrdiff_t;
 }

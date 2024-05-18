@@ -10,14 +10,14 @@ namespace GameEngine
     {
     public:
 
-        static constexpr size_t UNKNOWN_N{ 0U };
+        static constexpr std::size_t UNKNOWN_N{ 0U };
         static constexpr Geometry::Vector2D<int> LEFT_TOP{ 0, 0 };
         
         enum class FramesAlignment
         {
             HORIZONTAL, VERTICAL
         };
-        static std::vector<Surface> get_frames_from_sprites_sheet(std::filesystem::path const& sprites_sheet_src, size_t frame_width, size_t frame_height, size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
+        static std::vector<Surface> get_frames_from_sprites_sheet(std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
 
     public:
 
@@ -42,7 +42,7 @@ namespace GameEngine
     private:
 
         std::shared_ptr<std::vector<Surface> const> frames;
-        size_t cur_frame_index{ 0U };
+        std::size_t cur_frame_index{ 0U };
 
         float frame_duration;
         float elapsed_duration{ 0.f };

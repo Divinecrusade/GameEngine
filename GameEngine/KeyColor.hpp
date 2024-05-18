@@ -13,7 +13,7 @@ namespace GameEngine
         [[maybe_unused]] static constexpr uint8_t MIN_COLOUR_DEPTH{ 0U };
         [[maybe_unused]] static constexpr uint8_t MAX_COLOUR_DEPTH{ 255U };
 
-        enum class ComponentIndex : size_t
+        enum class ComponentIndex : std::size_t
         {
             R = 0U,
             G = 1U,
@@ -79,11 +79,11 @@ namespace GameEngine
         
         [[maybe_unused]] constexpr uint8_t& operator[](ComponentIndex index) noexcept
         {
-            return colors[static_cast<size_t>(index)];
+            return colors[static_cast<std::size_t>(index)];
         }
         [[maybe_unused]] constexpr uint8_t const& operator[](ComponentIndex index) const noexcept
         {
-            return colors[static_cast<size_t>(index)];
+            return colors[static_cast<std::size_t>(index)];
         }
 
     private:

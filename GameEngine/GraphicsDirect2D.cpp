@@ -148,9 +148,9 @@ namespace GameEngine
 
     Surface GameEngine::GraphicsDirect2D::make_mask(Surface const& sprite, Colour c_req)
     {
-        size_t const width{ sprite.get_width() };
-        size_t const height{ sprite.get_height() };
-        size_t const n_pixels{ width * height };
+        std::size_t const width{ sprite.get_width() };
+        std::size_t const height{ sprite.get_height() };
+        std::size_t const n_pixels{ width * height };
 
         Surface mask{ sprite };
 
