@@ -165,7 +165,7 @@ void Arkanoid::update_bricks()
     if (collided_brick != bricks.end())
     {
         collided_brick->deflect(ball);
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::WHITE);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::MAGENTA);
         if (bricks.erase(collided_brick); bricks.empty())
         {
             cur_stage = GameStage::GAMEOVER;
@@ -188,7 +188,7 @@ void Arkanoid::update_missiles(float dt)
             field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
-            blows.emplace_back(missile->get_pos(), blow_frames, GameEngine::Colours::WHITE);
+            blows.emplace_back(missile->get_pos(), blow_frames, GameEngine::Colours::MAGENTA);
         }
     }
     std::erase_if(missiles, [](Missile const& missile)
