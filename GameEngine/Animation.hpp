@@ -17,15 +17,15 @@ namespace GameEngine
         {
             HORIZONTAL, VERTICAL
         };
-        static std::vector<Surface> get_frames_from_sprites_sheet(std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
 
     public:
 
         Animation() = delete;
-        Animation(std::shared_ptr<std::vector<Surface> const> const& frames, float frame_duration);
-        Animation(Animation const&)            = default;
+        Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
+        Animation(Animation&&) = default;
+        Animation(Animation const&) = default;
         Animation& operator=(Animation const&) = default;
-        Animation& operator=(Animation&&)      = default;
+        Animation& operator=(Animation&&) = default;
 
         void update(float dt);
         void reset() noexcept;
@@ -33,7 +33,7 @@ namespace GameEngine
         bool is_finished() const noexcept;
         Surface const& get_cur_frame() const noexcept;
 
-        ~Animation() noexcept = default;
+        ~Animation() = default;
 
     private:
 
@@ -41,7 +41,7 @@ namespace GameEngine
 
     private:
 
-        std::shared_ptr<std::vector<Surface> const> frames;
+        std::shared_ptr<std::vector<Surface>> frames;
         std::size_t cur_frame_index{ 0U };
 
         float frame_duration;

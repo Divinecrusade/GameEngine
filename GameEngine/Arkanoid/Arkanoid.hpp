@@ -103,6 +103,8 @@ private:
 
     static constexpr float MISSILE_SPEED{ 300.f };
 
+    static constexpr float BLOW_DURATION{ 4.f };
+
     GameStage cur_stage{ GameStage::START };
 
     PlayField field;
@@ -114,7 +116,7 @@ private:
     GameEngine::Surface gamestart_img;
     GameEngine::Surface gameover_img;
     std::shared_ptr<GameEngine::Surface> rocket;
-    std::shared_ptr<std::vector<GameEngine::Surface>> blow_frames;
+    GameEngine::Animation blow_effect;
 
     std::vector<Missile> missiles;
     std::vector<Blow>    blows;

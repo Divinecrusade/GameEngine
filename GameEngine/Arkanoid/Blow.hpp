@@ -18,18 +18,17 @@ public:
 
     static constexpr int   COLLISION_HALF_WIDTH { 20 };
     static constexpr int   COLLISION_HALF_HEIGHT{ 20 };
-    static constexpr float DURATION{ 5.f };
 
 public:
 
-    Blow(Vec2i const& pos, std::shared_ptr<std::vector<GameEngine::Surface> const> const& frames, GameEngine::Colour chroma);
-    Blow(Blow const&) noexcept = default;
-    Blow(Blow&&)      noexcept = default;
+    Blow(Vec2i const& pos, GameEngine::Animation const& anim, GameEngine::Colour chroma);
+    Blow(Blow const&) = default;
+    Blow(Blow&&)      = default;
 
-    Blow& operator=(Blow const&) noexcept = default;
-    Blow& operator=(Blow&&)      noexcept = default;
+    Blow& operator=(Blow const&) = default;
+    Blow& operator=(Blow&&)      = default;
     
-    ~Blow() noexcept = default;
+    ~Blow() = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const;
     void update(float dt);

@@ -3,8 +3,10 @@
 
 namespace GameEngine
 {
-    std::vector<Surface> Animation::get_frames_from_sprites_sheet(std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n, FramesAlignment direction, Geometry::Vector2D<int> start_point)
-    {
+    Animation::Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n, FramesAlignment direction, Geometry::Vector2D<int> start_point)
+    :
+    frame_duration{ frame_duration }
+    { 
         assert(start_point.x >= 0);
         assert(start_point.y >= 0);
         Surface::BMP_HANDLER sprites_sheet{ Surface::parse_img(sprites_sheet_src) };
@@ -13,31 +15,32 @@ namespace GameEngine
         {
             switch (direction)
             {
-                case GameEngine::Animation::FramesAlignment::HORIZONTAL: n = (sprites_sheet.get_width()  - static_cast<std::size_t>(start_point.x)) / frame_width;  break;
+                case GameEngine::Animation::FramesAlignment::HORIZONTAL: n = (sprites_sheet.get_width() - static_cast<std::size_t>(start_point.x)) / frame_width;  break;
                 case GameEngine::Animation::FramesAlignment::VERTICAL:   n = (sprites_sheet.get_height() - static_cast<std::size_t>(start_point.y)) / frame_height; break;
             }
         }
 
-        std::vector<Surface> frames{  };
-        frames.reserve(n);
+        frames = std::make_shared<std::vector<Surface>>();
+        frames->reserve(n);
+        frame_duration = animation_duration / n;
         sprites_sheet.get_stream().seekg
         (
             static_cast<std::streamoff>
             (
                 (
-                    static_cast<std::size_t>(start_point.x) + 
-                    static_cast<std::size_t>(start_point.y) * 
+                    static_cast<std::size_t>(start_point.x) +
+                    static_cast<std::size_t>(start_point.y) *
                     sprites_sheet.get_width()
-                ) * 
+                ) *
                 sprites_sheet.get_pixel_size() +
-                static_cast<std::size_t>(start_point.y) * 
+                static_cast<std::size_t>(start_point.y) *
                 sprites_sheet.get_padding()
-            ), std::ifstream::cur);
-        auto frame_beg{ sprites_sheet.get_stream().tellg()};
+                ), std::ifstream::cur);
+        auto frame_beg{ sprites_sheet.get_stream().tellg() };
         for (std::size_t i{ 0U }; i != n; ++i)
         {
             std::unique_ptr<Colour[]> frame{ new Colour[frame_width * frame_height] };
-            
+
             for (std::size_t y{ sprites_sheet.get_pixels_table_y_start() }; y != sprites_sheet.get_pixels_table_y_end(); y += sprites_sheet.get_pixels_table_dy(),
                 sprites_sheet.get_stream().seekg
                 (
@@ -46,13 +49,13 @@ namespace GameEngine
                         (sprites_sheet.get_width() - frame_width) *
                         sprites_sheet.get_pixel_size() +
                         sprites_sheet.get_padding()
-                    ), 
+                    ),
                     std::ifstream::cur))
             {
                 for (std::size_t x{ 0U }; x != frame_width; ++x)
                 {
                     frame[y * frame_width + x] = Colour
-                    { 
+                    {
                         Colour::encode
                         (
                             static_cast<uint8_t>(sprites_sheet.get_stream().get()),
@@ -63,7 +66,7 @@ namespace GameEngine
                     };
                 }
             }
-            frames.emplace_back(std::move(frame), frame_height, frame_width);
+            frames->emplace_back(std::move(frame), frame_height, frame_width);
 
             switch (direction)
             {
@@ -72,15 +75,7 @@ namespace GameEngine
             }
             sprites_sheet.get_stream().seekg(frame_beg, std::ifstream::beg);
         }
-
-        return frames;
     }
-
-    Animation::Animation(std::shared_ptr<std::vector<Surface> const> const& frames, float frame_duration)
-    :
-    frames{ frames },
-    frame_duration{ frame_duration }
-    { }
 
     void Animation::update(float dt)
     {

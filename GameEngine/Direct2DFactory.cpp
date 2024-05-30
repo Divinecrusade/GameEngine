@@ -14,8 +14,7 @@ namespace GameEngine
     Direct2DFactory::~Direct2DFactory()
     {
         safe_release(render_target);
-        containers_safe_release(brushes);
-        invalidate_resources();
+        containers_safe_release(brushes, bitmapbrushes, bitmaps);
         safe_release(d2d_factory);
         safe_release(geom);
         safe_release(sink);
@@ -73,7 +72,7 @@ namespace GameEngine
         assert(render_target);
 
         KeyColor const* const raw_ptr_to_srf{ std::to_address(srf.begin()) };
-        if (!bitmaps.contains(std::to_address(raw_ptr_to_srf)))
+        if (!bitmaps.contains(raw_ptr_to_srf))
         {
             ID2D1Bitmap* bmp_img{ nullptr };
             FLOAT dpiX{ };
@@ -83,7 +82,7 @@ namespace GameEngine
             render_target->CreateBitmap
             (
                 D2D1::SizeU(static_cast<UINT32>(srf.get_width()), static_cast<UINT32>(srf.get_height())),
-                reinterpret_cast<void const*>(std::to_address(raw_ptr_to_srf)),
+                reinterpret_cast<void const*>(raw_ptr_to_srf),
                 static_cast<UINT32>(srf.get_width()) * sizeof(GameEngine::Colour),
                 D2D1_BITMAP_PROPERTIES{ PIXEL_FORMAT, dpiX, dpiY },
                 &bmp_img
@@ -141,10 +140,5 @@ namespace GameEngine
         assert(sink);
 
         return *sink;
-    }
-    
-    void Direct2DFactory::invalidate_resources()
-    {
-        containers_safe_release(bitmapbrushes, bitmaps);
     }
 }

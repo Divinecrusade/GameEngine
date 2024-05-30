@@ -21,39 +21,39 @@ namespace GameEngine
 
         virtual ~GraphicsDirect2D() = default;
 
-        virtual void begin_frame() override;
-        virtual void end_frame() override;
+        void begin_frame() override;
+        void end_frame() override;
 
-        virtual int get_screen_width() const noexcept override;
-        virtual int get_screen_height() const noexcept override;
+        int get_screen_width() const noexcept override;
+        int get_screen_height() const noexcept override;
 
-        virtual void draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c) override;
+        void draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c) override;
 
-        virtual void fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c) override;
-        virtual void draw_rectangle(Geometry::Rectangle2D<int> const& rect, int stroke_witdth, Colour c) override;
+        void fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c) override;
+        void draw_rectangle(Geometry::Rectangle2D<int> const& rect, int stroke_witdth, Colour c) override;
 
-        virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
-        virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
+        void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
+        void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
 
-        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
-        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
+        void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
+        void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
 
-        virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c) override;
-        virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
+        void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c) override;
+        void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
 
     private:
 
-        Surface make_mask(Surface const& sprite, Colour c_req);
+        Surface const& make_mask(Surface const& sprite, Colour c_req);
 
-        __forceinline float get_dips_from_pixels(int px) const
+        float get_dips_from_pixels(int px) const
         {
             return static_cast<float>(px) / (static_cast<float>(GetDpiForWindow(d2d_factory.get_render_target().GetHwnd())) / USER_DEFAULT_SCREEN_DPI);
         }
-        __forceinline D2D1_RECT_F convert(Geometry::Rectangle2D<int> const& source) const
+        D2D1_RECT_F convert(Geometry::Rectangle2D<int> const& source) const
         {
             return D2D1::RectF(get_dips_from_pixels(source.left), get_dips_from_pixels(source.top), get_dips_from_pixels(source.right), get_dips_from_pixels(source.bottom));
         }
-        __forceinline D2D1_POINT_2F convert(Geometry::Vector2D<int> const& source) const
+        D2D1_POINT_2F convert(Geometry::Vector2D<int> const& source) const
         {
             return D2D1::Point2F(get_dips_from_pixels(source.x), get_dips_from_pixels(source.y));
         }
@@ -63,6 +63,7 @@ namespace GameEngine
     private:
     
         bool composing_frame{ false };
+        std::unordered_map<KeyColor const*, Surface> masks{ };
 
         mutable Direct2DFactory d2d_factory;
     };

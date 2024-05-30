@@ -61,7 +61,7 @@ namespace GameEngine
     private:
 
         template<Releasable Interface>
-        __forceinline static void safe_release(Interface*& realising_resource)
+        static void safe_release(Interface*& realising_resource)
         {
             if (realising_resource != nullptr)
             {
@@ -86,7 +86,7 @@ namespace GameEngine
             };
         }
 
-        __forceinline static D2D1::ColorF get_color(Colour c)
+        static D2D1::ColorF get_color(Colour c)
         {
             static constexpr float MAX_COLOR_DEPTH{ 255.f };
             return D2D1::ColorF{ c[Colour::ComponentIndex::R] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::G] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::B] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::A] / MAX_COLOR_DEPTH };
@@ -123,8 +123,6 @@ namespace GameEngine
         void               close_sink();
         ID2D1GeometrySink& get_sink();
         
-        void invalidate_resources();
-
         D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
 
     private:
