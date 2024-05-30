@@ -45,33 +45,94 @@ namespace GameEngine
     public:
 
         static constexpr wchar_t const* const SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
-        static constexpr int                  SUPPORTED_COLOUR_DEPTHS[]{ 24 };
-        static constexpr int                  SUPPORTED_COLOUR_CHANNEL {  8 };
+        static constexpr std::size_t                  SUPPORTED_COLOUR_DEPTH   { 24U };
+        static constexpr std::size_t                  SUPPORTED_COLOUR_CHANNEL {  8U };
+        static constexpr std::size_t                  SUPPORTED_PIXEL_SIZE     { SUPPORTED_COLOUR_DEPTH / SUPPORTED_COLOUR_CHANNEL };
 
-        static constexpr std::size_t IMG_FIN        { 0U };
-        static constexpr std::size_t IMG_WIDTH      { 1U };
-        static constexpr std::size_t IMG_HEIGHT     { 2U };
-        static constexpr std::size_t IMG_REVERSED{ 3U };
-        static constexpr std::size_t IMG_PADDING    { 4U };
-        static constexpr std::size_t IMG_PIXEL_SIZE { 5U };
-        static std::tuple<std::ifstream, std::size_t const, std::size_t const, bool const, std::streamoff const, int const> parse_img(std::filesystem::path const& img_src);
-        
-        static constexpr std::size_t PIXEL_TABLE_INFO_Y_START{ 0U };
-        static constexpr std::size_t PIXEL_TABLE_INFO_Y_END  { 1U };
-        static constexpr std::size_t PIXEL_TABLE_INFO_DY     { 2U };
-        static std::tuple<std::size_t const, std::size_t const, int const> get_pixel_table_info(bool reversed, std::size_t height);
-
-    private:
-
-        static std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> read_img(std::tuple<std::ifstream, std::size_t const, std::size_t const, bool const, std::streamoff const, int const>&& img);
-
-    private:
-
-        static constexpr int BYTE_SIZE{ 8 };
-        static constexpr int SUPPORTED_PIXEL_SIZES[]
+        class BMP_HANDLER final
         {
-            SUPPORTED_COLOUR_DEPTHS[0U] / BYTE_SIZE
+        public:
+
+            BMP_HANDLER() noexcept = default;
+            BMP_HANDLER(std::ifstream&& fin, std::size_t width, std::size_t height, bool reversed, std::streamoff padding)
+            :
+            fin{ std::move(fin) },
+            width{ width },
+            height{ height },
+            reversed{ reversed },
+            padding{ padding }
+            { }
+            BMP_HANDLER(BMP_HANDLER const&) noexcept = default;
+            BMP_HANDLER(BMP_HANDLER&&) noexcept = default;
+
+            BMP_HANDLER& operator=(BMP_HANDLER const&) noexcept = default;
+            BMP_HANDLER& operator=(BMP_HANDLER&&) noexcept = default;
+
+            ~BMP_HANDLER() noexcept = default;
+
+            std::ifstream& get_stream() noexcept
+            {
+                return fin;
+            }
+            std::ifstream const& get_stream() const noexcept
+            {
+                return fin;
+            }
+
+            std::size_t get_width() const noexcept
+            {
+                return width;
+            }
+            std::size_t get_height() const noexcept
+            {
+                return height;
+            }
+
+            bool is_reversed() const noexcept
+            {
+                return reversed;
+            }
+
+            std::streamoff get_padding() const noexcept
+            {
+                return padding;
+            }
+
+            constexpr std::size_t get_pixel_size() const noexcept
+            {
+                return Surface::SUPPORTED_PIXEL_SIZE;
+            }
+
+            std::size_t get_pixels_table_y_start() const noexcept
+            {
+                return (reversed ? 0U : height - 1U);
+            }
+            std::size_t get_pixels_table_y_end() const noexcept
+            {
+                return (reversed ? height : 0U);
+            }
+
+            int get_pixels_table_dy() const noexcept
+            {
+                return (reversed ? 1 : -1);
+            }
+
+        private:
+
+            std::ifstream fin{ };
+
+            std::size_t width{ };
+            std::size_t height{ };
+
+            bool reversed{ };
+
+            std::streamoff padding{ };
         };
+        static BMP_HANDLER parse_img(std::filesystem::path const& img_src);
+        
+    private:
+
+        static std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> read_img(BMP_HANDLER&& img);
 
     public:
 

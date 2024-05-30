@@ -15,10 +15,9 @@ namespace GameEngine
 
     std::pair<Surface::iterator const, Surface::iterator const> Surface::operator[](std::size_t i_row) noexcept
     {
-        iterator const begin{ buffer.get() + n_cols * i_row };
-        iterator const end{ begin + n_cols };
+        iterator const begin{ buffer.get() + static_cast<iterator::difference_type>(n_cols * i_row) };
 
-        return std::make_pair(begin, end);
+        return std::make_pair(begin, begin + static_cast<iterator::difference_type>(n_cols));
     }
 
     Surface::const_iterator Surface::begin() const noexcept
@@ -44,9 +43,8 @@ namespace GameEngine
     std::pair<Surface::const_iterator const, Surface::const_iterator const> Surface::operator[](std::size_t i_row) const noexcept
     {
         const_iterator const begin{ buffer.get() + n_cols * i_row };
-        const_iterator const end  { begin + n_cols };
 
-        return std::make_pair(begin, end);
+        return std::make_pair(begin, begin + static_cast<const_iterator::difference_type>(n_cols));
     }
 
     Surface::reverse_iterator Surface::rbegin() noexcept
@@ -79,7 +77,7 @@ namespace GameEngine
         return const_reverse_iterator{ buffer.get() - 1U };
     }
 
-    std::tuple<std::ifstream, std::size_t const, std::size_t const, bool const, std::streamoff const, int const> Surface::parse_img(std::filesystem::path const& img_src)
+    Surface::BMP_HANDLER Surface::parse_img(std::filesystem::path const& img_src)
     {
         if (!std::filesystem::exists(img_src)) throw std::runtime_error{ "Image not found" };
         if (std::find_if(std::cbegin(SUPPORTED_EXTENSIONS), std::cend(SUPPORTED_EXTENSIONS),
@@ -94,68 +92,47 @@ namespace GameEngine
         BITMAPINFOHEADER bmp_info{ };
 
         fin.read(reinterpret_cast<char*>(&bmp_header), sizeof(bmp_header));
-        fin.read(reinterpret_cast<char*>(&bmp_info), sizeof(bmp_info));
+        fin.read(reinterpret_cast<char*>(&bmp_info),   sizeof(bmp_info));
+
+        std::size_t const pixel_size{ static_cast<std::size_t>(bmp_info.biBitCount) / 8U };
+
+        if (pixel_size != SUPPORTED_PIXEL_SIZE) throw std::runtime_error{ "Not supported colour depth" };
 
         constexpr std::streamoff ALIGNMENT{ 4LL };
-        int const pixel_size{ bmp_info.biBitCount / 8 };
-        if (std::find(std::cbegin(SUPPORTED_PIXEL_SIZES), std::cend(SUPPORTED_PIXEL_SIZES), pixel_size) == std::cend(SUPPORTED_PIXEL_SIZES))
-            throw std::runtime_error{ "Not supported colour depth" };
-        std::streamoff const padding{ (ALIGNMENT - (static_cast<std::streamoff>(bmp_info.biWidth) * pixel_size % ALIGNMENT)) % ALIGNMENT };
+        std::streamoff const padding{ static_cast<std::streamoff>((ALIGNMENT - (bmp_info.biWidth * pixel_size % ALIGNMENT)) % ALIGNMENT) };
         fin.seekg(bmp_header.bfOffBits, std::ifstream::beg);
 
-        return std::make_tuple(std::move(fin), static_cast<std::size_t>(bmp_info.biWidth), static_cast<std::size_t>(bmp_info.biHeight < 0 ? -bmp_info.biHeight : bmp_info.biHeight), bmp_info.biHeight < 0L, padding, pixel_size);
+        return BMP_HANDLER{ std::move(fin), static_cast<std::size_t>(bmp_info.biWidth), static_cast<std::size_t>(bmp_info.biHeight < 0 ? -bmp_info.biHeight : bmp_info.biHeight), bmp_info.biHeight < 0L, padding };
     }
 
-    std::tuple<std::size_t const, std::size_t const, int const> Surface::get_pixel_table_info(bool reversed, std::size_t height)
+    std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> Surface::read_img(BMP_HANDLER&& img)
     {
-        std::size_t y_start{ };
-        std::size_t y_end{ };
-        int dy{ };
-        if (reversed)
-        {
-            y_start = 0U;
-            y_end = height;
-            dy = 1;
-        }
-        else
-        {
-            y_start = height - 1U;
-            y_end = 0U;
-            dy = -1;
-        }
+        std::unique_ptr<Colour[]> tmp_buffer{ new Colour[img.get_width() * img.get_height()]};
 
-        return std::make_tuple(y_start, y_end, dy);
-    }
-
-    std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> Surface::read_img(std::tuple<std::ifstream, std::size_t const, std::size_t const, bool const, std::streamoff const, int const>&& img)
-    {
-        std::unique_ptr<Colour[]> tmp_buffer{ new Colour[std::get<IMG_WIDTH>(img) * std::get<IMG_HEIGHT>(img)] };
-        auto const pixel_table_info{ get_pixel_table_info(std::get<IMG_REVERSED>(img), std::get<IMG_HEIGHT>(img)) };
-
-        for (std::size_t y{ std::get<PIXEL_TABLE_INFO_Y_START>(pixel_table_info) }; y != std::get<PIXEL_TABLE_INFO_Y_END>(pixel_table_info); y += std::get<PIXEL_TABLE_INFO_DY>(pixel_table_info))
+        for (std::size_t y{ img.get_pixels_table_y_start() }; y != img.get_pixels_table_y_end(); y += img.get_pixels_table_dy())
         {
-            for (std::size_t x{ 0U }; x != std::get<IMG_WIDTH>(img); ++x)
+            for (std::size_t x{ 0U }; x != img.get_width(); ++x)
             {
-                tmp_buffer[static_cast<ptrdiff_t>(y * std::get<IMG_WIDTH>(img) + x)] = Colour
+                tmp_buffer[y * img.get_width() + x] = Colour
                 {
                     Colour::encode
                     (
-                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()),
-                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()),
-                        static_cast<uint8_t>(std::get<IMG_FIN>(img).get()),
+                        static_cast<uint8_t>(img.get_stream().get()),
+                        static_cast<uint8_t>(img.get_stream().get()),
+                        static_cast<uint8_t>(img.get_stream().get()),
                         Colour::MAX_COLOUR_DEPTH
                     )
                 };
             }
-            std::get<IMG_FIN>(img).seekg(std::get<IMG_PADDING>(img), std::ifstream::cur);
+            img.get_stream().seekg(img.get_padding(), std::ifstream::cur);
         }
 
-        return std::make_tuple(std::move(tmp_buffer), std::get<IMG_HEIGHT>(img), std::get<IMG_WIDTH>(img));
+        return std::make_tuple(std::move(tmp_buffer), img.get_height(), img.get_width());
     }
 
     Surface::Surface(std::filesystem::path const& img_src)
     :
-    Surface{ std::move(std::make_from_tuple<Surface>(read_img(parse_img(img_src)))) }
+    Surface{ std::make_from_tuple<Surface>(read_img(parse_img(img_src))) }
     { }
 
     Surface::Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols)

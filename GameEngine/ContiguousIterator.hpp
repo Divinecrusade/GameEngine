@@ -83,14 +83,14 @@ namespace GameEngine::Auxiliary
 
         ContiguousIterator& operator+=(difference_type delta) noexcept
         {
-            if constexpr(reversed) --this->data;
-            else                   ++this->data;
+            if constexpr(reversed) this->data -= delta;
+            else                   this->data += delta;
             return *this;
         }
         ContiguousIterator& operator-=(difference_type delta) noexcept
         {
-            if constexpr(reversed) ++this->data;
-            else                   --this->data;
+            if constexpr(reversed) this->data += delta;
+            else                   this->data -= delta;
             return *this;
         }
 

@@ -7,58 +7,57 @@ namespace GameEngine
     {
         assert(start_point.x >= 0);
         assert(start_point.y >= 0);
-        auto       sprites_sheet   { Surface::parse_img(sprites_sheet_src) };
-        auto const pixel_table_info{ Surface::get_pixel_table_info(std::get<Surface::IMG_REVERSED>(sprites_sheet), std::get<Surface::IMG_HEIGHT>(sprites_sheet)) };
+        Surface::BMP_HANDLER sprites_sheet{ Surface::parse_img(sprites_sheet_src) };
 
         if (n == UNKNOWN_N)
         {
             switch (direction)
             {
-                case GameEngine::Animation::FramesAlignment::HORIZONTAL: n = (std::get<Surface::IMG_WIDTH>(sprites_sheet) - static_cast<std::size_t>(start_point.x)) / frame_width;  break;
-                case GameEngine::Animation::FramesAlignment::VERTICAL:   n = (std::get<Surface::IMG_HEIGHT>(sprites_sheet) - static_cast<std::size_t>(start_point.y)) / frame_height; break;
+                case GameEngine::Animation::FramesAlignment::HORIZONTAL: n = (sprites_sheet.get_width()  - static_cast<std::size_t>(start_point.x)) / frame_width;  break;
+                case GameEngine::Animation::FramesAlignment::VERTICAL:   n = (sprites_sheet.get_height() - static_cast<std::size_t>(start_point.y)) / frame_height; break;
             }
         }
 
         std::vector<Surface> frames{  };
         frames.reserve(n);
-        std::get<Surface::IMG_FIN>(sprites_sheet).seekg
+        sprites_sheet.get_stream().seekg
         (
             static_cast<std::streamoff>
             (
                 (
                     static_cast<std::size_t>(start_point.x) + 
                     static_cast<std::size_t>(start_point.y) * 
-                    std::get<Surface::IMG_WIDTH>(sprites_sheet)
+                    sprites_sheet.get_width()
                 ) * 
-                std::get<Surface::IMG_PIXEL_SIZE>(sprites_sheet) + 
+                sprites_sheet.get_pixel_size() +
                 static_cast<std::size_t>(start_point.y) * 
-                std::get<Surface::IMG_PADDING>(sprites_sheet)
+                sprites_sheet.get_padding()
             ), std::ifstream::cur);
-        auto frame_beg{ std::get<Surface::IMG_FIN>(sprites_sheet).tellg() };
+        auto frame_beg{ sprites_sheet.get_stream().tellg()};
         for (std::size_t i{ 0U }; i != n; ++i)
         {
             std::unique_ptr<Colour[]> frame{ new Colour[frame_width * frame_height] };
             
-            for (std::size_t y{ std::get<Surface::PIXEL_TABLE_INFO_Y_START>(pixel_table_info) }; y != std::get<Surface::PIXEL_TABLE_INFO_Y_END>(pixel_table_info); y += std::get<Surface::PIXEL_TABLE_INFO_DY>(pixel_table_info),
-                std::get<Surface::IMG_FIN>(sprites_sheet).seekg
+            for (std::size_t y{ sprites_sheet.get_pixels_table_y_start() }; y != sprites_sheet.get_pixels_table_y_end(); y += sprites_sheet.get_pixels_table_dy(),
+                sprites_sheet.get_stream().seekg
                 (
                     static_cast<std::streamoff>
                     (
-                        (std::get<Surface::IMG_WIDTH>(sprites_sheet) - frame_width) * 
-                        std::get<Surface::IMG_PIXEL_SIZE>(sprites_sheet) + 
-                        std::get<Surface::IMG_PADDING>(sprites_sheet)
+                        (sprites_sheet.get_width() - frame_width) *
+                        sprites_sheet.get_pixel_size() +
+                        sprites_sheet.get_padding()
                     ), 
                     std::ifstream::cur))
             {
                 for (std::size_t x{ 0U }; x != frame_width; ++x)
                 {
-                    frame[static_cast<ptrdiff_t>(y * frame_width + x)] = Colour
+                    frame[y * frame_width + x] = Colour
                     { 
                         Colour::encode
                         (
-                            static_cast<uint8_t>(std::get<Surface::IMG_FIN>(sprites_sheet).get()),
-                            static_cast<uint8_t>(std::get<Surface::IMG_FIN>(sprites_sheet).get()),
-                            static_cast<uint8_t>(std::get<Surface::IMG_FIN>(sprites_sheet).get()),
+                            static_cast<uint8_t>(sprites_sheet.get_stream().get()),
+                            static_cast<uint8_t>(sprites_sheet.get_stream().get()),
+                            static_cast<uint8_t>(sprites_sheet.get_stream().get()),
                             Colour::MAX_COLOUR_DEPTH
                         )
                     };
@@ -68,10 +67,10 @@ namespace GameEngine
 
             switch (direction)
             {
-                case FramesAlignment::HORIZONTAL: frame_beg += static_cast<std::streamoff>(frame_width) * std::get<Surface::IMG_PIXEL_SIZE>(sprites_sheet); break;
-                case FramesAlignment::VERTICAL:   frame_beg += static_cast<std::streamoff>(frame_width) * frame_height * std::get<Surface::IMG_PIXEL_SIZE>(sprites_sheet) + std::get<Surface::IMG_PADDING>(sprites_sheet) * static_cast<std::streamoff>(frame_height); break;
+                case FramesAlignment::HORIZONTAL: frame_beg += static_cast<std::streamoff>(frame_width * sprites_sheet.get_pixel_size()); break;
+                case FramesAlignment::VERTICAL:   frame_beg += static_cast<std::streamoff>(frame_width * frame_height * sprites_sheet.get_pixel_size()) + sprites_sheet.get_padding() * static_cast<std::streamoff>(frame_height); break;
             }
-            std::get<Surface::IMG_FIN>(sprites_sheet).seekg(frame_beg, std::ifstream::beg);
+            sprites_sheet.get_stream().seekg(frame_beg, std::ifstream::beg);
         }
 
         return frames;

@@ -4,7 +4,7 @@
 Blow::Blow(Vec2i const& pos, std::shared_ptr<std::vector<GameEngine::Surface> const> const& frames, GameEngine::Colour chroma)
 :
 pos{ pos },
-blow_effect{ std::make_pair(GameEngine::Animation{ frames, DURATION / frames->size() }, chroma) }
+blow_effect{ std::make_pair(GameEngine::Animation{ frames, DURATION / static_cast<float>(frames->size()) }, chroma) }
 { }
 
 void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const
