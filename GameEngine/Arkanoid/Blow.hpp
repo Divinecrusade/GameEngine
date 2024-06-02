@@ -7,7 +7,7 @@
 #include "Missile.hpp"
 
 
-class Blow final //: public GameEngine::Abstract::Collidable
+class Blow final : public GameEngine::Abstract::Collidable
 {
 private:
 
@@ -16,8 +16,8 @@ private:
 
 public:
 
-    static constexpr int   COLLISION_HALF_WIDTH { 20 };
-    static constexpr int   COLLISION_HALF_HEIGHT{ 20 };
+    static constexpr int COLLISION_HALF_WIDTH { 20 };
+    static constexpr int COLLISION_HALF_HEIGHT{ 20 };
 
 public:
 
@@ -36,6 +36,8 @@ public:
     bool is_ended() const noexcept;
 
     void throw_ball(Ball& ball) const;
+
+    Rec2i get_collision_box() const override;
 
 private:
 

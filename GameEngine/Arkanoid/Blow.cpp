@@ -29,3 +29,8 @@ void Blow::throw_ball(Ball& ball) const
     ball.change_direction(new_dir);
     ball.accelerate(BALL_ACCELERATION);
 }
+
+Blow::Rec2i Blow::get_collision_box() const
+{
+    return Rec2i::get_from_center(pos, COLLISION_HALF_WIDTH, COLLISION_HALF_HEIGHT);
+}

@@ -188,7 +188,8 @@ void Arkanoid::update_missiles(float dt)
             field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
-            blows.emplace_back(missile->get_pos(), blow_effect, GameEngine::Colours::MAGENTA);
+            Blow const& new_blow{ blows.emplace_back(missile->get_pos(), blow_effect, GameEngine::Colours::MAGENTA) };
+            if (new_blow.is_collided_with(ball)) new_blow.throw_ball(ball);
         }
     }
     std::erase_if(missiles, [](Missile const& missile)
