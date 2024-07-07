@@ -12,13 +12,13 @@ namespace GameEngine
     {
     public:
 
-        __forceinline static Geometry::Vector2D<int> get_cursor_pos() noexcept
+        static Geometry::Vector2D<int> get_cursor_pos() noexcept
         {
             POINT const global_cursor_pos{ get_global_pos() };
             
             return { global_cursor_pos.x, global_cursor_pos.y };
         }
-        __forceinline static Geometry::Vector2D<int> get_cursor_pos(Interfaces::IWindow const& wnd) noexcept
+        static Geometry::Vector2D<int> get_cursor_pos(Interfaces::IWindow const& wnd) noexcept
         {
             POINT cursor_pos{ get_global_pos() };
 
@@ -29,7 +29,7 @@ namespace GameEngine
 
     private:
 
-        __forceinline static POINT get_global_pos() noexcept
+        static POINT get_global_pos() noexcept
         {
             POINT global_cursor_pos{ };
 

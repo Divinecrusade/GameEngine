@@ -21,9 +21,9 @@ namespace GameEngine::Geometry
     namespace Auxiliry
     {            
         static constexpr double PRECISION{ 1e-5 };
-        [[maybe_unused]] inline bool is_equal_with_precision(double a, double b) noexcept
+        [[maybe_unused]] constexpr inline bool is_equal_with_precision(double a, double b) noexcept
         {
-            return std::fabs(a - b) <= PRECISION;
+            return std::max(a, b) - std::min(a, b) <= PRECISION;
         }
 
         template <std::integral T> 
