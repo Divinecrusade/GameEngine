@@ -33,7 +33,7 @@ Ball::Rec2i Ball::get_collision_box() const noexcept
     return Rec2i::get_from_center(cur_pos, RADIUS, RADIUS);
 }
 
-GameEngine::Geometry::Vector2D<float> Ball::get_velocity() const noexcept
+Ball::Vec2f Ball::get_direction() const noexcept
 {
     return cur_vel;
 }

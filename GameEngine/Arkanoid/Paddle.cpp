@@ -90,12 +90,12 @@ Paddle::CollisionEdge Paddle::process(Ball& ball) const noexcept
     auto const padd_collision_box{ get_collision_box() };
     if (ball_center.x >= padd_collision_box.left && ball_center.x <= padd_collision_box.right)
     {
-        if (ball.get_velocity().y > 0.f) edge = CollisionEdge::TOP;
+        if (ball.get_direction().y > 0.f) edge = CollisionEdge::TOP;
         else edge = CollisionEdge::BOTTOM;
     }
     else 
     {
-        if (ball.get_velocity().x > 0.f) edge = CollisionEdge::LEFT;
+        if (ball.get_direction().x > 0.f) edge = CollisionEdge::LEFT;
         else edge = CollisionEdge::RIGHT;
     }
 
@@ -111,7 +111,7 @@ void Paddle::deflect(Ball& ball, CollisionEdge edge) const
         case CollisionEdge::BOTTOM:
         case CollisionEdge::TOP:
         
-            ball.change_direction(calculate_deflect_direction(edge, ball.get_collision_box().get_center().x - cur_pos.x, (ball.get_velocity().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
+            ball.change_direction(calculate_deflect_direction(edge, ball.get_collision_box().get_center().x - cur_pos.x, (ball.get_direction().x > 0.f ? Direction::RIGHT : Direction::LEFT)));
 
         break;
 

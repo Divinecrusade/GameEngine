@@ -12,6 +12,7 @@ class Blow final : public GameEngine::Abstract::Collidable
 private:
 
     using Vec2i = GameEngine::Geometry::Vector2D<int>;
+    using Vec2f = GameEngine::Geometry::Vector2D<float>;
     using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
 
 public:

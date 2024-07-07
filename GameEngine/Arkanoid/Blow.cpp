@@ -25,7 +25,7 @@ bool Blow::is_ended() const noexcept
 
 void Blow::throw_ball(Ball& ball) const
 {
-    auto new_dir{ ball.get_collision_box().get_center() + pos };
+    auto const new_dir{ static_cast<Vec2f>(pos) - ball.get_direction() };
     ball.change_direction(new_dir);
     ball.accelerate(BALL_ACCELERATION);
 }

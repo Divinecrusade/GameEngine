@@ -123,7 +123,7 @@ void Brick::deflect(Ball& ball) const noexcept
     if (Vec2i const ball_position{ ball.get_collision_box().get_center() }; 
         (ball_position.x >= collision_box.left && ball_position.x <= collision_box.right)
         ||
-        (std::signbit(ball.get_velocity().x) == GameEngine::Geometry::Auxiliry::signbit((ball_position - collision_box.get_center()).x)))
+        (std::signbit(ball.get_direction().x) == GameEngine::Geometry::Auxiliry::signbit((ball_position - collision_box.get_center()).x)))
     {
         ball.inverse_y();
     }

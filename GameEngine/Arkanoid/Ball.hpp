@@ -12,6 +12,7 @@ private:
 
     using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
     using Vec2i = GameEngine::Geometry::Vector2D<int>;
+    using Vec2f = GameEngine::Geometry::Vector2D<float>;
 
 public:
 
@@ -39,8 +40,7 @@ public:
 
     Rec2i get_collision_box() const noexcept override;
     
-    GameEngine::Geometry::Vector2D<float> get_velocity() const noexcept;
-
+    Vec2f get_direction() const noexcept;
     void change_direction(GameEngine::Geometry::Vector2D<float> const& dir);
 
     void move_by(Vec2i const& dpos) noexcept;
