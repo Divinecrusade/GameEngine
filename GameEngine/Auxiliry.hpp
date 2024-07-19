@@ -23,7 +23,7 @@ namespace GameEngine::Geometry
         static constexpr double PRECISION{ 1e-5 };
         [[maybe_unused]] constexpr inline bool is_equal_with_precision(double a, double b) noexcept
         {
-            return (((a) > (b)) ? (a) : (b)) - (((a) < (b)) ? (a) : (b)) <= PRECISION;
+            return ((a > b) ? a : b) - ((a < b) ? a : b) <= PRECISION;
         }
 
         template <std::integral T> 
