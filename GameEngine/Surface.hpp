@@ -45,9 +45,9 @@ namespace GameEngine
     public:
 
         static constexpr wchar_t const* const SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
-        static constexpr std::size_t                  SUPPORTED_COLOUR_DEPTH   { 24U };
-        static constexpr std::size_t                  SUPPORTED_COLOUR_CHANNEL {  8U };
-        static constexpr std::size_t                  SUPPORTED_PIXEL_SIZE     { SUPPORTED_COLOUR_DEPTH / SUPPORTED_COLOUR_CHANNEL };
+        static constexpr std::size_t          SUPPORTED_COLOUR_DEPTH   { 24U };
+        static constexpr std::size_t          SUPPORTED_COLOUR_CHANNEL {  8U };
+        static constexpr std::size_t          SUPPORTED_PIXEL_SIZE     { SUPPORTED_COLOUR_DEPTH / SUPPORTED_COLOUR_CHANNEL };
 
         class BMP_HANDLER final
         {
