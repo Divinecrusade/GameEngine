@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Animation.hpp>
+#include <SurfaceView.hpp>
 
 #include "PlayField.hpp"
 #include <Rectangle2D.hpp>
@@ -23,7 +24,7 @@ public:
 public:
 
     Missile() = delete;
-    Missile(Vec2i const& init_pos, float init_speed, std::shared_ptr<GameEngine::Surface const> const& sprite, GameEngine::Colour chroma);
+    Missile(Vec2i const& init_pos, float init_speed, GameEngine::SurfaceView sprite, GameEngine::Colour chroma);
     Missile(Missile const&) noexcept = default;
     Missile(Missile&&)      noexcept = default;
 
@@ -52,5 +53,5 @@ private:
     float cur_speed;
     Vec2f cur_vel;
 
-    std::pair<std::shared_ptr<GameEngine::Surface const>, GameEngine::Colour> sprite;
+    std::pair<GameEngine::SurfaceView, GameEngine::Colour> sprite;
 };

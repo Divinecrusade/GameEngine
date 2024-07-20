@@ -113,9 +113,9 @@ private:
     std::vector<Brick>     bricks;
     Ball      ball;
 
-    GameEngine::Surface gamestart_img;
-    GameEngine::Surface gameover_img;
-    std::shared_ptr<GameEngine::Surface> rocket;
+    GameEngine::Surface   gamestart_img;
+    GameEngine::Surface   gameover_img;
+    GameEngine::Surface   rocket;
     GameEngine::Animation blow_effect;
 
     std::vector<Missile> missiles;

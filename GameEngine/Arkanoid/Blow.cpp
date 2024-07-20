@@ -9,7 +9,7 @@ blow_effect{ std::make_pair(anim, chroma) }
 
 void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const
 {
-    GameEngine::Surface const& frame{ blow_effect.first.get_cur_frame() };
+    GameEngine::SurfaceView frame{ blow_effect.first.get_cur_frame() };
     gfx.draw_sprite_excluding_color(Vec2i{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, blow_effect.second, clip);
 }
 

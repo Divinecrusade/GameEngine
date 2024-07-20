@@ -98,7 +98,7 @@ namespace GameEngine
         cur_frame_index = 0U;
     }
 
-    Surface const& GameEngine::Animation::get_cur_frame() const noexcept
+    SurfaceView GameEngine::Animation::get_cur_frame() const noexcept
     {
         assert(cur_frame_index < frames->size());
         return (*frames)[cur_frame_index];

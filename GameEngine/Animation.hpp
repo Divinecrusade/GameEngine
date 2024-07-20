@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Surface.hpp"
+#include "SurfaceView.hpp"
 #include "IGraphics2D.hpp"
 
 
@@ -31,7 +32,7 @@ namespace GameEngine
         void reset() noexcept;
 
         bool is_finished() const noexcept;
-        Surface const& get_cur_frame() const noexcept;
+        SurfaceView get_cur_frame() const noexcept;
 
         ~Animation() = default;
 

@@ -1,19 +1,19 @@
 #include "Missile.hpp"
 
 
-Missile::Missile(Vec2i const& init_pos, float init_speed, std::shared_ptr<GameEngine::Surface const> const& sprite, GameEngine::Colour chroma)
+Missile::Missile(Vec2i const& init_pos, float init_speed, GameEngine::SurfaceView sprite, GameEngine::Colour chroma)
 :
 cur_pos  { init_pos },
 cur_speed{ init_speed },
 cur_vel  { DIR * cur_speed },
-sprite{ std::make_pair(sprite, chroma) }
+sprite   { std::make_pair(sprite, chroma) }
 { }
 
 void Missile::draw(GameEngine::Interfaces::IGraphics2D & gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const
 {
     assert(!is_destroyed());
 
-    gfx.draw_sprite_excluding_color(Vec2i{ cur_pos.x - static_cast<int>(sprite.first->get_width() / 2U), cur_pos.y - static_cast<int>(sprite.first->get_height() / 2U) }, *sprite.first, sprite.second, clip);
+    gfx.draw_sprite_excluding_color(Vec2i{ cur_pos.x - static_cast<int>(sprite.first.get_width() / 2U), cur_pos.y - static_cast<int>(sprite.first.get_height() / 2U) }, sprite.first, sprite.second, clip);
 }
 
 void Missile::update(float dt)

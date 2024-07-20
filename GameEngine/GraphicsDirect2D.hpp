@@ -35,15 +35,15 @@ namespace GameEngine
         void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) override;
         void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) override;
 
-        void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
-        void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
+        void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Geometry::Rectangle2D<int> const& clipping_area) override;
+        void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) override;
 
         void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c) override;
         void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) override;
 
     private:
 
-        Surface const& make_mask(Surface const& sprite, Colour c_req);
+        SurfaceView make_mask(SurfaceView sprite, Colour c_req);
 
         float get_dips_from_pixels(int px) const
         {

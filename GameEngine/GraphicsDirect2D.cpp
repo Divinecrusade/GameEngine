@@ -101,7 +101,7 @@ namespace GameEngine
         d2d_factory.get_render_target().DrawEllipse(DIPs, &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 
-    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area)
+    void GraphicsDirect2D::draw_sprite(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Geometry::Rectangle2D<int> const& clipping_area)
     {
         assert(composing_frame);
 
@@ -126,7 +126,7 @@ namespace GameEngine
                                                    ));
     }
 
-    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area)
+    void GraphicsDirect2D::draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area)
     {
         assert(composing_frame);
 
@@ -157,7 +157,7 @@ namespace GameEngine
         d2d_factory.get_render_target().SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
     }
 
-    Surface const& GameEngine::GraphicsDirect2D::make_mask(Surface const& sprite, Colour c_req)
+    SurfaceView GameEngine::GraphicsDirect2D::make_mask(SurfaceView sprite, Colour c_req)
     {
         KeyColor const* const raw_ptr_to_srf{ std::to_address(sprite.begin()) };
         if (!masks.contains(raw_ptr_to_srf))

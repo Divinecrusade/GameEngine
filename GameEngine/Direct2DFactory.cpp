@@ -67,7 +67,7 @@ namespace GameEngine
         return *brushes[key];
     }
 
-    ID2D1Bitmap& Direct2DFactory::get_bitmap(Surface const& srf)
+    ID2D1Bitmap& Direct2DFactory::get_bitmap(SurfaceView srf)
     {
         assert(render_target);
 

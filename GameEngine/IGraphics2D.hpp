@@ -4,6 +4,7 @@
 #include "Vector2D.hpp"
 #include "Rectangle2D.hpp"
 #include "Surface.hpp"
+#include "SurfaceView.hpp"
 
 #include <vector>
 
@@ -25,8 +26,8 @@ namespace GameEngine::Interfaces
         virtual void fill_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, Colour c) = 0;
         virtual void draw_ellipse(Geometry::Vector2D<int> const& center, int radius_x, int radius_y, int stroke_width, Colour c) = 0;
         
-        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Geometry::Rectangle2D<int> const& clipping_area) = 0;
-        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, Surface const& sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) = 0;
+        virtual void draw_sprite(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Geometry::Rectangle2D<int> const& clipping_area) = 0;
+        virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) = 0;
        
         virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c) = 0;
         virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) = 0;

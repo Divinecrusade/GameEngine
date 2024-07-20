@@ -1,4 +1,4 @@
-#include "Surface.hpp"
+#include "SurfaceView.hpp"
 
 
 namespace GameEngine
@@ -149,6 +149,16 @@ namespace GameEngine
     n_cols{ other.n_cols }
     {
         std::copy(other.begin(), other.end(), this->begin());
+        //std::ranges::copy(other, this->begin());
+    }
+
+    Surface::Surface(SurfaceView other)
+    :
+    buffer{ new Colour[other.size()] },
+    n_rows{ other.get_height() },
+    n_cols{ other.get_width() }
+    {
+        std::ranges::copy(other, this->begin());
     }
 
     Surface::Surface(Surface&& other_tmp) noexcept

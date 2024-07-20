@@ -140,6 +140,7 @@ namespace GameEngine
         Surface(std::filesystem::path const& img_src);
         Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols);
         Surface(Surface const& other);
+        Surface(class SurfaceView other);
         Surface(Surface&& other_tmp) noexcept;
 
         Surface& operator=(Surface const&) = delete;

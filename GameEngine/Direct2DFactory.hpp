@@ -4,6 +4,7 @@
 
 #include "KeyColor.hpp"
 #include "Surface.hpp"
+#include "SurfaceView.hpp"
 
 #include <d2d1.h>
 #include <wincodec.h>
@@ -116,7 +117,7 @@ namespace GameEngine
         ID2D1HwndRenderTarget& get_render_target();
         ID2D1PathGeometry&     get_geometry();
         ID2D1SolidColorBrush&  get_brush(KeyColor const& key);
-        ID2D1Bitmap&           get_bitmap(Surface const& srf);
+        ID2D1Bitmap&           get_bitmap(SurfaceView srf);
         ID2D1BitmapBrush&      get_bitmapbrush(ID2D1Bitmap& bitmap);
         
         void               open_sink();
