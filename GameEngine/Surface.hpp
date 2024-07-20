@@ -27,13 +27,11 @@ namespace GameEngine
 
         iterator begin() noexcept;
         iterator end()   noexcept;
-        std::pair<iterator const, iterator const> operator[](std::size_t i_row) noexcept;
 
         const_iterator begin()  const noexcept;
         const_iterator end()    const noexcept;
         const_iterator cbegin() const noexcept;
         const_iterator cend()   const noexcept;
-        std::pair<const_iterator const, const_iterator const> operator[](std::size_t i_row) const noexcept;
 
         reverse_iterator rbegin()              noexcept;
         reverse_iterator rend()                noexcept;
@@ -41,6 +39,44 @@ namespace GameEngine
         const_reverse_iterator rend()    const noexcept;
         const_reverse_iterator crbegin() const noexcept;
         const_reverse_iterator crend()   const noexcept;
+
+        class RowView;
+        RowView operator[](std::size_t i_row) const noexcept;
+
+        class RowView final : public std::ranges::view_interface<RowView>
+        {
+            friend RowView Surface::operator[](std::size_t) const noexcept;
+            RowView(Surface::const_iterator begin, Surface::const_iterator end)
+            :
+            begin_{ begin },
+            end_{ end }
+            { }
+
+        public:
+
+            RowView() = default;
+            RowView(RowView const&) = default;
+            RowView(RowView&&) = default;
+
+            RowView& operator=(RowView const&) = default;
+            RowView& operator=(RowView&&) = default;
+            
+            ~RowView() = default;
+
+            Surface::const_iterator begin() const noexcept
+            {
+                return begin_;
+            }
+
+            Surface::const_iterator end() const noexcept
+            {
+                return end_;
+            }
+
+        private:
+
+            Surface::const_iterator begin_{ }, end_{ };
+        };
 
     public:
 

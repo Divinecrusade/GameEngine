@@ -13,13 +13,6 @@ namespace GameEngine
         return iterator{ buffer.get() + n_cols * n_rows };
     }
 
-    std::pair<Surface::iterator const, Surface::iterator const> Surface::operator[](std::size_t i_row) noexcept
-    {
-        iterator const begin{ buffer.get() + static_cast<iterator::difference_type>(n_cols * i_row) };
-
-        return std::make_pair(begin, begin + static_cast<iterator::difference_type>(n_cols));
-    }
-
     Surface::const_iterator Surface::begin() const noexcept
     {
         return this->cbegin();
@@ -38,13 +31,6 @@ namespace GameEngine
     Surface::const_iterator Surface::cend() const noexcept
     {
         return const_iterator{ buffer.get() + n_cols * n_rows };
-    }
-
-    std::pair<Surface::const_iterator const, Surface::const_iterator const> Surface::operator[](std::size_t i_row) const noexcept
-    {
-        const_iterator const begin{ buffer.get() + n_cols * i_row };
-
-        return std::make_pair(begin, begin + static_cast<const_iterator::difference_type>(n_cols));
     }
 
     Surface::reverse_iterator Surface::rbegin() noexcept
@@ -75,6 +61,13 @@ namespace GameEngine
     Surface::const_reverse_iterator Surface::crend() const noexcept
     {
         return const_reverse_iterator{ buffer.get() - 1U };
+    }
+
+    Surface::RowView Surface::operator[](std::size_t i_row) const noexcept
+    {
+        const_iterator const begin{ buffer.get() + n_cols * i_row };
+
+        return RowView{ begin, begin + static_cast<const_iterator::difference_type>(n_cols) };
     }
 
     Surface::BMP_HANDLER Surface::parse_img(std::filesystem::path const& img_src)
