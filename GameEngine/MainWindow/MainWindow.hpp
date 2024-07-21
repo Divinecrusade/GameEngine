@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <optional>
 
 
 namespace GameEngine
@@ -21,7 +22,7 @@ namespace GameEngine
     public:
 
         MainWindow() = delete;
-        MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable = DEFAULT_RESIZABLE, int init_width = DEFAULT_INIT_WIDTH, int init_height = DEFAULT_INIT_HEIGHT);
+        MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, std::optional<bool> resizable = std::nullopt, std::optional<int> init_width = std::nullopt, std::optional<int> init_height = std::nullopt);
         MainWindow(MainWindow const&) = delete;
         MainWindow(MainWindow&&) = delete;
 

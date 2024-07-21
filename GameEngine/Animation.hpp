@@ -11,18 +11,18 @@ namespace GameEngine
     {
     public:
 
-        static constexpr std::size_t UNKNOWN_N{ 0U };
-        static constexpr Geometry::Vector2D<int> LEFT_TOP{ 0, 0 };
-        
         enum class FramesAlignment
         {
             HORIZONTAL, VERTICAL
         };
 
+        static constexpr Geometry::Vector2D<int> DEFAULT_START_POINT{ 0, 0 };
+        static constexpr FramesAlignment         DEFAULT_DIRECTION{ FramesAlignment:: HORIZONTAL };
+
     public:
 
         Animation() = delete;
-        Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n = UNKNOWN_N, FramesAlignment direction = FramesAlignment::HORIZONTAL, Geometry::Vector2D<int> start_point = LEFT_TOP);
+        Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::optional<std::size_t> n = std::nullopt, std::optional<FramesAlignment> direction = std::nullopt, std::optional<Geometry::Vector2D<int>> start_point = std::nullopt);
         Animation(Animation&&) = default;
         Animation(Animation const&) = default;
         Animation& operator=(Animation const&) = default;

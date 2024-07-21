@@ -7,11 +7,11 @@ namespace GameEngine
 {
     MainWindow* MainWindow::instance_{ nullptr };
 
-    MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, bool resizable, int init_width, int init_height)
+    MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, std::optional<bool> resizable, std::optional<int> init_width, std::optional<int> init_height)
     :
     H_INSTANCE{ hInstance == NULL ? (HINSTANCE)GetModuleHandleW(NULL) : hInstance },
     WND_TITLE { window_name },
-    H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, resizable, init_width, init_height)   }
+    H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, resizable.value_or(DEFAULT_RESIZABLE), init_width.value_or(DEFAULT_INIT_WIDTH), init_height.value_or(DEFAULT_INIT_HEIGHT)) }
     {
         assert(H_WND);
         assert(!instance_);

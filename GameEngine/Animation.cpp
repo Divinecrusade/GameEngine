@@ -3,37 +3,35 @@
 
 namespace GameEngine
 {
-    Animation::Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::size_t n, FramesAlignment direction, Geometry::Vector2D<int> start_point)
+    Animation::Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::optional<std::size_t> n, std::optional<FramesAlignment> direction, std::optional<Geometry::Vector2D<int>> start_point)
     :
     frame_duration{ frame_duration }
     { 
-        assert(start_point.x >= 0);
-        assert(start_point.y >= 0);
         Surface::BMP_HANDLER sprites_sheet{ Surface::parse_img(sprites_sheet_src) };
 
-        if (n == UNKNOWN_N)
+        if (!n)
         {
-            switch (direction)
+            switch (direction.value_or(DEFAULT_DIRECTION))
             {
-                case GameEngine::Animation::FramesAlignment::HORIZONTAL: n = (sprites_sheet.get_width() - static_cast<std::size_t>(start_point.x)) / frame_width;  break;
-                case GameEngine::Animation::FramesAlignment::VERTICAL:   n = (sprites_sheet.get_height() - static_cast<std::size_t>(start_point.y)) / frame_height; break;
+                case FramesAlignment::HORIZONTAL: n.emplace((sprites_sheet.get_width() - static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).x))  / frame_width);  break;
+                case FramesAlignment::VERTICAL:   n.emplace((sprites_sheet.get_height() - static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y)) / frame_height); break;
             }
         }
 
         frames = std::make_shared<std::vector<Surface>>();
-        frames->reserve(n);
-        frame_duration = animation_duration / n;
+        frames->reserve(n.value());
+        frame_duration = animation_duration / n.value();
         sprites_sheet.get_stream().seekg
         (
             static_cast<std::streamoff>
             (
                 (
-                    static_cast<std::size_t>(start_point.x) +
-                    static_cast<std::size_t>(start_point.y) *
+                    static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).x) +
+                    static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
                     sprites_sheet.get_width()
                 ) *
                 sprites_sheet.get_pixel_size() +
-                static_cast<std::size_t>(start_point.y) *
+                static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
                 sprites_sheet.get_padding()
                 ), std::ifstream::cur);
         auto frame_beg{ sprites_sheet.get_stream().tellg() };
@@ -68,7 +66,7 @@ namespace GameEngine
             }
             frames->emplace_back(std::move(frame), frame_height, frame_width);
 
-            switch (direction)
+            switch (direction.value_or(FramesAlignment::HORIZONTAL))
             {
                 case FramesAlignment::HORIZONTAL: frame_beg += static_cast<std::streamoff>(frame_width * sprites_sheet.get_pixel_size()); break;
                 case FramesAlignment::VERTICAL:   frame_beg += static_cast<std::streamoff>(frame_width * frame_height * sprites_sheet.get_pixel_size()) + sprites_sheet.get_padding() * static_cast<std::streamoff>(frame_height); break;
