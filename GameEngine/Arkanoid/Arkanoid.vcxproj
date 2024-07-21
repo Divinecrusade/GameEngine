@@ -512,6 +512,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Animation.hpp" />
+    <ClInclude Include="..\AnimationFrames.hpp" />
+    <ClInclude Include="..\AnimationFramesView.hpp" />
     <ClInclude Include="..\Auxiliry.hpp" />
     <ClInclude Include="..\Collidable.hpp" />
     <ClInclude Include="..\Direct2DFactory.hpp" />
@@ -525,6 +527,7 @@
     <ClInclude Include="..\MainWindow\WinKey.hpp" />
     <ClInclude Include="..\Mouse.hpp" />
     <ClInclude Include="..\Surface.hpp" />
+    <ClInclude Include="..\SurfaceView.hpp" />
     <ClInclude Include="Arkanoid.hpp" />
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="Blow.hpp" />
@@ -535,6 +538,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Animation.cpp" />
+    <ClCompile Include="..\AnimationFrames.cpp" />
     <ClCompile Include="..\Direct2DFactory.cpp" />
     <ClCompile Include="..\Game.cpp" />
     <ClCompile Include="..\GraphicsDirect2D.cpp" />

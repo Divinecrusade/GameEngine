@@ -3,6 +3,7 @@
 #include "Surface.hpp"
 #include "SurfaceView.hpp"
 #include "IGraphics2D.hpp"
+#include "AnimationFramesView.hpp"
 
 
 namespace GameEngine
@@ -22,11 +23,11 @@ namespace GameEngine
     public:
 
         Animation() = delete;
-        Animation(float animation_duration, std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::optional<std::size_t> n = std::nullopt, std::optional<FramesAlignment> direction = std::nullopt, std::optional<Geometry::Vector2D<int>> start_point = std::nullopt);
-        Animation(Animation&&) = default;
+        Animation(AnimationFramesView frames, float animation_duration);
+        Animation(Animation&&)      = default;
         Animation(Animation const&) = default;
         Animation& operator=(Animation const&) = default;
-        Animation& operator=(Animation&&) = default;
+        Animation& operator=(Animation&&)      = default;
 
         void update(float dt);
         void reset() noexcept;
@@ -42,7 +43,7 @@ namespace GameEngine
 
     private:
 
-        std::shared_ptr<std::vector<Surface>> frames;
+        AnimationFramesView frames;
         std::size_t cur_frame_index{ 0U };
 
         float frame_duration;

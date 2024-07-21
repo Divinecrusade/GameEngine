@@ -116,7 +116,8 @@ private:
     GameEngine::Surface   gamestart_img;
     GameEngine::Surface   gameover_img;
     GameEngine::Surface   rocket;
-    GameEngine::Animation blow_effect;
+
+    GameEngine::AnimationFrames blow_effect;
 
     std::vector<Missile> missiles;
     std::vector<Blow>    blows;

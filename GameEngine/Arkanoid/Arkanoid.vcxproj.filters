@@ -90,6 +90,15 @@
     <ClInclude Include="..\Collidable.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\AnimationFrames.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AnimationFramesView.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SurfaceView.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainWindow\MainWindow.cpp">
@@ -132,6 +141,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Blow.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AnimationFrames.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

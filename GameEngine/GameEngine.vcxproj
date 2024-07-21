@@ -134,6 +134,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.hpp" />
+    <ClInclude Include="AnimationFrames.hpp" />
+    <ClInclude Include="AnimationFramesView.hpp" />
     <ClInclude Include="Auxiliry.hpp" />
     <ClInclude Include="ContiguousIterator.hpp" />
     <ClInclude Include="Direct2DFactory.hpp">
@@ -158,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationFrames.cpp" />
     <ClCompile Include="Direct2DFactory.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

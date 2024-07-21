@@ -7,10 +7,10 @@ Game { window, graphics },
 field{ Rec2i{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_height() - PADDING.bottom, 0 + PADDING.top } },
 pad  { PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
-gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
-gameover_img { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
-rocket       { std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
-blow_effect  { BLOW_DURATION, std::filesystem::current_path() / (std::filesystem::path{std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U }
+gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
+gameover_img { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
+rocket       { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
+blow_effect  { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U }
 { 
     constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -188,7 +188,7 @@ void Arkanoid::update_missiles(float dt)
             field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
-            Blow const& new_blow{ blows.emplace_back(missile->get_pos(), blow_effect, GameEngine::Colours::MAGENTA) };
+            Blow const& new_blow{ blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA) };
             if (new_blow.is_collided_with(ball)) new_blow.throw_ball(ball);
         }
     }
