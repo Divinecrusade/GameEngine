@@ -74,6 +74,7 @@ void Arkanoid::update_paddle(float dt)
 
             break;
         }
+    else new_dir = Paddle::Direction::STOP;
     pad.set_direction(new_dir);
     
     pad.update(dt);
@@ -144,10 +145,11 @@ void Arkanoid::update_missiles(float dt)
         missile->update(dt);
 
         if (missile->is_collided_with(ball) || 
-            missile->is_collided_with(pad) || 
+            missile->is_collided_with(pad)  || 
             field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
+
             Blow const& new_blow{ blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA) };
             if (new_blow.is_collided_with(ball)) new_blow.throw_ball(ball);
         }
