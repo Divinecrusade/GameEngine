@@ -123,16 +123,14 @@ namespace GameEngine
         return std::find(pressed_non_fun_keys.begin(), pressed_non_fun_keys.end(), code) != pressed_non_fun_keys.end();
     }
 
-    WinKey MainWindow::get_last_pressed_functional_key() const noexcept
+    std::optional<WinKey> MainWindow::get_last_pressed_functional_key() const noexcept
     {
-        auto const it { pressed_fun_keys.crbegin() };
-        return (it == pressed_fun_keys.crend() ? WinKey::NOT_PRESSED : *it);
+        return (!pressed_fun_keys.empty() ? std::optional<WinKey>{ pressed_fun_keys.back() } : std::nullopt);
     }
 
-    int MainWindow::get_last_pressed_non_functional_key() const noexcept
+    std::optional<int> MainWindow::get_last_pressed_non_functional_key() const noexcept
     {
-        auto const it{ pressed_non_fun_keys.crbegin() };
-        return (it == pressed_non_fun_keys.crend() ? NON_FUNCTIONAL_KEY_NOT_PRESSED : *it);
+        return (!pressed_non_fun_keys.empty() ? std::optional<int>{ pressed_non_fun_keys.back() } : std::nullopt);
     }
 
     void MainWindow::key_pressed(WPARAM code)

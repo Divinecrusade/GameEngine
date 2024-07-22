@@ -28,7 +28,6 @@ namespace GameEngine
 		ARROW_LEFT = VK_LEFT,
 		ARROW_RIGHT = VK_RIGHT,
 		ARROW_DOWN = VK_DOWN,
-		ARROW_UP = VK_UP,
-		NOT_PRESSED = -1
+		ARROW_UP = VK_UP
 	};
 }

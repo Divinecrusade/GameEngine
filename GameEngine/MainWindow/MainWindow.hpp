@@ -17,8 +17,6 @@ namespace GameEngine
         static constexpr int  DEFAULT_INIT_WIDTH {  640  };
         static constexpr int  DEFAULT_INIT_HEIGHT{  480  };
 
-        static constexpr int NON_FUNCTIONAL_KEY_NOT_PRESSED{ 0U };
-
     public:
 
         MainWindow() = delete;
@@ -31,15 +29,15 @@ namespace GameEngine
         MainWindow& operator=(MainWindow const&) = delete;
         MainWindow& operator=(MainWindow&&) = delete;
 
-        virtual bool is_fun_key_pressed(WinKey key) const override;
-        virtual bool is_non_fun_key_pressed(int code) const override;
+        bool is_fun_key_pressed(WinKey key) const override;
+        bool is_non_fun_key_pressed(int code) const override;
 
-        virtual WinKey get_last_pressed_functional_key() const noexcept override;
-        virtual int get_last_pressed_non_functional_key() const noexcept override;
+        std::optional<WinKey> get_last_pressed_functional_key() const noexcept override;
+        std::optional<int> get_last_pressed_non_functional_key() const noexcept override;
 
-        virtual void process_messages_queue() noexcept override;
-        virtual bool is_terminated() const noexcept override;
-        virtual HWND get_window_handler() const noexcept override;
+        void process_messages_queue() noexcept override;
+        bool is_terminated() const noexcept override;
+        HWND get_window_handler() const noexcept override;
 
         __forceinline MSG start_message_loop() noexcept
         {
