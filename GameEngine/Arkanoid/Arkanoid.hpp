@@ -68,6 +68,8 @@ private:
 
     void render_full_scene();
 
+    void cascade_blows(Blow const& new_blow);
+
 private:
     
     static constexpr Rec2i PADDING{ 250, 30, 30, 30 };
@@ -103,7 +105,7 @@ private:
 
     static constexpr float MISSILE_SPEED{ 300.f };
 
-    static constexpr float BLOW_DURATION{ 4.f };
+    static constexpr float BLOW_DURATION{ 3.f };
 
     GameStage cur_stage{ GameStage::START };
 

@@ -88,7 +88,7 @@ void Arkanoid::update_ball(float dt)
     {
         if (field.is_in_lose_zone(ball))
         {
-            //cur_stage = GameStage::GAMEOVER;
+            cur_stage = GameStage::GAMEOVER;
 
             return;
         }
@@ -126,6 +126,7 @@ void Arkanoid::update_bricks()
     if (collided_brick != bricks.end())
     {
         collided_brick->deflect(ball);
+
         missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::MAGENTA);
         if (bricks.erase(collided_brick); bricks.empty())
         {
@@ -142,6 +143,7 @@ void Arkanoid::update_missiles(float dt)
 {
     for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
     {
+        if (missile->is_destroyed()) continue;
         missile->update(dt);
 
         if (missile->is_collided_with(ball) || 
@@ -150,8 +152,7 @@ void Arkanoid::update_missiles(float dt)
         {
             missile->destroy();
 
-            Blow const& new_blow{ blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA) };
-            if (new_blow.is_collided_with(ball)) new_blow.throw_ball(ball);
+            cascade_blows(std::cref(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA)));
         }
     }
     std::erase_if(missiles, [](Missile const& missile)
@@ -189,6 +190,22 @@ void Arkanoid::render_full_scene()
         blow.draw(gfx, WINDOW);
     }
     ball.draw(gfx);
+}
+
+void Arkanoid::cascade_blows(Blow const& new_blow)
+{
+    if (new_blow.is_collided_with(ball)) new_blow.throw_ball(ball);
+
+    for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
+    {
+        if (missile->is_destroyed()) continue;
+
+        if (new_blow.is_collided_with(*missile))
+        {
+            missile->destroy();
+            cascade_blows(std::cref(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA)));
+        }
+    }
 }
 
 void Arkanoid::render()
