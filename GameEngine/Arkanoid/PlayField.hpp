@@ -2,11 +2,12 @@
 
 #include <Rectangle2D.hpp>
 #include <IGraphics2D.hpp>
+#include <IDrawable.hpp>
 
 #include "Paddle.hpp"
 
 
-class PlayField final
+class PlayField final : public GameEngine::Interfaces::IDrawable
 {
 private:
 
@@ -23,7 +24,7 @@ public:
     PlayField& operator=(PlayField const&) = delete;
     PlayField& operator=(PlayField&&)      = delete;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area = std::nullopt) const override;
     
     bool is_in_field(Paddle const& pad) const noexcept;
     void handle_collision(Paddle& pad)  const noexcept;

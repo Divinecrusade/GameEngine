@@ -31,7 +31,7 @@ public:
     
     ~Blow() = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<Rec2i> const& clipping_area) const;
     void update(float dt);
 
     bool is_ended() const noexcept;

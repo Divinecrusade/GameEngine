@@ -2,13 +2,13 @@
 
 #include <Animation.hpp>
 #include <SurfaceView.hpp>
-
-#include "PlayField.hpp"
 #include <Rectangle2D.hpp>
 #include <Collidable.hpp>
+#include <IDrawable.hpp>
+#include "PlayField.hpp"
 
 
-class Missile final : public GameEngine::Abstract::Collidable
+class Missile final : public GameEngine::Abstract::Collidable, public GameEngine::Interfaces::IDrawable
 {
 private:
 
@@ -25,15 +25,15 @@ public:
 
     Missile() = delete;
     Missile(Vec2i const& init_pos, float init_speed, GameEngine::SurfaceView sprite, GameEngine::Colour chroma);
-    Missile(Missile const&) noexcept = default;
-    Missile(Missile&&)      noexcept = default;
+    Missile(Missile const&) = default;
+    Missile(Missile&&)      = default;
 
-    Missile& operator=(Missile const&) noexcept = default;
-    Missile& operator=(Missile&&)      noexcept = default;
+    Missile& operator=(Missile const& other_missile) noexcept;
+    Missile& operator=(Missile&& other_missile_tmp)  noexcept;
 
     ~Missile() noexcept = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, GameEngine::Geometry::Rectangle2D<int> const& clip) const;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override;
     void update(float dt);
 
     Rec2i get_collision_box() const noexcept override;

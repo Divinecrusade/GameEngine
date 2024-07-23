@@ -7,10 +7,12 @@ pos{ pos },
 blow_effect{ std::make_pair(anim, chroma) }
 { }
 
-void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx, Rec2i const& clip) const
+void Blow::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<Rec2i> const& clipping_area) const
 {
+    assert(clipping_area.has_value());
+
     GameEngine::SurfaceView frame{ blow_effect.first.get_cur_frame() };
-    gfx.draw_sprite_excluding_color(Vec2i{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, blow_effect.second, clip);
+    gfx.draw_sprite_excluding_color(Vec2i{ pos.x - static_cast<int>(frame.get_width() / 2U), pos.y - static_cast<int>(frame.get_height() / 2U) }, frame, blow_effect.second, *clipping_area);
 }
 
 void Blow::update(float dt)

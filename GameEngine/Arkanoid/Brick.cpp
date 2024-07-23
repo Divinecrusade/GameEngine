@@ -46,7 +46,7 @@ Brick& Brick::operator=(Brick&& b) noexcept
     return *this;
 }
 
-void Brick::draw(GameEngine::Interfaces::IGraphics2D & gfx) const
+void Brick::draw(GameEngine::Interfaces::IGraphics2D & gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
 {
     auto padded_block{ collision_box.get_expanded(-VISUAL_PADDING) };
     auto flat_visual_block{ padded_block.get_expanded(-FRAME_WIDTH) };

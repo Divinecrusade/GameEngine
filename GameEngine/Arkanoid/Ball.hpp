@@ -3,10 +3,11 @@
 #include <Rectangle2D.hpp>
 #include <KeyColor.hpp>
 #include <IGraphics2D.hpp>
+#include <IDrawable.hpp>
 #include <Collidable.hpp>
 
 
-class Ball final : public GameEngine::Abstract::Collidable
+class Ball final : public GameEngine::Abstract::Collidable, public GameEngine::Interfaces::IDrawable
 {
 private:
 
@@ -33,7 +34,7 @@ public:
 
     ~Ball() noexcept = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area = std::nullopt) const override;
     void update(float dt) noexcept;
     
     void accelerate(float a) noexcept;

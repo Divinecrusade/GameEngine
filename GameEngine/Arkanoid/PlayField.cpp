@@ -14,7 +14,7 @@ collision_frame{ size_and_location }
     assert(collision_frame.top < collision_frame.bottom);
 }
 
-void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx) const
+void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
 {
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness), inner_border_thickness, inner_border_colour);
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness + outer_border_thickness), outer_border_thickness, outer_border_colour);

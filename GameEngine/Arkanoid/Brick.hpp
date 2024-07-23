@@ -3,12 +3,13 @@
 #include <Rectangle2D.hpp>
 #include <KeyColor.hpp>
 #include <IGraphics2D.hpp>
+#include <IDrawable.hpp>
 #include <Collidable.hpp>
 
 #include "Ball.hpp"
 
 
-class Brick final : public GameEngine::Abstract::Collidable
+class Brick final : public GameEngine::Abstract::Collidable, public GameEngine::Interfaces::IDrawable
 {
 private:
 
@@ -32,7 +33,7 @@ public:
 
     ~Brick() noexcept = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx) const;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area = std::nullopt) const override;
 
     Rec2i get_collision_box() const override;
 

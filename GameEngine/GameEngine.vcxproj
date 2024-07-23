@@ -145,6 +145,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GraphicsDirect2D.hpp" />
     <ClInclude Include="Collidable.hpp" />
+    <ClInclude Include="IDrawable.hpp" />
     <ClInclude Include="IFramableGraphics2D.hpp" />
     <ClInclude Include="IGraphics2D.hpp" />
     <ClInclude Include="IteratorCommonTraits.hpp" />

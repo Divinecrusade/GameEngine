@@ -12,7 +12,7 @@ cur_speed{ init_speed }
     change_direction(init_dir);
 }
 
-void Ball::draw(GameEngine::Interfaces::IGraphics2D& gfx) const
+void Ball::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
 {
     gfx.fill_ellipse(cur_pos, RADIUS, RADIUS, c);
 }

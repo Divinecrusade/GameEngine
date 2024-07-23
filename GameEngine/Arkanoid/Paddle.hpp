@@ -2,16 +2,18 @@
 
 #include <Rectangle2D.hpp>
 #include <IGraphics2D.hpp>
+#include <IDrawable.hpp>
 #include <Collidable.hpp>
+#include <IDrawable.hpp>
+#include <Auxiliry.hpp>
 
 #include "Ball.hpp"
-#include <Auxiliry.hpp>
 
 
 using namespace GameEngine::Geometry::Literals;
 
 
-class Paddle final : public GameEngine::Abstract::Collidable
+class Paddle final : public GameEngine::Abstract::Collidable, public GameEngine::Interfaces::IDrawable
 {
 private:
 
@@ -34,7 +36,7 @@ public:
     Paddle& operator=(Paddle const&) = delete;
     Paddle& operator=(Paddle&&)      = delete;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx);
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area = std::nullopt) const override;
     void update(float dt) noexcept;
 
     Direction get_direction() const   noexcept;

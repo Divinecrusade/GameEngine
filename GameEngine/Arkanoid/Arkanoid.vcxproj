@@ -519,6 +519,7 @@
     <ClInclude Include="..\Direct2DFactory.hpp" />
     <ClInclude Include="..\Game.hpp" />
     <ClInclude Include="..\GraphicsDirect2D.hpp" />
+    <ClInclude Include="..\IDrawable.hpp" />
     <ClInclude Include="..\IGraphics2D.hpp" />
     <ClInclude Include="..\ISurface.hpp" />
     <ClInclude Include="..\IWindow.hpp" />
