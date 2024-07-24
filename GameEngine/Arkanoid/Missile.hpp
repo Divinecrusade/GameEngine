@@ -33,7 +33,7 @@ public:
 
     ~Missile() noexcept = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override;
     void update(float dt);
 
     Rec2i get_collision_box() const noexcept override;
