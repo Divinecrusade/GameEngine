@@ -28,6 +28,7 @@ private:
     static constexpr wchar_t const* const ASSETS_DIR{ L"data\\assets\\" };
     static constexpr wchar_t const* const ASSET_GAMESTART_IMG { L"gamestart.bmp" };
     static constexpr wchar_t const* const ASSET_GAMEOVER_IMG  { L"gameover.bmp" };
+    static constexpr wchar_t const* const ASSET_LIFE_SPRITE   { L"heart.bmp" };
     static constexpr wchar_t const* const ASSET_MISSILE_SPRITE{ L"missile.bmp" };
     static constexpr wchar_t const* const ASSET_BLOW_ANIMATION{ L"blow.bmp" };
 
@@ -127,6 +128,7 @@ private:
     GameEngine::Surface   gamestart_img;
     GameEngine::Surface   gameover_img;
     GameEngine::Surface   rocket;
+    GameEngine::Surface   heart;
 
     GameEngine::AnimationFrames blow_effect;
 
