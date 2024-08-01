@@ -45,6 +45,7 @@ public:
     void change_direction(GameEngine::Geometry::Vector2D<float> const& dir);
 
     void move_by(Vec2i const& dpos) noexcept;
+    void move_to(Vec2i const& pos)  noexcept;
 
     void inverse_x() noexcept;
     void inverse_y() noexcept;

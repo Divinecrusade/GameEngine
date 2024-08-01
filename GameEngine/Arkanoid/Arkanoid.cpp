@@ -27,6 +27,7 @@ void Arkanoid::update()
     {
         case Arkanoid::GameStage::START:       update_start_stage();         break;        
         case Arkanoid::GameStage::IN_PROGRESS: update_in_progress_stage(dt); break;
+        case Arkanoid::GameStage::RESET:       update_reset_stage(dt);       break;
         case Arkanoid::GameStage::GAMEOVER:    update_gameover_stage();      break;
     }
 }
@@ -52,6 +53,29 @@ void Arkanoid::update_in_progress_stage(float dt)
     update_bricks();
     update_missiles(dt);
     update_blows(dt);
+}
+
+void Arkanoid::update_reset_stage(float dt)
+{
+    assert(cur_stage == GameStage::RESET);
+
+    static float left_duration{ RESET_STAGE_DURATION };
+
+    if (GameEngine::Geometry::Auxiliry::is_equal_with_precision(left_duration, RESET_STAGE_DURATION))
+    {
+        missiles.clear();
+        blows.clear();
+        pad.move_to(PADDLE_INIT_POS);
+        ball.move_to(BALL_INIT_POS);
+        ball.change_direction(BALL_INIT_DIR);
+    }
+
+    left_duration -= dt;
+    if (left_duration <= 0.f)
+    {
+        left_duration = RESET_STAGE_DURATION;
+        cur_stage = GameStage::IN_PROGRESS;
+    }
 }
 
 void Arkanoid::update_gameover_stage()
@@ -89,8 +113,7 @@ void Arkanoid::update_ball(float dt)
     {
         if (field.is_in_lose_zone(ball))
         {
-            if (lives.is_ended()) cur_stage = GameStage::GAMEOVER;
-            else lives.decrease();
+            decrease_lives();
 
             return;
         }
@@ -148,9 +171,14 @@ void Arkanoid::update_missiles(float dt)
         if (missile->is_destroyed()) continue;
         missile->update(dt);
 
-        if (missile->is_collided_with(ball) || 
-            missile->is_collided_with(pad)  || 
-            field.get_collision_box().bottom < missile->get_collision_box().bottom)
+
+        if (missile->is_collided_with(pad))
+        {
+            decrease_lives();
+
+            return;
+        }
+        if (missile->is_collided_with(ball) || field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
 
@@ -211,6 +239,17 @@ void Arkanoid::cascade_blows(Blow const& new_blow)
     }
 }
 
+void Arkanoid::decrease_lives()
+{
+    if (lives.is_ended()) cur_stage = GameStage::GAMEOVER;
+    else
+    {
+        lives.decrease();
+        pad.reset_cooldown();
+        cur_stage = GameStage::RESET;
+    }
+}
+
 void Arkanoid::render()
 {
     Game::render();
@@ -221,8 +260,9 @@ void Arkanoid::render()
             gfx.draw_sprite({ 0, WINDOW.get_height() / 2 - static_cast<int>(gamestart_img.get_height() / 2U) }, gamestart_img, WINDOW);
         
         break;
-
+        
         case GameStage::IN_PROGRESS:
+        case GameStage::RESET:
         
             render_full_scene();
 

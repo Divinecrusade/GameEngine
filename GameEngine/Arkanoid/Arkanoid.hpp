@@ -22,7 +22,7 @@ private:
 
     enum class GameStage
     {
-        START, IN_PROGRESS, GAMEOVER
+        START, IN_PROGRESS, RESET, GAMEOVER
     };
 
     static constexpr wchar_t const* const ASSETS_DIR{ L"data\\assets\\" };
@@ -59,6 +59,7 @@ private:
 
     void update_start_stage();
     void update_in_progress_stage(float dt);
+    void update_reset_stage(float dt);
     void update_gameover_stage();
 
     void update_paddle(float dt);
@@ -70,6 +71,8 @@ private:
     void render_full_scene();
 
     void cascade_blows(Blow const& new_blow);
+
+    void decrease_lives();
 
 private:
     
@@ -111,6 +114,7 @@ private:
     static constexpr int N_LIVES{ 3 };
 
     static constexpr Rec2i LIVES_AREA{ WINDOW.left + 30, WINDOW.left + PADDING.left, WINDOW.bottom - PADDING.bottom, WINDOW.top + PADDING.top };
+    static constexpr float RESET_STAGE_DURATION{ 2.f };
 
     GameStage cur_stage{ GameStage::START };
 

@@ -43,6 +43,7 @@ public:
     void set_direction(Direction dir) noexcept;
 
     void move_by(Vec2i const& dpos) noexcept;
+    void move_to(Vec2i const& pos)  noexcept;
     void accelerate(float a)        noexcept;
 
     Rec2i get_collision_box() const noexcept override;

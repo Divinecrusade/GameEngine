@@ -50,6 +50,11 @@ void Ball::move_by(Vec2i const& dpos) noexcept
     cur_pos += dpos;
 }
 
+void Ball::move_to(Vec2i const& pos) noexcept
+{
+    cur_pos = pos;
+}
+
 void Ball::inverse_x() noexcept
 {
     cur_vel.x *= -1.f;
