@@ -11,6 +11,7 @@
 #include "Brick.hpp"
 #include "Missile.hpp"
 #include "Blow.hpp"
+#include "LifeCounter.hpp"
 
 #include <stack>
 
@@ -107,6 +108,10 @@ private:
 
     static constexpr float BLOW_DURATION{ 3.f };
 
+    static constexpr int N_LIVES{ 3 };
+
+    static constexpr Rec2i LIVES_AREA{ WINDOW.left + 30, WINDOW.left + PADDING.left, WINDOW.bottom - PADDING.bottom, WINDOW.top + PADDING.top };
+
     GameStage cur_stage{ GameStage::START };
 
     PlayField field;
@@ -123,4 +128,6 @@ private:
 
     std::vector<Missile> missiles;
     std::vector<Blow>    blows;
+
+    LifeCounter lives;
 };

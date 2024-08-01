@@ -533,6 +533,7 @@
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="Blow.hpp" />
     <ClInclude Include="Brick.hpp" />
+    <ClInclude Include="LifeCounter.hpp" />
     <ClInclude Include="Missile.hpp" />
     <ClInclude Include="Paddle.hpp" />
     <ClInclude Include="PlayField.hpp" />
@@ -549,6 +550,7 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Blow.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="LifeCounter.cpp" />
     <ClCompile Include="Missile.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

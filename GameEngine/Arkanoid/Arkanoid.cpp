@@ -10,7 +10,8 @@ ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
 gameover_img { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
 rocket       { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
-blow_effect  { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U }
+blow_effect  { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U },
+lives        { 0, N_LIVES, { PADDING.right, PADDING.top }, rocket }
 { 
     constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -88,7 +89,8 @@ void Arkanoid::update_ball(float dt)
     {
         if (field.is_in_lose_zone(ball))
         {
-            cur_stage = GameStage::GAMEOVER;
+            if (lives.is_ended()) cur_stage = GameStage::GAMEOVER;
+            else lives.decrease();
 
             return;
         }
@@ -190,6 +192,7 @@ void Arkanoid::render_full_scene()
         blow.draw(gfx, WINDOW);
     }
     ball.draw(gfx);
+    lives.draw(gfx, LIVES_AREA);
 }
 
 void Arkanoid::cascade_blows(Blow const& new_blow)
