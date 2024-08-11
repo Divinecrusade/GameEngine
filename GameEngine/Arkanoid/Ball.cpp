@@ -7,7 +7,10 @@
 Ball::Ball(Vec2i init_pos, GameEngine::Geometry::Vector2D<float> init_dir, float init_speed) noexcept
 :
 cur_pos{ init_pos },
-cur_speed{ init_speed }
+cur_speed{ init_speed },
+init_pos{ init_pos },
+init_speed{ init_speed },
+init_dir{ init_dir }
 { 
     change_direction(init_dir);
 }
@@ -26,6 +29,13 @@ void Ball::accelerate(float a) noexcept
 {
     cur_vel *= ((cur_speed + a) / cur_speed);
     cur_speed += a;
+}
+
+void Ball::reset() noexcept
+{
+    cur_pos = init_pos;
+    cur_speed = init_speed;
+    change_direction(init_dir);
 }
 
 Ball::Rec2i Ball::get_collision_box() const noexcept

@@ -38,6 +38,7 @@ public:
     void update(float dt) noexcept;
     
     void accelerate(float a) noexcept;
+    void reset() noexcept;
 
     Rec2i get_collision_box() const noexcept override;
     
@@ -57,5 +58,9 @@ private:
     Vec2i cur_pos;
     float cur_speed;
 
-    GameEngine::Geometry::Vector2D<float> cur_vel;
+    Vec2i const init_pos;
+    float const init_speed;
+    Vec2f const init_dir; 
+
+    Vec2f cur_vel;
 };

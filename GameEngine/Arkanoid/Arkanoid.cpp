@@ -68,8 +68,8 @@ void Arkanoid::update_reset_stage(float dt)
         missiles.clear();
         blows.clear();
         pad.move_to(PADDLE_INIT_POS);
-        ball.move_to(BALL_INIT_POS);
-        ball.change_direction(BALL_INIT_DIR);
+        ball.reset();
+        points_counter.ball_missed();
     }
 
     left_duration -= dt;
