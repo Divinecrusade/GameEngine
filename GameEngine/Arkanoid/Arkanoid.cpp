@@ -188,6 +188,7 @@ void Arkanoid::update_missiles(float dt)
         if (missile->is_collided_with(ball) || field.get_collision_box().bottom < missile->get_collision_box().bottom)
         {
             missile->destroy();
+            pad.reset_cooldown();
 
             cascade_blows(std::cref(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA)));
         }
