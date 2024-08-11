@@ -14,6 +14,11 @@ bool LifeCounter::is_ended() const noexcept
     return cur_value == min_value;
 }
 
+int LifeCounter::get_cur_n_lives() const noexcept
+{
+    return cur_value;
+}
+
 void LifeCounter::reset() noexcept
 {
     cur_value = max_value;

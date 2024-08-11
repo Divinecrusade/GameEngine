@@ -141,6 +141,11 @@
     <ClInclude Include="Direct2DFactory.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="DWriteFontNames.hpp" />
+    <ClInclude Include="DWriteFontStretch.hpp" />
+    <ClInclude Include="DWriteFontStyles.hpp" />
+    <ClInclude Include="DWriteTextHorizontalAlignment.hpp" />
+    <ClInclude Include="DWriteTextVerticalAlignment.hpp" />
     <ClInclude Include="FrameTimer.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GraphicsDirect2D.hpp" />

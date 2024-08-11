@@ -37,6 +37,9 @@
     <Filter Include="Файлы заголовков\Auxiliary">
       <UniqueIdentifier>{d5235f4b-c0a9-48f6-8140-8b0a9afe6a6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\DWrite">
+      <UniqueIdentifier>{f882f262-8e7d-4f21-9397-3cb640cb12bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow\MainWindow.hpp">
@@ -107,6 +110,21 @@
     </ClInclude>
     <ClInclude Include="IDrawable.hpp">
       <Filter>Файлы заголовков\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DWriteFontStyles.hpp">
+      <Filter>Файлы заголовков\DWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DWriteFontNames.hpp">
+      <Filter>Файлы заголовков\DWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DWriteFontStretch.hpp">
+      <Filter>Файлы заголовков\DWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DWriteTextHorizontalAlignment.hpp">
+      <Filter>Файлы заголовков\DWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DWriteTextVerticalAlignment.hpp">
+      <Filter>Файлы заголовков\DWrite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

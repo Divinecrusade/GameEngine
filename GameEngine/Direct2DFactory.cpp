@@ -1,5 +1,8 @@
 #include "Direct2DFactory.hpp"
 
+#include <algorithm>
+#include <ranges>
+
 
 namespace GameEngine
 {
@@ -14,10 +17,11 @@ namespace GameEngine
     Direct2DFactory::~Direct2DFactory()
     {
         safe_release(render_target);
-        containers_safe_release(brushes, bitmapbrushes, bitmaps);
+        containers_safe_release(brushes, bitmapbrushes, bitmaps, text_formats);
         safe_release(d2d_factory);
         safe_release(geom);
         safe_release(sink);
+        safe_release(dwrite_factory);
     }
 
     RECT Direct2DFactory::get_render_area_size() const noexcept
@@ -115,6 +119,31 @@ namespace GameEngine
         }
 
         return *bitmapbrushes[&bitmap];
+    }
+
+    IDWriteTextFormat& Direct2DFactory::get_text_format(DWriteFontNames font, FLOAT font_size, int font_weight, DWriteFontStyles style, DWriteFontStretch stretch)
+    {
+        auto it{ std::ranges::find_if(text_formats, [&](auto const& text_format) 
+        { 
+            return text_format.second->GetFontSize() == font_size && 
+                   text_format.second->GetFontWeight() == font_weight && 
+                   static_cast<DWriteFontStyles>(text_format.second->GetFontStyle()) == style && 
+                   text_format.first == font;
+        }) };
+        if (it == text_formats.end())
+        {
+            if (!dwrite_factory)
+                if (FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(dwrite_factory), reinterpret_cast<IUnknown**>(&dwrite_factory))))
+                    throw std::runtime_error{ "Failed to create DWrite factory" };
+
+            auto& new_pair{ text_formats.emplace_back(font, nullptr) };
+
+            if (FAILED(dwrite_factory->CreateTextFormat(FONT_NAMES[static_cast<int>(font)], nullptr, static_cast<DWRITE_FONT_WEIGHT>(font_weight), static_cast<DWRITE_FONT_STYLE>(style), static_cast<DWRITE_FONT_STRETCH>(stretch), font_size, L"", &new_pair.second)))
+                throw std::runtime_error{ "Failed to create text format" };
+
+            it = text_formats.end() - 1;
+        }
+        return *it->second;
     }
 
     void Direct2DFactory::open_sink()

@@ -1,12 +1,17 @@
 #pragma once
 
 #pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "Dwrite")
 
 #include "KeyColor.hpp"
 #include "Surface.hpp"
 #include "SurfaceView.hpp"
+#include "DWriteFontNames.hpp"
+#include "DWriteFontStyles.hpp"
+#include "DWriteFontStretch.hpp"
 
 #include <d2d1.h>
+#include <dwrite.h>
 #include <wincodec.h>
 #include <stdexcept>
 #include <cassert>
@@ -50,7 +55,7 @@ namespace std
 
 
 namespace GameEngine
-{
+{    
     template<class Interface>
     concept Releasable = requires (Interface& instance)
     {
@@ -100,6 +105,8 @@ namespace GameEngine
             return PIXEL_FORMAT;
         }
 
+        static constexpr WCHAR const* FONT_NAMES[]{ L"Verdana", L"Gabriola" };
+
     public:
 
         Direct2DFactory() = delete;
@@ -119,7 +126,8 @@ namespace GameEngine
         ID2D1SolidColorBrush&  get_brush(KeyColor const& key);
         ID2D1Bitmap&           get_bitmap(SurfaceView srf);
         ID2D1BitmapBrush&      get_bitmapbrush(ID2D1Bitmap& bitmap);
-        
+        IDWriteTextFormat&     get_text_format(DWriteFontNames font, FLOAT font_size, int font_weight, DWriteFontStyles style, DWriteFontStretch stretch = DWriteFontStretch::NORMAL);
+
         void               open_sink();
         void               close_sink();
         ID2D1GeometrySink& get_sink();
@@ -130,6 +138,7 @@ namespace GameEngine
     
         HWND const attached_window;
         ID2D1Factory* d2d_factory{ nullptr };
+        IDWriteFactory* dwrite_factory{ nullptr };
         ID2D1GeometrySink* sink{ nullptr };
 
         ID2D1HwndRenderTarget* render_target{ nullptr };
@@ -137,5 +146,6 @@ namespace GameEngine
         std::unordered_map<KeyColor, ID2D1SolidColorBrush*> brushes;
         std::unordered_map<KeyColor const*, ID2D1Bitmap*>   bitmaps;
         std::unordered_map<ID2D1Bitmap*, ID2D1BitmapBrush*> bitmapbrushes;
+        std::vector<std::pair<DWriteFontNames, IDWriteTextFormat*>> text_formats;
     };
 }

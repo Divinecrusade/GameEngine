@@ -222,4 +222,28 @@ namespace GameEngine
         ID2D1SolidColorBrush& brush{ d2d_factory.get_brush(c) };
         d2d_factory.get_render_target().FillGeometry(&d2d_factory.get_geometry(), &brush);
     }
+
+    void GraphicsDirect2D::draw_text(std::wstring_view text, Colour c, DWriteFontNames font, int font_size, int font_weight, Geometry::Rectangle2D<int> const& clipping_area, DWriteFontStyles style, DWriteFontStretch stretch, DWriteTextHorizontalAlignment align1, DWriteTextVerticalAlignment align2)
+    {
+        assert(font_size >= 0);
+        assert(font_weight >= 1 && font_weight <= 999);
+
+        IDWriteTextFormat& text_format{ d2d_factory.get_text_format(font, get_dips_from_pixels(font_size), font_weight, style) };
+        text_format.SetTextAlignment(static_cast<DWRITE_TEXT_ALIGNMENT>(align1));
+        text_format.SetParagraphAlignment(static_cast<DWRITE_PARAGRAPH_ALIGNMENT>(align2));
+        d2d_factory.get_render_target().DrawTextW
+        (
+            text.data(),
+            text.size(),
+            &text_format,
+            D2D1::RectF
+            (
+                get_dips_from_pixels(clipping_area.left),
+                get_dips_from_pixels(clipping_area.top),
+                get_dips_from_pixels(clipping_area.right),
+                get_dips_from_pixels(clipping_area.bottom)
+            ),
+            &d2d_factory.get_brush(c)
+        );
+    }
 }

@@ -7,12 +7,13 @@ Game { window, graphics },
 field{ Rec2i{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_height() - PADDING.bottom, 0 + PADDING.top } },
 pad  { PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
-gamestart_img{ std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
-gameover_img { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
-rocket       { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
-heart        { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_LIFE_SPRITE   }}) },
-blow_effect  { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U },
-lives        { 0, N_LIVES, { PADDING.right, PADDING.top }, heart, GameEngine::Colours::WHITE }
+gamestart_img { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
+gameover_img  { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
+rocket        { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
+heart         { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_LIFE_SPRITE   }}) },
+blow_effect   { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U },
+lives         { 0, N_LIVES, { PADDING.right, PADDING.top }, heart, GameEngine::Colours::WHITE },
+points_counter{ POINTS_LEFT_TOP_POS }
 { 
     constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
@@ -121,7 +122,11 @@ void Arkanoid::update_ball(float dt)
         field.handle_collision(ball);
         pad.reset_cooldown();
     }
-    if (pad.is_collided_with(ball)) pad.deflect(ball);
+    if (pad.is_collided_with(ball))
+    {
+        pad.deflect(ball);
+        points_counter.ball_reflected_by_paddle();
+    }
 }
 
 void Arkanoid::update_bricks()
@@ -162,6 +167,7 @@ void Arkanoid::update_bricks()
         }
 
         pad.reset_cooldown();
+        points_counter.brick_destroyed(lives.get_cur_n_lives());
     }
 }
 
@@ -222,6 +228,7 @@ void Arkanoid::render_full_scene()
     }
     ball.draw(gfx);
     lives.draw(gfx, LIVES_AREA);
+    points_counter.draw(gfx, POINTS_AREA);
 }
 
 void Arkanoid::cascade_blows(Blow const& new_blow)

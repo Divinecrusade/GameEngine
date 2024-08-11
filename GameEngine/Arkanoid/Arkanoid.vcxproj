@@ -517,6 +517,11 @@
     <ClInclude Include="..\Auxiliry.hpp" />
     <ClInclude Include="..\Collidable.hpp" />
     <ClInclude Include="..\Direct2DFactory.hpp" />
+    <ClInclude Include="..\DWriteFontNames.hpp" />
+    <ClInclude Include="..\DWriteFontStretch.hpp" />
+    <ClInclude Include="..\DWriteFontStyles.hpp" />
+    <ClInclude Include="..\DWriteTextHorizontalAlignment.hpp" />
+    <ClInclude Include="..\DWriteTextVerticalAlignment.hpp" />
     <ClInclude Include="..\Game.hpp" />
     <ClInclude Include="..\GraphicsDirect2D.hpp" />
     <ClInclude Include="..\IDrawable.hpp" />
@@ -537,6 +542,7 @@
     <ClInclude Include="Missile.hpp" />
     <ClInclude Include="Paddle.hpp" />
     <ClInclude Include="PlayField.hpp" />
+    <ClInclude Include="Score.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Animation.cpp" />
@@ -556,6 +562,7 @@
     </ClCompile>
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PlayField.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

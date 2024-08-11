@@ -19,6 +19,8 @@ public:
     ~LifeCounter() = default;
 
     bool is_ended() const noexcept;
+    
+    int get_cur_n_lives() const noexcept;
 
     void reset() noexcept;
 

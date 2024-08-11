@@ -12,6 +12,7 @@
 #include "Missile.hpp"
 #include "Blow.hpp"
 #include "LifeCounter.hpp"
+#include "Score.hpp"
 
 #include <stack>
 
@@ -114,8 +115,11 @@ private:
 
     static constexpr int N_LIVES{ 3 };
 
-    static constexpr Rec2i LIVES_AREA{ WINDOW.left + 30, WINDOW.left + PADDING.left, WINDOW.bottom - PADDING.bottom, WINDOW.top + PADDING.top };
+    static constexpr Rec2i LIVES_AREA{ WINDOW.left + 30, WINDOW.left + PADDING.left, PADDING.top + 100, WINDOW.top + PADDING.top };
     static constexpr float RESET_STAGE_DURATION{ 2.f };
+
+    static constexpr Rec2i POINTS_AREA{ LIVES_AREA.left, LIVES_AREA.right, WINDOW.bottom - PADDING.bottom, LIVES_AREA.bottom };
+    static constexpr Vec2i POINTS_LEFT_TOP_POS{ POINTS_AREA.left, POINTS_AREA.top };
 
     GameStage cur_stage{ GameStage::START };
 
@@ -136,4 +140,5 @@ private:
     std::vector<Blow>    blows;
 
     LifeCounter lives;
+    Score       points_counter;
 };

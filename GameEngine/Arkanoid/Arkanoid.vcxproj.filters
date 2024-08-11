@@ -105,6 +105,24 @@
     <ClInclude Include="LifeCounter.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Score.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DWriteFontNames.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DWriteFontStyles.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DWriteFontStretch.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DWriteTextHorizontalAlignment.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DWriteTextVerticalAlignment.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainWindow\MainWindow.cpp">
@@ -153,6 +171,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="LifeCounter.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Score.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
