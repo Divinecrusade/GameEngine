@@ -19,6 +19,12 @@ namespace GameEngine
         }
     }
 
+    void Game::stop()
+    {
+        assert(!wnd.is_terminated());
+        PostMessage(wnd.get_window_handler(), WM_DESTROY, NULL, NULL);
+    }
+
     void Game::process()
     {
         wnd.process_messages_queue();

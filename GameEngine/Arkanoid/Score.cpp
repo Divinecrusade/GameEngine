@@ -1,9 +1,10 @@
 #include "Score.hpp"
 
 
-Score::Score(GameEngine::Geometry::Vector2D<int> const& left_top_pos)
+Score::Score(GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::Colour font_colour)
 :
-left_top_pos{ left_top_pos }
+left_top_pos{ left_top_pos },
+POINTS_FONT_COLOUR{ font_colour }
 { }
 
 void Score::brick_destroyed(int cur_n_lives)
@@ -20,6 +21,17 @@ void Score::ball_reflected_by_paddle()
 void Score::ball_missed()
 {
     cur_points_factor = MIN_POINTS_FACTOR;
+}
+
+int Score::get_points() const noexcept
+{
+    return points;
+}
+
+void Score::reset() noexcept
+{
+    cur_points_factor = MIN_POINTS_FACTOR;
+    points = 0;
 }
 
 void Score::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const

@@ -5,6 +5,7 @@
 #include <IWindow.hpp>
 #include <FrameTimer.hpp>
 #include <Animation.hpp>
+#include <Mouse.hpp>
 
 #include "Paddle.hpp"
 #include "PlayField.hpp"
@@ -28,7 +29,6 @@ private:
 
     static constexpr wchar_t const* const ASSETS_DIR{ L"data\\assets\\" };
     static constexpr wchar_t const* const ASSET_GAMESTART_IMG { L"gamestart.bmp" };
-    static constexpr wchar_t const* const ASSET_GAMEOVER_IMG  { L"gameover.bmp" };
     static constexpr wchar_t const* const ASSET_LIFE_SPRITE   { L"heart.bmp" };
     static constexpr wchar_t const* const ASSET_MISSILE_SPRITE{ L"missile.bmp" };
     static constexpr wchar_t const* const ASSET_BLOW_ANIMATION{ L"blow.bmp" };
@@ -76,6 +76,8 @@ private:
 
     void decrease_lives();
 
+    void spawn_bricks();
+
 private:
     
     static constexpr Rec2i PADDING{ 250, 30, 30, 30 };
@@ -121,6 +123,18 @@ private:
     static constexpr Rec2i POINTS_AREA{ LIVES_AREA.left, LIVES_AREA.right, WINDOW.bottom - PADDING.bottom, LIVES_AREA.bottom };
     static constexpr Vec2i POINTS_LEFT_TOP_POS{ POINTS_AREA.left, POINTS_AREA.top };
 
+    static constexpr GameEngine::Colour C1{ 75, 166, 226 };
+    static constexpr GameEngine::Colour C2{ 74, 83, 128 };
+
+    static constexpr int   BUTTON_AREA_OFFSET{ 50 };
+    static constexpr Rec2i YES_BUTTON_AREA{ 30 + BUTTON_AREA_OFFSET, WINDOW.right / 2 - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.bottom - 30 - BUTTON_AREA_OFFSET };
+    static constexpr Rec2i NO_BUTTON_AREA { WINDOW.right / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.right - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.bottom - 30 - BUTTON_AREA_OFFSET };
+    
+    static constexpr int   BUTTON_BORDER_WIDTH{ 5 };
+
+    bool is_yes_btn_hovered{ false };
+    bool is_no_btn_hovered{ false };
+
     GameStage cur_stage{ GameStage::START };
 
     PlayField field;
@@ -130,7 +144,6 @@ private:
     Ball      ball;
 
     GameEngine::Surface   gamestart_img;
-    GameEngine::Surface   gameover_img;
     GameEngine::Surface   rocket;
     GameEngine::Surface   heart;
 

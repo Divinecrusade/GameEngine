@@ -21,6 +21,7 @@ namespace GameEngine
         virtual ~Game() = default;
 
         void start();
+        void stop();
 
     protected:
 

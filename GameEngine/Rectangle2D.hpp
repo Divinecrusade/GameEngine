@@ -89,6 +89,11 @@ namespace GameEngine::Geometry
             return left <= point.x && right >= point.x &&
                     bottom >= point.y && top <= point.y;
         }
+        [[maybe_unused]] constexpr bool contains_y_axis_inversed(Vector2D<T> const& point) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
+        {
+            return left <= point.x && right >= point.x &&
+                bottom <= point.y && top >= point.y;
+        }
         [[maybe_unused]] constexpr bool contains(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {
             return left <= rect.left && right >= rect.right && bottom >= rect.bottom && top <= rect.top;

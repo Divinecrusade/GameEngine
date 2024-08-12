@@ -8,19 +8,14 @@ field{ Rec2i{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_h
 pad  { PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
-gameover_img  { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMEOVER_IMG   }}) },
 rocket        { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
 heart         { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_LIFE_SPRITE   }}) },
 blow_effect   { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U },
 lives         { 0, N_LIVES, { PADDING.right, PADDING.top }, heart, GameEngine::Colours::WHITE },
-points_counter{ POINTS_LEFT_TOP_POS }
+points_counter{ POINTS_LEFT_TOP_POS, C1 }
 { 
-    constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     bricks.reserve(N_BRICKS_TOTAL);
-    for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)
-    {
-        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * Vec2i{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW] );
-    }
+    spawn_bricks();
 }
 
 void Arkanoid::update()
@@ -83,6 +78,35 @@ void Arkanoid::update_reset_stage(float dt)
 void Arkanoid::update_gameover_stage()
 {
     assert(cur_stage == GameStage::GAMEOVER);
+
+    if (auto const mouse_pos{ GameEngine::Mouse::get_cursor_pos(get_wnd()) }; YES_BUTTON_AREA.contains_y_axis_inversed(mouse_pos))
+    {
+        is_yes_btn_hovered = true;
+        is_no_btn_hovered = false;
+    }
+    else if (NO_BUTTON_AREA.contains_y_axis_inversed(mouse_pos))
+    {
+        is_yes_btn_hovered = false;
+        is_no_btn_hovered = true;
+    }
+    else is_yes_btn_hovered = is_no_btn_hovered = false;
+
+    if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
+    {
+        if (is_yes_btn_hovered)
+        {
+            ball.reset();
+            pad.move_to(PADDLE_INIT_POS);
+            missiles.clear();
+            blows.clear();
+            lives.reset();
+            points_counter.reset();
+            bricks.clear();
+            spawn_bricks();
+            cur_stage = GameStage::START;
+        }
+        else if (is_no_btn_hovered) stop();
+    }
 }
 
 void Arkanoid::update_paddle(float dt)
@@ -259,6 +283,15 @@ void Arkanoid::decrease_lives()
     }
 }
 
+void Arkanoid::spawn_bricks()
+{
+    constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
+    for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)
+    {
+        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * Vec2i{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW]);
+    }
+}
+
 void Arkanoid::render()
 {
     Game::render();
@@ -279,18 +312,50 @@ void Arkanoid::render()
 
         case GameStage::GAMEOVER:
 
-            render_full_scene();
-
-            gfx.draw_sprite_excluding_color
+            gfx.draw_text
             (
-                { 
-                    WINDOW.get_width()  / 2 - static_cast<int>(gameover_img.get_width()  / 2U),
-                    WINDOW.get_height() / 2 - static_cast<int>(gameover_img.get_height() / 2U)
-                },
-                gameover_img,
-                GameEngine::Colours::BLACK,
-                WINDOW
+                std::wstring{ L"Game Over\nYour score:\n" } + std::to_wstring(points_counter.get_points()),
+                C2,
+                GameEngine::DWriteFontNames::VERDANA, 72, 600, WINDOW, 
+                GameEngine::DWriteFontStyles::NORMAL,
+                GameEngine::DWriteFontStretch::NORMAL,
+                GameEngine::DWriteTextHorizontalAlignment::CENTER,
+                GameEngine::DWriteTextVerticalAlignment::TOP
             );
+            gfx.draw_text
+            (
+                L"Restart?",
+                C1,
+                GameEngine::DWriteFontNames::VERDANA, 72, 600, WINDOW,
+                GameEngine::DWriteFontStyles::ITALIC,
+                GameEngine::DWriteFontStretch::NORMAL,
+                GameEngine::DWriteTextHorizontalAlignment::CENTER,
+                GameEngine::DWriteTextVerticalAlignment::CENTER
+            );
+            gfx.draw_text
+            (
+                L"YES",
+                C1,
+                GameEngine::DWriteFontNames::VERDANA, 72, 600, YES_BUTTON_AREA,
+                GameEngine::DWriteFontStyles::ITALIC,
+                GameEngine::DWriteFontStretch::NORMAL,
+                GameEngine::DWriteTextHorizontalAlignment::CENTER,
+                GameEngine::DWriteTextVerticalAlignment::CENTER
+            );
+            gfx.draw_text
+            (
+                L"NO",
+                C1,
+                GameEngine::DWriteFontNames::VERDANA, 72, 600, NO_BUTTON_AREA,
+                GameEngine::DWriteFontStyles::ITALIC,
+                GameEngine::DWriteFontStretch::SEMI_EXPANDED,
+                GameEngine::DWriteTextHorizontalAlignment::CENTER,
+                GameEngine::DWriteTextVerticalAlignment::CENTER
+            );
+            if      (is_yes_btn_hovered) 
+                gfx.draw_rectangle(YES_BUTTON_AREA, BUTTON_BORDER_WIDTH, C1);
+            else if (is_no_btn_hovered)  
+                gfx.draw_rectangle(NO_BUTTON_AREA, BUTTON_BORDER_WIDTH, C1);
 
         break;
     }

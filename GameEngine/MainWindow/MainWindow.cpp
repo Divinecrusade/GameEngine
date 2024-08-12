@@ -34,7 +34,13 @@ namespace GameEngine
 
         switch (message)
         {
+            case WM_LBUTTONDOWN:   MainWindow::instance_->key_pressed(VK_LBUTTON); break;
+            case WM_RBUTTONDOWN:   MainWindow::instance_->key_pressed(VK_RBUTTON); break;
+            case WM_MBUTTONDOWN:   MainWindow::instance_->key_pressed(VK_MBUTTON); break;
             case WM_KEYDOWN:       MainWindow::instance_->key_pressed(wParam); break;
+            case WM_LBUTTONUP:     MainWindow::instance_->key_released(VK_LBUTTON); break;
+            case WM_RBUTTONUP:     MainWindow::instance_->key_released(VK_RBUTTON); break;
+            case WM_MBUTTONUP:     MainWindow::instance_->key_released(VK_MBUTTON); break;
             case WM_KEYUP:         MainWindow::instance_->key_released(wParam); break;
             case WM_DISPLAYCHANGE: InvalidateRect(hWnd, NULL, FALSE); break;
             case WM_PAINT:         ValidateRect(hWnd, NULL); break;

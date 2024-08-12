@@ -8,7 +8,7 @@ class Score final : public GameEngine::Interfaces::IDrawable
 public:
 
     Score() = delete;
-    Score(GameEngine::Geometry::Vector2D<int> const& left_top_pos);
+    Score(GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::Colour font_colour);
     Score(Score const&) = delete;
     Score(Score&&) = delete;
 
@@ -21,6 +21,10 @@ public:
     void ball_reflected_by_paddle();
     void ball_missed();
 
+    int get_points() const noexcept;
+
+    void reset() noexcept;
+
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override;
 
 private:
@@ -31,12 +35,14 @@ private:
     static constexpr int DELTA_POINTS_FACTOR{ 1 };
 
     static constexpr GameEngine::DWriteFontNames  FONT{ GameEngine::DWriteFontNames::VERDANA };
-    static constexpr GameEngine::Colour           POINTS_FONT_COLOUR{ GameEngine::Colours::CYAN };
     static constexpr int                          POINTS_FONT_SIZE{ 42 };
     static constexpr int                          POINTS_FONT_WEIGHT{ 600 };
 
     static constexpr GameEngine::Colour           FACTORS_COLORS[]{ GameEngine::Colours::CORAL, GameEngine::Colours::CRIMSON, GameEngine::Colours::ROYAL_BLUE, GameEngine::Colours::GOLD };
     static constexpr int                          FACTORS_FONT_SIZES[]{ 42, 46, 48, 50 };
+
+    
+    GameEngine::Colour const POINTS_FONT_COLOUR;
 
     GameEngine::Geometry::Vector2D<int> left_top_pos;
 
