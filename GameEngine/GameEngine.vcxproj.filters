@@ -126,6 +126,9 @@
     <ClInclude Include="DWriteTextVerticalAlignment.hpp">
       <Filter>Файлы заголовков\DWrite</Filter>
     </ClInclude>
+    <ClInclude Include="WinApiException.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">

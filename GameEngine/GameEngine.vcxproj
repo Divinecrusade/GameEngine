@@ -162,6 +162,7 @@
     <ClInclude Include="Surface.hpp" />
     <ClInclude Include="SurfaceView.hpp" />
     <ClInclude Include="Vector2D.hpp" />
+    <ClInclude Include="WinApiException.hpp" />
     <ClInclude Include="WinKey.hpp" />
   </ItemGroup>
   <ItemGroup>
