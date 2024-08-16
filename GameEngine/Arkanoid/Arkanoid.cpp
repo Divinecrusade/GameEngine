@@ -214,7 +214,7 @@ void Arkanoid::update_missiles(float dt)
             missile->destroy();
             pad.reset_cooldown();
 
-            cascade_blows(std::cref(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA)));
+            cascade_blows(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA));
         }
     }
     std::erase_if(missiles, [](Missile const& missile)
@@ -267,7 +267,7 @@ void Arkanoid::cascade_blows(Blow const& new_blow)
         if (new_blow.is_collided_with(*missile))
         {
             missile->destroy();
-            cascade_blows(std::cref(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA)));
+            cascade_blows(blows.emplace_back(missile->get_pos(), GameEngine::Animation{ blow_effect, BLOW_DURATION }, GameEngine::Colours::MAGENTA));
         }
     }
 }
