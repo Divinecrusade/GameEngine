@@ -62,11 +62,11 @@ namespace GameEngine::Geometry
 
         [[maybe_unused]] constexpr T get_width() const noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()))
         {
-            return right - left;
+            return ((left > right) ? left : right) - ((left < right) ? left : right);
         }
         [[maybe_unused]] constexpr T get_height() const noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()))
         {
-            return bottom - top;
+            return ((bottom > top) ? bottom : top) - ((bottom < top) ? bottom : top);
         }
         [[maybe_unused]] constexpr Vector2D<T> get_center() const noexcept(noexcept(Vector2D<T>(std::declval<T const&>(), std::declval<T const&>())))
         {
@@ -74,29 +74,25 @@ namespace GameEngine::Geometry
         }
         [[maybe_unused]] constexpr Rectangle2D get_expanded(T offset) const noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()) && noexcept(std::declval<T const&>() + std::declval<T const&>()) && noexcept(T(std::declval<T const&>())))
         {
-            return Rectangle2D(left - offset, right + offset, bottom + offset, top - offset);
+            return Rectangle2D{ left - offset, right + offset, bottom + offset, top - offset };
         }
 
         [[maybe_unused]] constexpr bool is_colided_with(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() > std::declval<T const&>()) && noexcept(std::declval<T const&>() < std::declval<T const&>()))
         {
             return left < rect.right &&
-                    right > rect.left &&
-                    bottom > rect.top &&
-                    top < rect.bottom;
+                   right > rect.left &&
+                   bottom > rect.top &&
+                   top < rect.bottom;
         }
         [[maybe_unused]] constexpr bool contains(Vector2D<T> const& point) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {
             return left <= point.x && right >= point.x &&
-                    bottom >= point.y && top <= point.y;
-        }
-        [[maybe_unused]] constexpr bool contains_y_axis_inversed(Vector2D<T> const& point) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
-        {
-            return left <= point.x && right >= point.x &&
-                bottom <= point.y && top >= point.y;
+                   bottom <= point.y && top >= point.y;
         }
         [[maybe_unused]] constexpr bool contains(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {
-            return left <= rect.left && right >= rect.right && bottom >= rect.bottom && top <= rect.top;
+            return left <= rect.left && right >= rect.right && 
+                   bottom >= rect.bottom && top <= rect.top;
         }
         [[maybe_unused]] bool is_contained(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() > std::declval<T const&>()) && noexcept(std::declval<T const&>() < std::declval<T const&>()))
         {
@@ -115,7 +111,7 @@ namespace GameEngine::Geometry
     constexpr bool operator==(Rectangle2D<T> const& lhs, Rectangle2D<T> const& rhs) noexcept(noexcept(std::declval<T const&>() == std::declval<T const&>()))
     {
         return lhs.left == rhs.left && lhs.right == rhs.right && 
-                lhs.bottom == rhs.bottom && lhs.top == rhs.top;
+               lhs.bottom == rhs.bottom && lhs.top == rhs.top;
     }
     
     template<typename T>

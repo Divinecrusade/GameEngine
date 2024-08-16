@@ -79,12 +79,12 @@ void Arkanoid::update_gameover_stage()
 {
     assert(cur_stage == GameStage::GAMEOVER);
 
-    if (auto const mouse_pos{ GameEngine::Mouse::get_cursor_pos(get_wnd()) }; YES_BUTTON_AREA.contains_y_axis_inversed(mouse_pos))
+    if (auto const mouse_pos{ GameEngine::Mouse::get_cursor_pos(get_wnd()) }; YES_BUTTON_AREA.contains(mouse_pos))
     {
         is_yes_btn_hovered = true;
         is_no_btn_hovered = false;
     }
-    else if (NO_BUTTON_AREA.contains_y_axis_inversed(mouse_pos))
+    else if (NO_BUTTON_AREA.contains(mouse_pos))
     {
         is_yes_btn_hovered = false;
         is_no_btn_hovered = true;
