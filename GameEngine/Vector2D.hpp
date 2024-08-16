@@ -59,6 +59,9 @@ namespace GameEngine::Geometry
 
         [[maybe_unused]] constexpr Vector2D& operator/=(Vector2D const& rhs) noexcept(noexcept(std::declval<T&>() /= std::declval<T const&>()))
         {
+            assert(rhs.x != static_cast<T>(0));
+            assert(rhs.y != static_cast<T>(0));
+
             x /= rhs.x;
             y /= rhs.y;
             return *this;
@@ -66,6 +69,8 @@ namespace GameEngine::Geometry
 
         [[maybe_unused]] constexpr Vector2D& operator/=(T const& rhs) noexcept(noexcept(std::declval<T&>() /= std::declval<T const&>()))
         {
+            assert(rhs != static_cast<T>(0));
+
             x /= rhs;
             y /= rhs;
             return *this;
@@ -127,7 +132,7 @@ namespace GameEngine::Geometry
 
         [[maybe_unused]] static Vector2D get_rotated(Vector2D const& vec, double radians)
         {
-            Vector2D tmp{ static_cast<T>(vec.x * std::cos(radians) - vec.y * std::sin(radians)), static_cast<T>(vec.x * std::sin(radians) + vec.y * std::cos(radians)) };
+            Vector2D const tmp{ static_cast<T>(vec.x * std::cos(radians) - vec.y * std::sin(radians)), static_cast<T>(vec.x * std::sin(radians) + vec.y * std::cos(radians)) };
                 
             assert(Auxiliry::is_equal_with_precision(vec.get_length(), tmp.get_length()));
                 
