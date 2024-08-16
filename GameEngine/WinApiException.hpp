@@ -8,12 +8,17 @@
 #include <WinUser.h>
 #include <WinBase.h>
 #include <memory>
+#include <sstream>
 
 
 namespace GameEngine
 {
     class WinApiException : public std::exception
     {
+    public:
+
+        static constexpr wchar_t const* CAPTION{ L"WinAPI exception" };
+
     private:
 
         static wchar_t const* alloc_error_description(DWORD error_code) noexcept
@@ -63,6 +68,17 @@ namespace GameEngine
         wchar_t const* get_winapi_error_description() const noexcept
         {
             return error_description.get();
+        }
+
+        static std::wstring get_full_description(WinApiException const& e) noexcept
+        {
+            std::wostringstream wsout{ };
+            
+            wsout << L"[What happened]: " << e.what() << std::endl;
+            wsout << L"[Error code]: " << std::to_wstring(e.get_winapi_error_code()) << std::endl;
+            wsout << L"[Error description]: " << e.get_winapi_error_description();
+
+            return wsout.str();
         }
 
     private:
