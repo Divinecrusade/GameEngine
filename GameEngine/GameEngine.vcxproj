@@ -153,7 +153,6 @@
     <ClInclude Include="IDrawable.hpp" />
     <ClInclude Include="IFramableGraphics2D.hpp" />
     <ClInclude Include="IGraphics2D.hpp" />
-    <ClInclude Include="IteratorCommonTraits.hpp" />
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />
     <ClInclude Include="MainWindow\MainWindow.hpp" />

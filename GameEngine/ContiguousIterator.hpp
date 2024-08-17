@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IteratorCommonTraits.hpp"
-
 #include <iterator>
 #include <concepts>
 #include <functional>
@@ -19,7 +17,7 @@ namespace GameEngine::Auxiliary
         using value_type        = T;
         using element_type      = T;
         using iterator_category = std::contiguous_iterator_tag;
-        using difference_type   = IteratorCommonTraits::difference_type;
+        using difference_type   = std::ptrdiff_t;
 
         using pointer   = T*;
         using reference = T&;

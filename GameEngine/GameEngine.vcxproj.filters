@@ -96,9 +96,6 @@
     <ClInclude Include="ContiguousIterator.hpp">
       <Filter>Файлы заголовков\Auxiliary</Filter>
     </ClInclude>
-    <ClInclude Include="IteratorCommonTraits.hpp">
-      <Filter>Файлы заголовков\Auxiliary</Filter>
-    </ClInclude>
     <ClInclude Include="SurfaceView.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
