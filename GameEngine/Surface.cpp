@@ -1,4 +1,5 @@
 #include "SurfaceView.hpp"
+#include <cassert>
 
 
 namespace GameEngine
@@ -72,14 +73,18 @@ namespace GameEngine
 
     Surface::BMP_HANDLER Surface::parse_img(std::filesystem::path const& img_src)
     {
-        if (!std::filesystem::exists(img_src)) throw std::runtime_error{ "Image not found" };
-        if (std::find_if(std::cbegin(SUPPORTED_EXTENSIONS), std::cend(SUPPORTED_EXTENSIONS),
+        assert(std::filesystem::exists(img_src));
+        assert
+        (
+            std::ranges::find_if(SUPPORTED_EXTENSIONS,
             [ext = img_src.extension().native()](wchar_t const* const& s)
             {
                 return wcscmp(ext.c_str(), s) == 0;
-            }) == std::cend(SUPPORTED_EXTENSIONS)) throw std::runtime_error{ "Unsupported image extension" };
+            }) != SUPPORTED_EXTENSIONS.end()
+        );
 
         std::ifstream fin{ img_src, std::ifstream::binary };
+        fin.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 
         BITMAPFILEHEADER bmp_header{ };
         BITMAPINFOHEADER bmp_info{ };
@@ -89,7 +94,7 @@ namespace GameEngine
 
         std::size_t const pixel_size{ static_cast<std::size_t>(bmp_info.biBitCount) / 8U };
 
-        if (pixel_size != SUPPORTED_PIXEL_SIZE) throw std::runtime_error{ "Not supported colour depth" };
+        if (pixel_size != SUPPORTED_PIXEL_SIZE) throw std::invalid_argument{ "Image pixel size (colour depth) is not supported or bmp-table is corrupted" };
 
         constexpr std::streamoff ALIGNMENT{ 4LL };
         std::streamoff const padding{ static_cast<std::streamoff>((ALIGNMENT - (bmp_info.biWidth * pixel_size % ALIGNMENT)) % ALIGNMENT) };
@@ -100,7 +105,7 @@ namespace GameEngine
 
     std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> Surface::read_img(BMP_HANDLER&& img)
     {
-        std::unique_ptr<Colour[]> tmp_buffer{ new Colour[img.get_width() * img.get_height()]};
+        std::unique_ptr<Colour[]> tmp_buffer{ std::make_unique<Colour[]>(img.get_width() * img.get_height()) };
 
         for (std::size_t y{ img.get_pixels_table_y_start() }; y != img.get_pixels_table_y_end(); y += img.get_pixels_table_dy())
         {
@@ -128,7 +133,7 @@ namespace GameEngine
     Surface{ std::make_from_tuple<Surface>(read_img(parse_img(img_src))) }
     { }
 
-    Surface::Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols)
+    Surface::Surface(std::unique_ptr<Colour[]>&& buffer, std::size_t n_rows, std::size_t n_cols)
     :
     buffer{ std::move(buffer) },
     n_rows{ n_rows },
@@ -137,29 +142,21 @@ namespace GameEngine
 
     Surface::Surface(Surface const& other)
     :
-    buffer{ new Colour[other.n_rows * other.n_cols] },
+    buffer{ std::make_unique<Colour[]>(other.n_rows * other.n_cols) },
     n_rows{ other.n_rows },
     n_cols{ other.n_cols }
     {
-        std::copy(other.begin(), other.end(), this->begin());
-        //std::ranges::copy(other, this->begin());
+        std::ranges::copy(other, this->begin());
     }
 
     Surface::Surface(SurfaceView other)
     :
-    buffer{ new Colour[other.size()] },
+    buffer{ std::make_unique<Colour[]>(other.size()) },
     n_rows{ other.get_height() },
     n_cols{ other.get_width() }
     {
         std::ranges::copy(other, this->begin());
     }
-
-    Surface::Surface(Surface&& other_tmp) noexcept
-    :
-    buffer{ other_tmp.buffer.release() },
-    n_rows{ other_tmp.n_rows },
-    n_cols{ other_tmp.n_cols }
-    { }
 
     std::size_t Surface::get_width()  const noexcept
     {

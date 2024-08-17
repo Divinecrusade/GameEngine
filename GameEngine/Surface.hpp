@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cwchar>
 #include <tuple>
+#include <array>
 
 
 namespace GameEngine
@@ -80,17 +81,18 @@ namespace GameEngine
 
     public:
 
-        static constexpr wchar_t const* const SUPPORTED_EXTENSIONS[]{ L".bmp", L".BMP" };
-        static constexpr std::size_t          SUPPORTED_COLOUR_DEPTH   { 24U };
-        static constexpr std::size_t          SUPPORTED_COLOUR_CHANNEL {  8U };
-        static constexpr std::size_t          SUPPORTED_PIXEL_SIZE     { SUPPORTED_COLOUR_DEPTH / SUPPORTED_COLOUR_CHANNEL };
+        static constexpr std::array<wchar_t const* const, 2U> SUPPORTED_EXTENSIONS{ L".bmp", L".BMP" };
+        
+        static constexpr std::size_t SUPPORTED_COLOUR_DEPTH   { 24U };
+        static constexpr std::size_t SUPPORTED_COLOUR_CHANNEL {  8U };
+        static constexpr std::size_t SUPPORTED_PIXEL_SIZE     { SUPPORTED_COLOUR_DEPTH / SUPPORTED_COLOUR_CHANNEL };
 
         class BMP_HANDLER final
         {
         public:
 
             BMP_HANDLER() noexcept = default;
-            BMP_HANDLER(std::ifstream&& fin, std::size_t width, std::size_t height, bool reversed, std::streamoff padding)
+            BMP_HANDLER(std::ifstream&& fin, std::size_t width, std::size_t height, bool reversed, std::streamoff padding) noexcept
             :
             fin{ std::move(fin) },
             width{ width },
@@ -99,10 +101,10 @@ namespace GameEngine
             padding{ padding }
             { }
             BMP_HANDLER(BMP_HANDLER const&) noexcept = default;
-            BMP_HANDLER(BMP_HANDLER&&) noexcept = default;
+            BMP_HANDLER(BMP_HANDLER&&)      noexcept = default;
 
             BMP_HANDLER& operator=(BMP_HANDLER const&) noexcept = default;
-            BMP_HANDLER& operator=(BMP_HANDLER&&) noexcept = default;
+            BMP_HANDLER& operator=(BMP_HANDLER&&)      noexcept = default;
 
             ~BMP_HANDLER() noexcept = default;
 
@@ -174,10 +176,10 @@ namespace GameEngine
 
         Surface() = delete;
         Surface(std::filesystem::path const& img_src);
-        Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols);
+        Surface(std::unique_ptr<Colour[]>&& buffer, std::size_t n_rows, std::size_t n_cols);
         Surface(Surface const& other);
         Surface(class SurfaceView other);
-        Surface(Surface&& other_tmp) noexcept;
+        Surface(Surface&&) noexcept = default;
 
         Surface& operator=(Surface const&) = delete;
         Surface& operator=(Surface&&)      = delete;
