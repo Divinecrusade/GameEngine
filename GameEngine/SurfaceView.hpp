@@ -9,8 +9,8 @@ namespace GameEngine
     {
     public:
 
-        SurfaceView() = default;
-        SurfaceView(Surface const& srf)
+        SurfaceView() noexcept = default;
+        SurfaceView(Surface const& srf) noexcept
         :
         begin_ { srf.begin() },
         end_   { srf.end()   },
@@ -18,13 +18,13 @@ namespace GameEngine
         height_{ srf.get_height() }
         { }
 
-        SurfaceView(SurfaceView const&) = default;
-        SurfaceView(SurfaceView&&) = default;
+        SurfaceView(SurfaceView const&) noexcept = default;
+        SurfaceView(SurfaceView&&) noexcept = default;
 
-        SurfaceView& operator=(SurfaceView const&) = default;
-        SurfaceView& operator=(SurfaceView&&) = default;
+        SurfaceView& operator=(SurfaceView const&) noexcept = default;
+        SurfaceView& operator=(SurfaceView&&) noexcept = default;
 
-        ~SurfaceView() = default;
+        ~SurfaceView() noexcept = default;
 
         Surface::const_iterator begin() const noexcept
         {
