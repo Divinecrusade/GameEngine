@@ -70,7 +70,7 @@ namespace GameEngine
 
             return *this;
         }
-        [[maybe_unused]] ~KeyColor() = default;
+        [[maybe_unused]] ~KeyColor() noexcept = default;
 
         [[maybe_unused]] constexpr uint32_t get_encoded() const noexcept
         {
