@@ -23,7 +23,7 @@ namespace GameEngine
     void Game::stop()
     {
         assert(!wnd.is_terminated());
-        PostMessageW(wnd.get_window_handler(), WM_DESTROY, NULL, NULL);
+        if (!PostMessageW(wnd.get_window_handler(), WM_DESTROY, NULL, NULL)) throw WinApiException{ "Failed to destroy window via posting WM_DESTROY message" };
     }
 
     void Game::process()
