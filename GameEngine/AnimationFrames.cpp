@@ -5,6 +5,9 @@ namespace GameEngine
 {
     AnimationFrames::AnimationFrames(std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::optional<std::size_t> n, std::optional<FramesAlignment> direction, std::optional<Geometry::Vector2D<int>> start_point)
     {
+        assert(frame_width > 0);
+        assert(frame_height > 0);
+
         Surface::BMP_HANDLER sprites_sheet{ Surface::parse_img(sprites_sheet_src) };
 
         if (!n)
@@ -17,6 +20,7 @@ namespace GameEngine
         }
 
         assert(n.has_value());
+
         frames.reserve(*n);
         sprites_sheet.get_stream().seekg
         (
@@ -31,10 +35,11 @@ namespace GameEngine
                 static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
                 sprites_sheet.get_padding()
             ), std::ifstream::cur);
+
         auto frame_beg{ sprites_sheet.get_stream().tellg() };
         for (std::size_t i{ 0U }; i != n; ++i)
         {
-            std::unique_ptr<Colour[]> frame{ new Colour[frame_width * frame_height] };
+            std::unique_ptr<Colour[]> frame{ std::make_unique<Colour[]>(frame_width * frame_height) };
 
             for (
                     std::size_t y{ sprites_sheet.get_pixels_table_y_start() }; 

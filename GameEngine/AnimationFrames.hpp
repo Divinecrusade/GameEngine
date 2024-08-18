@@ -22,12 +22,12 @@ namespace GameEngine
 
         AnimationFrames() = delete;
         AnimationFrames(std::filesystem::path const& sprites_sheet_src, std::size_t frame_width, std::size_t frame_height, std::optional<std::size_t> n = std::nullopt, std::optional<FramesAlignment> direction = std::nullopt, std::optional<Geometry::Vector2D<int>> start_point = std::nullopt);
-        AnimationFrames(AnimationFrames&&)      = default;
-        AnimationFrames(AnimationFrames const&) = default;
+        AnimationFrames(AnimationFrames&&)      noexcept = default;
+        AnimationFrames(AnimationFrames const&) noexcept = default;
         AnimationFrames& operator=(AnimationFrames const&) = delete;
         AnimationFrames& operator=(AnimationFrames&&)      = delete;
 
-        ~AnimationFrames() = default;
+        ~AnimationFrames() noexcept = default;
 
         std::size_t get_n_frames() const noexcept
         {
@@ -36,7 +36,7 @@ namespace GameEngine
 
         SurfaceView operator[](std::size_t i) const noexcept
         {
-            assert(i != frames.size());
+            assert(i < frames.size());
             return frames[i];
         }
 
