@@ -3,13 +3,13 @@
 
 namespace GameEngine
 {
-    Animation::Animation(AnimationFramesView frames, float animation_duration)
+    Animation::Animation(AnimationFramesView frames, float animation_duration) noexcept
     :
     frames{ frames },
     frame_duration{ animation_duration / frames.size() }
     { }
 
-    void Animation::update(float dt)
+    void Animation::update(float dt) noexcept
     {
         elapsed_duration += dt;
         while (elapsed_duration >= frame_duration)

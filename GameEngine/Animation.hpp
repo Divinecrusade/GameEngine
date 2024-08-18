@@ -8,28 +8,18 @@
 
 namespace GameEngine
 {
-    class Animation
+    class Animation final
     {
     public:
 
-        enum class FramesAlignment
-        {
-            HORIZONTAL, VERTICAL
-        };
-
-        static constexpr Geometry::Vector2D<int> DEFAULT_START_POINT{ 0, 0 };
-        static constexpr FramesAlignment         DEFAULT_DIRECTION{ FramesAlignment:: HORIZONTAL };
-
-    public:
-
         Animation() = delete;
-        Animation(AnimationFramesView frames, float animation_duration);
-        Animation(Animation&&)      = default;
-        Animation(Animation const&) = default;
-        Animation& operator=(Animation const&) = default;
-        Animation& operator=(Animation&&)      = default;
+        Animation(AnimationFramesView frames, float animation_duration) noexcept;
+        Animation(Animation&&)      noexcept = default;
+        Animation(Animation const&) noexcept = default;
+        Animation& operator=(Animation const&) noexcept = default;
+        Animation& operator=(Animation&&)      noexcept = default;
 
-        void update(float dt);
+        void update(float dt) noexcept;
         void reset() noexcept;
 
         bool is_finished() const noexcept;
