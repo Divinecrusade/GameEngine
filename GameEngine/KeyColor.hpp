@@ -6,7 +6,7 @@
 
 namespace GameEngine
 {
-    union KeyColor
+    union KeyColor final
     {
     public:
 
@@ -103,7 +103,7 @@ namespace GameEngine
 
     using Colour = KeyColor;
 
-    struct Colours
+    struct Colours final
     {
         [[maybe_unused]] static constexpr Colour RED     { Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
         [[maybe_unused]] static constexpr Colour GREEN   { Colour::MIN_COLOUR_DEPTH, Colour::MAX_COLOUR_DEPTH, Colour::MIN_COLOUR_DEPTH };
