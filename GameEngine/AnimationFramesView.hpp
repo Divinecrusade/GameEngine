@@ -10,20 +10,20 @@ namespace GameEngine
     {
     public:
 
-        AnimationFramesView() = default;
-        AnimationFramesView(AnimationFrames const& frames)
+        AnimationFramesView() noexcept = default;
+        AnimationFramesView(AnimationFrames const& frames) noexcept
         :
         begin_{ frames.cbegin() },
         end_  { frames.cend()   }
         { }
 
-        AnimationFramesView(AnimationFramesView const&) = default;
-        AnimationFramesView(AnimationFramesView&&) = default;
+        AnimationFramesView(AnimationFramesView const&) noexcept = default;
+        AnimationFramesView(AnimationFramesView&&)      noexcept = default;
 
-        AnimationFramesView& operator=(AnimationFramesView const&) = default;
-        AnimationFramesView& operator=(AnimationFramesView&&) = default;
+        AnimationFramesView& operator=(AnimationFramesView const&) noexcept = default;
+        AnimationFramesView& operator=(AnimationFramesView&&)      noexcept = default;
 
-        ~AnimationFramesView() = default;
+        ~AnimationFramesView() noexcept = default;
 
         auto begin() const noexcept
         {
@@ -37,6 +37,7 @@ namespace GameEngine
 
         SurfaceView operator[](std::size_t i) const noexcept
         {
+            assert(i < std::distance(begin_, end_));
             return *(begin_ + i);
         }
 
