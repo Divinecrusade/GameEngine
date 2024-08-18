@@ -1,8 +1,9 @@
 #include "Game.hpp"
+#include "WinApiException.hpp"
 
 namespace GameEngine
 {
-    Game::Game(Interfaces::IWindow& window, Interfaces::IFramableGraphics2D& graphics)
+    Game::Game(Interfaces::IWindow& window, Interfaces::IFramableGraphics2D& graphics) noexcept
     :
     wnd{ window },
     gfx{ graphics }
@@ -22,7 +23,7 @@ namespace GameEngine
     void Game::stop()
     {
         assert(!wnd.is_terminated());
-        PostMessage(wnd.get_window_handler(), WM_DESTROY, NULL, NULL);
+        PostMessageW(wnd.get_window_handler(), WM_DESTROY, NULL, NULL);
     }
 
     void Game::process()

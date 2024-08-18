@@ -11,14 +11,14 @@ namespace GameEngine
     public:
 
         Game() = delete;
-        Game(Interfaces::IWindow& window, Interfaces::IFramableGraphics2D& graphics);
+        Game(Interfaces::IWindow& window, Interfaces::IFramableGraphics2D& graphics) noexcept;
         Game(Game const&) = delete;
-        Game(Game&&) = delete;
+        Game(Game&&)      = delete;
 
         Game& operator=(Game const&) = delete;
-        Game& operator=(Game&&) = delete;
+        Game& operator=(Game&&)      = delete;
 
-        virtual ~Game() = default;
+        virtual ~Game() noexcept = default;
 
         void start();
         void stop();
