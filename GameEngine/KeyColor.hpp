@@ -46,7 +46,7 @@ namespace GameEngine
         :
         rgba{ encode(r, g, b, a) }
         { }
-        [[maybe_unused]] constexpr KeyColor(uint32_t encoded)
+        [[maybe_unused]] constexpr KeyColor(uint32_t encoded) noexcept
         :
         rgba{ encoded }
         { }
