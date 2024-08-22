@@ -31,11 +31,11 @@ namespace GameEngine
             }
             catch (WinApiException const& e)
             {
-                std::wstring const exception_msg{ WinApiException::get_full_description(e) };
+                std::wstring const exception_msg{ e.get_full_description() };
 #ifdef _DEBUG
                 OutputDebugStringW(exception_msg.c_str());
 #endif // _DEBUG
-                MessageBoxW(NULL, exception_msg.c_str(), WinApiException::CAPTION, MB_OK);
+                MessageBoxW(NULL, exception_msg.c_str(), e.get_exception_class_name(), MB_OK);
             }
             terminated = true;
         }
@@ -45,11 +45,11 @@ namespace GameEngine
         }
         catch (WinApiException const& e)
         {
-            std::wstring const exception_msg{ WinApiException::get_full_description(e) };
+            std::wstring const exception_msg{ e.get_full_description() };
 #ifdef _DEBUG
             OutputDebugStringW(exception_msg.c_str());
 #endif // _DEBUG
-            MessageBoxW(NULL, exception_msg.c_str(), WinApiException::CAPTION, MB_OK);
+            MessageBoxW(NULL, exception_msg.c_str(), e.get_exception_class_name(), MB_OK);
         }
         instance_ = nullptr;
     }
