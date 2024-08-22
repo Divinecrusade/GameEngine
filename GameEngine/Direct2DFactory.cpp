@@ -16,12 +16,8 @@ namespace GameEngine
 
     Direct2DFactory::~Direct2DFactory()
     {
-        safe_release(render_target);
         containers_safe_release(brushes, bitmapbrushes, bitmaps, text_formats);
-        safe_release(d2d_factory);
-        safe_release(geom);
-        safe_release(sink);
-        safe_release(dwrite_factory);
+        safe_release(render_target, d2d_factory, geom, sink, dwrite_factory);
     }
 
     RECT Direct2DFactory::get_render_area_size() const noexcept

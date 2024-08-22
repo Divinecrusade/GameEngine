@@ -62,18 +62,33 @@ namespace GameEngine
         instance.Release();
     };
 
-    class Direct2DFactory
+    class Direct2DFactory final
     {
     private:
 
         template<Releasable Interface>
-        static void safe_release(Interface*& realising_resource)
+        static void safe_release(Interface*& releasing_resource)
         {
-            if (realising_resource != nullptr)
+            if (releasing_resource != nullptr)
             {
-                realising_resource->Release();
-                realising_resource = nullptr;
+                releasing_resource->Release();
+                releasing_resource = nullptr;
             }
+        }
+
+        template<Releasable... Interfaces>
+        static void safe_release(Interfaces*&... releasing_resources)
+        {
+            constexpr int DUMMY{ 0 };
+
+            (void)std::initializer_list<int>
+            {
+                (
+                    safe_release(releasing_resources),
+                    DUMMY
+                )
+                ...
+            };
         }
 
         template<class... Containers>
@@ -84,7 +99,7 @@ namespace GameEngine
             (void)std::initializer_list<int>
             { 
                 (
-                    std::for_each(container.begin(), container.end(), [](auto& val) { safe_release(val.second); }),
+                    std::ranges::for_each(container, [](auto& val) { safe_release(val.second); }),
                     container.clear(),
                     DUMMY
                 )
