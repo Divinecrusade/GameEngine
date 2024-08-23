@@ -132,9 +132,9 @@ namespace GameEngine
         Direct2DFactory& operator=(Direct2DFactory const&) = delete;
         Direct2DFactory&& operator=(Direct2DFactory&&) = delete;
 
-        ~Direct2DFactory();
+        ~Direct2DFactory() noexcept;
 
-        RECT get_render_area_size() const noexcept;
+        RECT get_render_area_size() const;
 
         ID2D1HwndRenderTarget& get_render_target();
         ID2D1PathGeometry&     get_geometry();

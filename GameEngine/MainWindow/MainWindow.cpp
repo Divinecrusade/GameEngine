@@ -34,6 +34,7 @@ namespace GameEngine
                 std::wstring const exception_msg{ e.get_full_description() };
 #ifdef _DEBUG
                 OutputDebugStringW(exception_msg.c_str());
+                OutputDebugStringW(L"\n");
 #endif // _DEBUG
                 MessageBoxW(NULL, exception_msg.c_str(), e.get_exception_class_name(), MB_OK);
             }
@@ -48,6 +49,7 @@ namespace GameEngine
             std::wstring const exception_msg{ e.get_full_description() };
 #ifdef _DEBUG
             OutputDebugStringW(exception_msg.c_str());
+            OutputDebugStringW(L"\n");
 #endif // _DEBUG
             MessageBoxW(NULL, exception_msg.c_str(), e.get_exception_class_name(), MB_OK);
         }
