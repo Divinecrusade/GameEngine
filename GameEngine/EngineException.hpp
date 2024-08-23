@@ -13,12 +13,7 @@
 namespace GameEngine::Auxiliary
 {
     template<typename T>
-    concept wstringable = requires (T a)
-    {
-        std::to_wstring(a);
-    };
-
-    template<wstringable T>
+    requires (std::is_default_constructible_v<T> == true && std::is_copy_assignable_v<T> == true && std::is_copy_constructible_v<T> == true)
     class EngineException : public std::exception
     {
     public:
@@ -45,13 +40,7 @@ namespace GameEngine::Auxiliary
 
         virtual std::wstring get_full_description() const noexcept
         {
-            std::wostringstream wsout{ };
-
-            wsout << L"[What happened]: "     << what() << std::endl;
-            wsout << L"[Error code]: "        << std::to_wstring(error_code) << std::endl;
-            wsout << L"[Error description]: " << error_description.get();
-
-            return wsout.str();
+            return get_description_builder().str();
         }
 
         virtual wchar_t const* get_exception_class_name() const noexcept
@@ -61,12 +50,22 @@ namespace GameEngine::Auxiliary
 
     protected:
 
-        EngineException(char const* msg, T const& error, std::function<wchar_t const*(T const&)> const& allocator, std::function<void(wchar_t const*)> const& deleter)
+        EngineException(char const* msg, T const& error_code, std::shared_ptr<wchar_t const> error_description) noexcept(noexcept(T{ std::declval<T const&>() }))
         :
-        std::exception{ msg },
-        error_code{ error },
-        error_description{ allocator(error), deleter }
+        exception{ msg },
+        error_code{ error_code },
+        error_description{ error_description }
         { }
+
+        std::wostringstream get_description_builder() const noexcept
+        {
+            std::wostringstream wsout{ };
+
+            wsout << L"[What happened]: " << what() << std::endl;
+            wsout << L"[Error description]: " << error_description.get() << std::endl;
+
+            return wsout;
+        }
 
     private:
 

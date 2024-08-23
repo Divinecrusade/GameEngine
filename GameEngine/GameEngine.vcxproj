@@ -138,6 +138,7 @@
     <ClInclude Include="AnimationFramesView.hpp" />
     <ClInclude Include="Auxiliry.hpp" />
     <ClInclude Include="ContiguousIterator.hpp" />
+    <ClInclude Include="Direct2dException.hpp" />
     <ClInclude Include="Direct2DFactory.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -146,6 +147,7 @@
     <ClInclude Include="DWriteFontStyles.hpp" />
     <ClInclude Include="DWriteTextHorizontalAlignment.hpp" />
     <ClInclude Include="DWriteTextVerticalAlignment.hpp" />
+    <ClInclude Include="EngineException.hpp" />
     <ClInclude Include="FrameTimer.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GraphicsDirect2D.hpp" />
