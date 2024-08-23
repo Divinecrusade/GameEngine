@@ -182,7 +182,7 @@ void Arkanoid::update_bricks()
     {
         collided_brick->deflect(ball);
 
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top - Missile::COLLISION_HALF_HEIGHT * 2 }, MISSILE_SPEED, rocket, GameEngine::Colours::MAGENTA);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top }, MISSILE_SPEED, rocket, GameEngine::Colours::MAGENTA);
         if (bricks.erase(collided_brick); bricks.empty())
         {
             cur_stage = GameStage::GAMEOVER;

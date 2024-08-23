@@ -127,15 +127,15 @@ private:
     static constexpr GameEngine::Colour C2{ 74, 83, 128 };
 
     static constexpr int   BUTTON_AREA_OFFSET{ 50 };
-    static constexpr Rec2i YES_BUTTON_AREA{ 30 + BUTTON_AREA_OFFSET, WINDOW.right / 2 - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.bottom - 30 - BUTTON_AREA_OFFSET };
-    static constexpr Rec2i NO_BUTTON_AREA { WINDOW.right / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.right - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.bottom - 30 - BUTTON_AREA_OFFSET };
+    static constexpr Rec2i YES_BUTTON_AREA{ 30 + BUTTON_AREA_OFFSET, WINDOW.right / 2 - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom / 2 + 30 + BUTTON_AREA_OFFSET };
+    static constexpr Rec2i NO_BUTTON_AREA { WINDOW.right / 2 + 30 + BUTTON_AREA_OFFSET, WINDOW.right - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom - 30 - BUTTON_AREA_OFFSET, WINDOW.bottom / 2 + 30 + BUTTON_AREA_OFFSET };
     
     static constexpr int   BUTTON_BORDER_WIDTH{ 5 };
 
     bool is_yes_btn_hovered{ false };
     bool is_no_btn_hovered{ false };
 
-    GameStage cur_stage{ GameStage::START };
+    GameStage cur_stage{ GameStage::GAMEOVER };
 
     PlayField field;
     Paddle    pad;

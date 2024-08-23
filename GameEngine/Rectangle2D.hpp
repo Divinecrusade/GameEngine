@@ -87,7 +87,7 @@ namespace GameEngine::Geometry
         [[maybe_unused]] constexpr bool contains(Vector2D<T> const& point) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {
             return left <= point.x && right >= point.x &&
-                   bottom <= point.y && top >= point.y;
+                   top <= point.y && bottom >= point.y;
         }
         [[maybe_unused]] constexpr bool contains(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {

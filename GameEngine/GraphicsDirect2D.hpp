@@ -19,10 +19,10 @@ namespace GameEngine
         GraphicsDirect2D& operator=(GraphicsDirect2D const&) = delete;
         GraphicsDirect2D& operator=(GraphicsDirect2D&&) = delete;
 
-        virtual ~GraphicsDirect2D() = default;
+        virtual ~GraphicsDirect2D() noexcept = default;
 
         void begin_frame() override;
-        void end_frame() override;
+        void end_frame() noexcept override;
 
         int get_screen_width() const noexcept override;
         int get_screen_height() const noexcept override;
@@ -60,7 +60,16 @@ namespace GameEngine
             return D2D1::Point2F(get_dips_from_pixels(source.x), get_dips_from_pixels(source.y));
         }
 
-        static Geometry::Rectangle2D<int> clip(Geometry::Rectangle2D<int> const& drawing_area, Geometry::Rectangle2D<int> const& clipping_area);
+        static constexpr Geometry::Rectangle2D<int> clip(Geometry::Rectangle2D<int> const& drawing_area, Geometry::Rectangle2D<int> const& clipping_area) noexcept
+        {
+            return Geometry::Rectangle2D<int>
+            {
+                ((drawing_area.left   > clipping_area.left)   ? drawing_area.left   : clipping_area.left),
+                ((drawing_area.right  < clipping_area.right)  ? drawing_area.right  : clipping_area.right),
+                ((drawing_area.bottom < clipping_area.bottom) ? drawing_area.bottom : clipping_area.bottom),
+                ((drawing_area.top    > clipping_area.top)    ? drawing_area.top    : clipping_area.top)
+            };
+        }
 
     private:
     

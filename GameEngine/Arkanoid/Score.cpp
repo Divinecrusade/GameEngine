@@ -39,7 +39,7 @@ void Score::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEng
     assert(clipping_area.has_value());
 
     gfx.draw_text(L"Score:", POINTS_FONT_COLOUR, FONT, POINTS_FONT_SIZE * 5 / 4, POINTS_FONT_WEIGHT * 5 / 4, *clipping_area);
-    gfx.draw_text(std::to_wstring(points), POINTS_FONT_COLOUR, FONT, POINTS_FONT_SIZE, POINTS_FONT_WEIGHT, GameEngine::Geometry::Rectangle2D<int>{ clipping_area->left, clipping_area->right, clipping_area->top + 75, clipping_area->bottom });
+    gfx.draw_text(std::to_wstring(points), POINTS_FONT_COLOUR, FONT, POINTS_FONT_SIZE, POINTS_FONT_WEIGHT, GameEngine::Geometry::Rectangle2D<int>{ clipping_area->left, clipping_area->right, clipping_area->bottom, clipping_area->top + 75 });
 
     std::wstring factor{ L"x" };
     factor += std::to_wstring(cur_points_factor);
@@ -63,5 +63,5 @@ void Score::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEng
         font_size = FACTORS_FONT_SIZES[2U];
     }
 
-    gfx.draw_text(factor, c, FONT, font_size, POINTS_FONT_WEIGHT, GameEngine::Geometry::Rectangle2D<int>{ clipping_area->left, clipping_area->right, clipping_area->top + 150, clipping_area->bottom });
+    gfx.draw_text(factor, c, FONT, font_size, POINTS_FONT_WEIGHT, GameEngine::Geometry::Rectangle2D<int>{ clipping_area->left, clipping_area->right, clipping_area->bottom, clipping_area->top + 150 });
 }
