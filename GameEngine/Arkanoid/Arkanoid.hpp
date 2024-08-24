@@ -135,7 +135,7 @@ private:
     bool is_yes_btn_hovered{ false };
     bool is_no_btn_hovered{ false };
 
-    GameStage cur_stage{ GameStage::GAMEOVER };
+    GameStage cur_stage{ GameStage::START };
 
     PlayField field;
     Paddle    pad;

@@ -1,13 +1,16 @@
 #include "LifeCounter.hpp"
 
-LifeCounter::LifeCounter(int min_value, int max_value, GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::SurfaceView sprite, GameEngine::Colour chroma)
+LifeCounter::LifeCounter(int min_value, int max_value, GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::SurfaceView sprite, GameEngine::Colour chroma) noexcept
 :
 min_value{ min_value },
 max_value{ max_value },
 cur_value{ max_value },
 left_top_pos{ left_top_pos },
-sprite{ std::make_pair(sprite, chroma) }
-{ }
+sprite{ sprite, chroma }
+{ 
+    assert(min_value <= max_value);
+    assert(cur_value >= min_value && cur_value <= max_value);
+}
 
 bool LifeCounter::is_ended() const noexcept
 {
@@ -34,7 +37,6 @@ void LifeCounter::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<G
 {
     assert(clipping_area.has_value());
 
-    auto t = sprite.first.get_height();
     for (int i{ min_value - min_value }; i < cur_value - min_value; ++i)
     {
         gfx.draw_sprite_excluding_color

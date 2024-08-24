@@ -15,7 +15,7 @@ init_dir{ init_dir }
     change_direction(init_dir);
 }
 
-void Ball::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
+void Ball::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const&) const
 {
     gfx.fill_ellipse(cur_pos, RADIUS, RADIUS, c);
 }
@@ -27,6 +27,7 @@ void Ball::update(float dt) noexcept
 
 void Ball::accelerate(float a) noexcept
 {
+    assert(!GameEngine::Geometry::Auxiliry::is_equal_with_precision(cur_speed, 0.f));
     cur_vel *= ((cur_speed + a) / cur_speed);
     cur_speed += a;
 }
@@ -48,7 +49,7 @@ Ball::Vec2f Ball::get_direction() const noexcept
     return cur_vel;
 }
 
-void Ball::change_direction(GameEngine::Geometry::Vector2D<float> const& dir)
+void Ball::change_direction(GameEngine::Geometry::Vector2D<float> const& dir) noexcept
 {
     cur_vel = dir.get_normalized() * cur_speed;
     if (std::fabs(cur_vel.x) <= MIN_ABS_X_VEL) cur_vel.x = (std::signbit(cur_vel.x) ? -1.f : 1.f) * MIN_ABS_X_VEL;

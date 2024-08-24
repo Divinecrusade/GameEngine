@@ -24,17 +24,39 @@ public:
 public:
 
     Missile() = delete;
-    Missile(Vec2i const& init_pos, float init_speed, GameEngine::SurfaceView sprite, GameEngine::Colour chroma);
-    Missile(Missile const&) = default;
-    Missile(Missile&&)      = default;
+    Missile(Vec2i const& init_pos, float init_speed, GameEngine::SurfaceView sprite, GameEngine::Colour chroma = GameEngine::Colours::MAGENTA) noexcept;
+    Missile(Missile const&) noexcept = default;
+    Missile(Missile&&)      noexcept = default;
 
-    Missile& operator=(Missile const& other_missile) noexcept;
-    Missile& operator=(Missile&& other_missile_tmp)  noexcept;
+    Missile& operator=(Missile const& other_missile) noexcept
+    {
+        assert(this != &other_missile);
+
+        destroyed = other_missile.destroyed;
+        cur_pos = other_missile.cur_pos;
+        cur_speed = other_missile.cur_speed;
+        cur_vel = other_missile.cur_vel;
+        sprite = other_missile.sprite;
+
+        return *this;
+    }
+    Missile& operator=(Missile&& other_missile_tmp)  noexcept
+    {
+        assert(this != &other_missile_tmp);
+
+        std::swap(destroyed, other_missile_tmp.destroyed);
+        std::swap(cur_pos, other_missile_tmp.cur_pos);
+        std::swap(cur_speed, other_missile_tmp.cur_speed);
+        std::swap(cur_vel, other_missile_tmp.cur_vel);
+        std::swap(sprite, other_missile_tmp.sprite);
+
+        return *this;
+    }
 
     ~Missile() noexcept = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override;
-    void update(float dt);
+    void update(float dt) noexcept;
 
     Rec2i get_collision_box() const noexcept override;
     Vec2i get_pos() const noexcept;

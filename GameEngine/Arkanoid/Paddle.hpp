@@ -59,8 +59,8 @@ private:
         LEFT, RIGHT, BOTTOM, TOP
     };
     CollisionEdge process(Ball& ball) const noexcept;
-    void deflect(Ball& ball, CollisionEdge edge) const;
-    inline GameEngine::Geometry::Vector2D<float> calculate_deflect_direction(CollisionEdge edge, double abs_dL, Direction ball_direction) const;
+    void deflect(Ball& ball, CollisionEdge edge) const noexcept;
+    GameEngine::Geometry::Vector2D<float> calculate_deflect_direction(CollisionEdge edge, double dL, Direction ball_direction) const noexcept;
 
 private:
 

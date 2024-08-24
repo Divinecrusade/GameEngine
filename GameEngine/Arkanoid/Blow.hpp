@@ -17,31 +17,28 @@ private:
 
 public:
 
-    static constexpr int COLLISION_HALF_WIDTH { 20 };
-    static constexpr int COLLISION_HALF_HEIGHT{ 20 };
+    Blow(Vec2i const& pos, GameEngine::Animation const& anim, GameEngine::Colour chroma) noexcept;
+    Blow(Blow const&) noexcept = default;
+    Blow(Blow&&)      noexcept = default;
 
-public:
-
-    Blow(Vec2i const& pos, GameEngine::Animation const& anim, GameEngine::Colour chroma);
-    Blow(Blow const&) = default;
-    Blow(Blow&&)      = default;
-
-    Blow& operator=(Blow const&) = default;
-    Blow& operator=(Blow&&)      = default;
+    Blow& operator=(Blow const&) noexcept = default;
+    Blow& operator=(Blow&&)      noexcept = default;
     
-    ~Blow() = default;
+    ~Blow() noexcept = default;
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<Rec2i> const& clipping_area) const;
-    void update(float dt);
+    void update(float dt) noexcept;
 
     bool is_ended() const noexcept;
 
-    void throw_ball(Ball& ball) const;
+    void throw_ball(Ball& ball) const noexcept;
 
-    Rec2i get_collision_box() const override;
+    Rec2i get_collision_box() const noexcept override;
 
 private:
 
+    static constexpr int COLLISION_HALF_WIDTH{ 20 };
+    static constexpr int COLLISION_HALF_HEIGHT{ 20 };
     static constexpr float BALL_ACCELERATION{ 10.0f };
 
     Vec2i pos;

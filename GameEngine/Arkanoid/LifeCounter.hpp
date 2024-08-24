@@ -9,14 +9,14 @@ class LifeCounter final : public GameEngine::Interfaces::IDrawable
 public:
     
     LifeCounter() = delete;
-    LifeCounter(int min_value, int max_value, GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::SurfaceView sprite, GameEngine::Colour chroma = GameEngine::Colours::MAGENTA);
+    LifeCounter(int min_value, int max_value, GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::SurfaceView sprite, GameEngine::Colour chroma = GameEngine::Colours::MAGENTA) noexcept;
     LifeCounter(LifeCounter const&) = delete;
-    LifeCounter(LifeCounter&&) = delete;
+    LifeCounter(LifeCounter&&)      = delete;
 
     LifeCounter& operator=(LifeCounter const&) = delete;
-    LifeCounter& operator=(LifeCounter&&) = delete;
+    LifeCounter& operator=(LifeCounter&&)      = delete;
     
-    ~LifeCounter() = default;
+    ~LifeCounter() noexcept = default;
 
     bool is_ended() const noexcept;
     

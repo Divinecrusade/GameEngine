@@ -6,15 +6,15 @@ PlayField::PlayField(Rec2i const& size_and_location) noexcept
 :
 collision_frame{ size_and_location }
 {
-    assert(collision_frame.left > 0);
-    assert(collision_frame.right > 0);
-    assert(collision_frame.bottom > 0);
-    assert(collision_frame.top > 0);
+    assert(collision_frame.left >= 0);
+    assert(collision_frame.right >= 0);
+    assert(collision_frame.bottom >= 0);
+    assert(collision_frame.top >= 0);
     assert(collision_frame.left < collision_frame.right);
     assert(collision_frame.top < collision_frame.bottom);
 }
 
-void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
+void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const&) const
 {
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness), inner_border_thickness, inner_border_colour);
     gfx.draw_rectangle(collision_frame.get_expanded(inner_border_thickness + outer_border_thickness), outer_border_thickness, outer_border_colour);
@@ -23,9 +23,14 @@ void PlayField::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<Gam
                   lose_zone_line_thickness, lose_zone_colour);
 }
 
-bool PlayField::is_in_field(Paddle const& pad) const noexcept
+bool PlayField::is_in_field(GameEngine::Abstract::Collidable const& obj) const noexcept
 {
-    return collision_frame.contains(pad.get_collision_box());
+    return collision_frame.contains(obj.get_collision_box());
+}
+
+bool PlayField::is_in_lose_zone(Ball const& ball) const noexcept
+{
+    return ball.get_collision_box().is_colided_with(Rec2i{{collision_frame.left, collision_frame.bottom}, {collision_frame.right, collision_frame.bottom}});
 }
 
 void PlayField::handle_collision(Paddle& pad) const noexcept
@@ -33,18 +38,7 @@ void PlayField::handle_collision(Paddle& pad) const noexcept
     assert(!is_in_field(pad));
 
     auto const rect_pad{ pad.get_collision_box() };
-    int dx{ (rect_pad.left < collision_frame.left ? collision_frame.left - rect_pad.left : collision_frame.right - rect_pad.right) };
-    pad.move_by(GameEngine::Geometry::Vector2D<int>{ dx, 0 });
-}
-
-bool PlayField::is_in_field(Ball const& ball) const noexcept
-{
-    return collision_frame.contains(ball.get_collision_box());
-}
-
-bool PlayField::is_in_lose_zone(Ball const& ball) const noexcept
-{
-    return ball.get_collision_box().is_colided_with(Rec2i{{collision_frame.left, collision_frame.bottom}, {collision_frame.right, collision_frame.bottom}});
+    pad.move_by(GameEngine::Geometry::Vector2D<int>{ (rect_pad.left < collision_frame.left ? collision_frame.left - rect_pad.left : collision_frame.right - rect_pad.right), 0 });
 }
 
 void PlayField::handle_collision(Ball& ball) const noexcept

@@ -7,8 +7,6 @@ cur_pos{ init_pos },
 cur_speed{ init_speed },
 cur_half_width{ init_half_width }
 { 
-    assert(init_pos.x >= 0);
-    assert(init_pos.y >= 0);
     assert(init_speed > 0.f);
     assert(init_half_width > 0);
 }
@@ -58,14 +56,11 @@ void Paddle::accelerate(float a) noexcept
 void Paddle::deflect(Ball& ball)
 {
     assert(is_collided_with(ball));
+    assert(!cooldown);
 
-    if (!cooldown)
-    {
-        CollisionEdge const edge{ process(ball) };
-        deflect(ball, edge);
+    deflect(ball, process(ball));
 
-        cooldown = true;
-    }
+    cooldown = true;
 }
 
 Paddle::Rec2i Paddle::get_collision_box() const noexcept
@@ -107,7 +102,7 @@ Paddle::CollisionEdge Paddle::process(Ball& ball) const noexcept
     return edge;
 }
 
-void Paddle::deflect(Ball& ball, CollisionEdge edge) const
+void Paddle::deflect(Ball& ball, CollisionEdge edge) const noexcept
 {
     assert(!cooldown);
 
@@ -129,7 +124,7 @@ void Paddle::deflect(Ball& ball, CollisionEdge edge) const
     }
 }
 
-Paddle::Vec2f Paddle::calculate_deflect_direction(CollisionEdge edge, double dL, Direction ball_direction) const
+Paddle::Vec2f Paddle::calculate_deflect_direction(CollisionEdge edge, double dL, Direction ball_direction) const noexcept
 {
     assert(edge == CollisionEdge::BOTTOM || edge == CollisionEdge::TOP);
     assert(ball_direction == Direction::LEFT || ball_direction == Direction::RIGHT);
@@ -144,7 +139,7 @@ Paddle::Vec2f Paddle::calculate_deflect_direction(CollisionEdge edge, double dL,
         (abs_dL <= cur_half_width * MIN_DEFLECT_ZONE_RATIO ?
         MIN_ANGLE_DEFLECT
         :
-        min(MAX_ANGLE_DEFLECT, (MIN_ANGLE_DEFLECT + (MAX_ANGLE_DEFLECT - MIN_ANGLE_DEFLECT) * (abs_dL / cur_half_width))))
+        (((MAX_ANGLE_DEFLECT) < ((MIN_ANGLE_DEFLECT + (MAX_ANGLE_DEFLECT - MIN_ANGLE_DEFLECT) * (abs_dL / cur_half_width)))) ? (MAX_ANGLE_DEFLECT) : ((MIN_ANGLE_DEFLECT + (MAX_ANGLE_DEFLECT - MIN_ANGLE_DEFLECT) * (abs_dL / cur_half_width)))))
     };
     new_dir.rotate(deflect_angle);
 

@@ -24,13 +24,12 @@ public:
     PlayField& operator=(PlayField const&) = delete;
     PlayField& operator=(PlayField&&)      = delete;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area = std::nullopt) const override;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override;
     
-    bool is_in_field(Paddle const& pad) const noexcept;
-    void handle_collision(Paddle& pad)  const noexcept;
-
-    bool is_in_field(Ball const& ball)     const noexcept;
+    bool is_in_field(GameEngine::Abstract::Collidable const& obj) const noexcept;
     bool is_in_lose_zone(Ball const& ball) const noexcept;
+
+    void handle_collision(Paddle& pad)  const noexcept;
     void handle_collision(Ball& ball)      const noexcept;
 
     Rec2i get_collision_box() const noexcept;

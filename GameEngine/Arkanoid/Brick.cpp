@@ -16,40 +16,10 @@ collision_box{ pos, WIDTH, HEIGHT },
 c{ c }
 { }
 
-Brick::Brick(Brick const& b) noexcept
-:
-collision_box{ b.collision_box },
-c{ b.c }
-{ }
-
-Brick::Brick(Brick && b) noexcept
-:
-Brick::Brick()
+void Brick::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const&) const
 {
-    swap(std::move(b));
-}
-
-Brick& Brick::operator=(Brick const& b) noexcept
-{
-    if (this != &b)
-    {
-        collision_box = b.collision_box;
-        c = b.c;
-    }
-
-    return *this;
-}
-
-Brick& Brick::operator=(Brick&& b) noexcept
-{
-    swap(std::move(b));
-    return *this;
-}
-
-void Brick::draw(GameEngine::Interfaces::IGraphics2D & gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
-{
-    auto padded_block{ collision_box.get_expanded(-VISUAL_PADDING) };
-    auto flat_visual_block{ padded_block.get_expanded(-FRAME_WIDTH) };
+    auto const padded_block{ collision_box.get_expanded(-VISUAL_PADDING) };
+    auto const flat_visual_block{ padded_block.get_expanded(-FRAME_WIDTH) };
 
     gfx.fill_rectangle(flat_visual_block, c);
 
@@ -133,23 +103,7 @@ void Brick::deflect(Ball& ball) const noexcept
     }
 }
 
-void Brick::swap(Brick&& b) noexcept
-{
-    std::swap(collision_box, b.collision_box);
-    std::swap(c, b.c);
-}
-
-GameEngine::Geometry::Rectangle2D<int> Brick::get_collision_box() const
+GameEngine::Geometry::Rectangle2D<int> Brick::get_collision_box() const noexcept
 {
     return collision_box;
-}
-
-bool operator==(Brick const& lhs, Brick const& rhs) noexcept
-{
-    return lhs.collision_box == rhs.collision_box && lhs.c == rhs.c;
-}
-
-bool operator!=(Brick const& lhs, Brick const& rhs) noexcept
-{
-    return !(lhs == rhs);
 }
