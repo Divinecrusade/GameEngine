@@ -1,8 +1,5 @@
 #include "Brick.hpp"
 
-#include <algorithm>
-#include <cmath>
-
 
 Brick::Brick() noexcept
 :

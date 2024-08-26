@@ -4,21 +4,21 @@
 Arkanoid::Arkanoid(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics)
 :
 Game { window, graphics },
-field{ Rec2i{ 0 + PADDING.left, WINDOW.get_width() - PADDING.right, WINDOW.get_height() - PADDING.bottom, 0 + PADDING.top } },
+field{ Rec2i{ 0 + PLAYFIELD_AREA.left, WINDOW.get_width() - PLAYFIELD_AREA.right, WINDOW.get_height() - PLAYFIELD_AREA.bottom, 0 + PLAYFIELD_AREA.top } },
 pad  { PADDLE_INIT_POS, PADDLE_INIT_SPEED, PADDLE_INIT_HALF_WIDTH },
 ball { BALL_INIT_POS, BALL_INIT_DIR, BALL_INIT_SPEED },
 gamestart_img { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_GAMESTART_IMG  }}) },
 rocket        { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_MISSILE_SPRITE }}) },
 heart         { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_LIFE_SPRITE   }}) },
 blow_effect   { std::filesystem::current_path() / (std::filesystem::path{ std::wstring{ ASSETS_DIR } + std::wstring{ ASSET_BLOW_ANIMATION }}), 50U, 70U },
-lives         { 0, N_LIVES, { PADDING.right, PADDING.top }, heart, GameEngine::Colours::WHITE },
+lives         { 0, N_LIVES, { PLAYFIELD_AREA.right, PLAYFIELD_AREA.top }, heart, GameEngine::Colours::WHITE },
 points_counter{ POINTS_LEFT_TOP_POS, C1 }
 { 
     bricks.reserve(N_BRICKS_TOTAL);
     spawn_bricks();
 }
 
-void Arkanoid::update()
+void Arkanoid::update() noexcept
 {
     switch (float const dt{ ft.mark() }; cur_stage)
     {
@@ -29,7 +29,7 @@ void Arkanoid::update()
     }
 }
 
-void Arkanoid::update_start_stage()
+void Arkanoid::update_start_stage() noexcept
 {
     assert(cur_stage == GameStage::START);
 
@@ -41,7 +41,7 @@ void Arkanoid::update_start_stage()
         }
 }
 
-void Arkanoid::update_in_progress_stage(float dt)
+void Arkanoid::update_in_progress_stage(float dt) noexcept
 {
     assert(cur_stage == GameStage::IN_PROGRESS);
 
@@ -52,7 +52,7 @@ void Arkanoid::update_in_progress_stage(float dt)
     update_blows(dt);
 }
 
-void Arkanoid::update_reset_stage(float dt)
+void Arkanoid::update_reset_stage(float dt) noexcept
 {
     assert(cur_stage == GameStage::RESET);
 
@@ -75,7 +75,7 @@ void Arkanoid::update_reset_stage(float dt)
     }
 }
 
-void Arkanoid::update_gameover_stage()
+void Arkanoid::update_gameover_stage() noexcept
 {
     assert(cur_stage == GameStage::GAMEOVER);
 
@@ -109,7 +109,7 @@ void Arkanoid::update_gameover_stage()
     }
 }
 
-void Arkanoid::update_paddle(float dt)
+void Arkanoid::update_paddle(float dt) noexcept
 {
     Paddle::Direction new_dir{ pad.get_direction() };
 
@@ -132,7 +132,7 @@ void Arkanoid::update_paddle(float dt)
     if (!field.is_in_field(pad)) field.handle_collision(pad);
 }
 
-void Arkanoid::update_ball(float dt)
+void Arkanoid::update_ball(float dt) noexcept
 {
     ball.update(dt);
     if (!field.is_in_field(ball))
@@ -146,43 +146,20 @@ void Arkanoid::update_ball(float dt)
         field.handle_collision(ball);
         pad.reset_cooldown();
     }
-    if (pad.is_collided_with(ball))
+    if (pad.is_collided_with(ball) && !pad.is_cooldowned())
     {
         pad.deflect(ball);
         points_counter.ball_reflected_by_paddle();
     }
 }
 
-void Arkanoid::update_bricks()
+void Arkanoid::update_bricks() noexcept
 {
-    auto collided_brick{ bricks.end() };
-    int distance{ Ball::RADIUS * Ball::RADIUS / 2 };
-    for (auto brick{ bricks.begin() }; brick != bricks.end(); ++brick)
-    {
-        if (brick->is_collided_with(ball))
-        {
-            if (collided_brick == bricks.end())
-            {
-                collided_brick = brick;
-                distance = collided_brick->get_sqr_distance(ball);
-
-                continue;
-            }
-            int const tmp_distance{ brick->get_sqr_distance(ball) };
-            if (distance > tmp_distance)
-            {
-                collided_brick = brick;
-                distance = tmp_distance;
-
-                break;
-            }
-        }
-    }
-    if (collided_brick != bricks.end())
+    if (auto const collided_brick{ std::ranges::find_if(bricks, [&ball = this->ball](auto const& brick) { return brick.is_collided_with(ball); })}; collided_brick != bricks.end())
     {
         collided_brick->deflect(ball);
 
-        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PADDING.top }, MISSILE_SPEED, rocket, GameEngine::Colours::MAGENTA);
+        missiles.emplace_back(Vec2i{ ball.get_collision_box().get_center().x, PLAYFIELD_AREA.top }, MISSILE_SPEED, rocket, GameEngine::Colours::MAGENTA);
         if (bricks.erase(collided_brick); bricks.empty())
         {
             cur_stage = GameStage::GAMEOVER;
@@ -195,13 +172,12 @@ void Arkanoid::update_bricks()
     }
 }
 
-void Arkanoid::update_missiles(float dt)
+void Arkanoid::update_missiles(float dt) noexcept
 {
     for (auto missile{ missiles.begin() }; missile != missiles.end(); ++missile)
     {
         if (missile->is_destroyed()) continue;
         missile->update(dt);
-
 
         if (missile->is_collided_with(pad))
         {
@@ -223,7 +199,7 @@ void Arkanoid::update_missiles(float dt)
         });
 }
 
-void Arkanoid::update_blows(float dt)
+void Arkanoid::update_blows(float dt) noexcept
 {
     for (auto& blow : blows)
     {
@@ -256,7 +232,7 @@ void Arkanoid::render_full_scene()
     points_counter.draw(gfx, POINTS_AREA);
 }
 
-void Arkanoid::cascade_blows(Blow const& new_blow)
+void Arkanoid::cascade_blows(Blow const& new_blow) noexcept
 {
     if (new_blow.is_collided_with(ball)) new_blow.throw_ball(ball);
 
@@ -272,7 +248,7 @@ void Arkanoid::cascade_blows(Blow const& new_blow)
     }
 }
 
-void Arkanoid::decrease_lives()
+void Arkanoid::decrease_lives() noexcept
 {
     if (lives.is_ended()) cur_stage = GameStage::GAMEOVER;
     else
@@ -283,7 +259,7 @@ void Arkanoid::decrease_lives()
     }
 }
 
-void Arkanoid::spawn_bricks()
+void Arkanoid::spawn_bricks() noexcept
 {
     constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)

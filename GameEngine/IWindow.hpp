@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Windows.h>
-#include <optional>
 #include "WinKey.hpp"
+
+#include <optional>
 
 
 namespace GameEngine::Interfaces

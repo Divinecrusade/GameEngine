@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AnimationFrames.hpp"
-#include <type_traits>
 
 
 namespace GameEngine

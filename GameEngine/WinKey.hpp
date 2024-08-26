@@ -1,6 +1,6 @@
 #pragma once
 
-#include <WinUser.h>
+#include <Windows.h>
 
 
 namespace GameEngine

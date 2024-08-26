@@ -5,12 +5,12 @@
 
 #include <Windows.h>
 #include <filesystem>
-#include <stdexcept>
 #include <fstream>
 #include <algorithm>
 #include <cwchar>
 #include <tuple>
 #include <array>
+#include <cassert>
 
 
 namespace GameEngine

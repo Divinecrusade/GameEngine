@@ -1,6 +1,4 @@
 #include "MainWindow.hpp"
-#include <stdexcept>
-#include <cassert>
 
 
 namespace GameEngine
@@ -42,7 +40,7 @@ namespace GameEngine
         }
         try
         {
-            if (!UnregisterClassW(MainWindow::WND_CLASS_NAME, H_INSTANCE)) throw WinApiException{ "Failed to unregister window class" };
+            if (!UnregisterClassW(MainWindow::WND_CLASS_NAME.data(), H_INSTANCE)) throw WinApiException{"Failed to unregister window class"};
         }
         catch (WinApiException const& e)
         {
@@ -99,7 +97,7 @@ namespace GameEngine
             LoadCursorW(NULL, IDC_ARROW),
             (HBRUSH) GetStockObject(BLACK_BRUSH),
             NULL,
-            MainWindow::WND_CLASS_NAME,
+            MainWindow::WND_CLASS_NAME.data(),
             LoadIconW(hInstance, IDI_APPLICATION)
         };
 
@@ -120,7 +118,7 @@ namespace GameEngine
             CreateWindowExW
             (
                 ex_style,
-                MainWindow::WND_CLASS_NAME,
+                MainWindow::WND_CLASS_NAME.data(),
                 window_name.data(),
                 style,
                 window_pos.left, window_pos.top,
@@ -135,7 +133,7 @@ namespace GameEngine
         {
             WinApiException e{ "Failed to create window" };
 
-            (void) UnregisterClassW(MainWindow::WND_CLASS_NAME, hInstance);
+            (void) UnregisterClassW(MainWindow::WND_CLASS_NAME.data(), hInstance);
 
             throw std::move(e);
         }

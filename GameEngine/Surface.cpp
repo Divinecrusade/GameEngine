@@ -1,5 +1,4 @@
 #include "SurfaceView.hpp"
-#include <cassert>
 
 
 namespace GameEngine

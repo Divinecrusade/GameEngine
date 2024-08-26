@@ -1,9 +1,4 @@
 #include "Direct2DFactory.hpp"
-#include "Direct2dException.hpp"
-#include "WinApiException.hpp"
-
-#include <algorithm>
-#include <ranges>
 
 
 namespace GameEngine

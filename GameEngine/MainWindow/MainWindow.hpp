@@ -1,12 +1,6 @@
 #pragma once
 
 #include <IWindow.hpp>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <optional>
-#include <exception>
-
 #include <WinApiException.hpp>
 
 
@@ -64,7 +58,7 @@ namespace GameEngine
 
     private:
 
-        static constexpr wchar_t const* WND_CLASS_NAME{ L"Main App Window" };
+        static constexpr std::wstring_view WND_CLASS_NAME{ L"Main App Window" };
 
         static MainWindow* instance_;
     

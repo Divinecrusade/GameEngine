@@ -9,14 +9,15 @@
 #include "DWriteFontNames.hpp"
 #include "DWriteFontStyles.hpp"
 #include "DWriteFontStretch.hpp"
+#include "Direct2dException.hpp"
+#include "WinApiException.hpp"
+
 
 #include <d2d1.h>
 #include <dwrite.h>
 #include <wincodec.h>
-#include <stdexcept>
-#include <cassert>
 #include <unordered_map>
-#include <algorithm>
+#include <ranges>
 #include <functional>
 
 

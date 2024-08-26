@@ -11,8 +11,6 @@
 #include "DWriteTextHorizontalAlignment.hpp"
 #include "DWriteTextVerticalAlignment.hpp"
 
-#include <vector>
-
 
 namespace GameEngine::Interfaces
 {

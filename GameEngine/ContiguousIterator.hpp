@@ -2,7 +2,6 @@
 
 #include <iterator>
 #include <concepts>
-#include <functional>
 
 
 namespace GameEngine::Auxiliary

@@ -2,8 +2,6 @@
 
 #include <IDrawable.hpp>
 
-#include <array>
-
 
 class Score final : public GameEngine::Interfaces::IDrawable
 {

@@ -1,16 +1,10 @@
 #pragma once
 
+#include "EngineException.hpp"
+
 #include <Windows.h>
 #include <cassert>
-#include <stdexcept>
-#include <exception>
 #include <errhandlingapi.h>
-#include <WinUser.h>
-#include <WinBase.h>
-#include <memory>
-#include <sstream>
-
-#include "EngineException.hpp"
 
 
 namespace GameEngine

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Vector2D.hpp"
-#include <cassert>
 
 
 namespace GameEngine::Geometry

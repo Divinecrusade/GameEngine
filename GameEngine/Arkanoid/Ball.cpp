@@ -1,8 +1,5 @@
 #include "Ball.hpp"
 
-#include <cassert>
-#include <cmath>
-
 
 Ball::Ball(Vec2i init_pos, GameEngine::Geometry::Vector2D<float> init_dir, float init_speed) noexcept
 :

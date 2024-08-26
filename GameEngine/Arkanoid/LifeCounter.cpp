@@ -1,5 +1,6 @@
 #include "LifeCounter.hpp"
 
+
 LifeCounter::LifeCounter(int min_value, int max_value, GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::SurfaceView sprite, GameEngine::Colour chroma) noexcept
 :
 min_value{ min_value },

@@ -4,8 +4,6 @@
 #include "IWindow.hpp"
 #include "WinApiException.hpp"
 
-#include <Windows.h>
-
 
 namespace GameEngine
 {

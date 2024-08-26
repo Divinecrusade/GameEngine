@@ -1,5 +1,4 @@
 #include "PlayField.hpp"
-#include <cassert>
 
 
 PlayField::PlayField(Rec2i const& size_and_location) noexcept

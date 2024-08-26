@@ -2,7 +2,6 @@
 
 #include "IGraphics2D.hpp"
 #include "Rectangle2D.hpp"
-#include <optional>
 
 
 namespace GameEngine::Interfaces

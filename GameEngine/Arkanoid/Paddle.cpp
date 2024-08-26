@@ -48,11 +48,6 @@ void Paddle::move_to(Vec2i const& pos) noexcept
     cur_pos = pos;
 }
 
-void Paddle::accelerate(float a) noexcept
-{
-    cur_speed += a;
-}
-
 void Paddle::deflect(Ball& ball)
 {
     assert(is_collided_with(ball));

@@ -2,6 +2,7 @@
 
 #include "IWindow.hpp"
 #include "IFramableGraphics2D.hpp"
+#include "WinApiException.hpp"
 
 
 namespace GameEngine
