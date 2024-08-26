@@ -6,7 +6,7 @@ namespace GameEngine
     Animation::Animation(AnimationFramesView frames, float animation_duration) noexcept
     :
     frames{ frames },
-    frame_duration{ animation_duration / frames.size() }
+    frame_duration{ animation_duration / static_cast<float>(frames.size()) }
     { }
 
     void Animation::update(float dt) noexcept

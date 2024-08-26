@@ -265,13 +265,13 @@ namespace GameEngine
         assert(clipping_area.left <= clipping_area.right);
         assert(clipping_area.top <= clipping_area.bottom);
 
-        IDWriteTextFormat& text_format{ d2d_factory.get_text_format(font, get_dips_from_pixels(font_size), font_weight, style) };
+        IDWriteTextFormat& text_format{ d2d_factory.get_text_format(font, get_dips_from_pixels(font_size), font_weight, style, stretch) };
         text_format.SetTextAlignment(static_cast<DWRITE_TEXT_ALIGNMENT>(align1));
         text_format.SetParagraphAlignment(static_cast<DWRITE_PARAGRAPH_ALIGNMENT>(align2));
         d2d_factory.get_render_target().DrawTextW
         (
             text.data(),
-            text.size(),
+            static_cast<UINT32>(text.size()),
             &text_format,
             D2D1::RectF
             (

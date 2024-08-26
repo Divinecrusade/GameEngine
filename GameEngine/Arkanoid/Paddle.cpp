@@ -11,7 +11,7 @@ cur_half_width{ init_half_width }
     assert(init_half_width > 0);
 }
 
-void Paddle::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const
+void Paddle::draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const&) const
 {
     Rec2i const pad_rect{ Rec2i::get_from_center(cur_pos, cur_half_width, HALF_HEIGHT) };
     gfx.fill_rectangle(pad_rect, MAIN_COLOUR);

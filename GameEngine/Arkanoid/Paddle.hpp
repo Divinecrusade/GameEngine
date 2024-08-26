@@ -36,7 +36,7 @@ public:
     Paddle& operator=(Paddle const&) = delete;
     Paddle& operator=(Paddle&&)      = delete;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area = std::nullopt) const override;
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override;
     void update(float dt) noexcept;
 
     Direction get_direction() const   noexcept;

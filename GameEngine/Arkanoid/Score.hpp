@@ -39,7 +39,7 @@ private:
     static constexpr int                          POINTS_FONT_WEIGHT{ 600 };
 
     static constexpr std::array<GameEngine::Colour, 4U> FACTORS_COLORS{ GameEngine::Colours::CORAL, GameEngine::Colours::CRIMSON, GameEngine::Colours::ROYAL_BLUE, GameEngine::Colours::GOLD };
-    static constexpr std::array<int, 4U>                FACTORS_FONT_SIZES{ 42, 46, 48, 50 };
+    static constexpr std::array<int, 4U>                FACTORS_FONT_SIZES{{ 42, 46, 48, 50 }};
 
     
     GameEngine::Colour const POINTS_FONT_COLOUR;

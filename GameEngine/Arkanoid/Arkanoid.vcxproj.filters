@@ -114,13 +114,13 @@
     <ClInclude Include="..\DWriteFontStyles.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\DWriteFontStretch.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\DWriteTextHorizontalAlignment.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\DWriteTextVerticalAlignment.hpp">
+      <Filter>Файлы заголовков\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DWriteFontStretch.hpp">
       <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
   </ItemGroup>

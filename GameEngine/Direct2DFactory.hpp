@@ -142,7 +142,7 @@ namespace GameEngine
         ID2D1SolidColorBrush&  get_brush(KeyColor const& key);
         ID2D1Bitmap&           get_bitmap(SurfaceView srf);
         ID2D1BitmapBrush&      get_bitmapbrush(ID2D1Bitmap& bitmap);
-        IDWriteTextFormat&     get_text_format(DWriteFontNames font, FLOAT font_size, int font_weight, DWriteFontStyles style, DWriteFontStretch stretch = DWriteFontStretch::NORMAL);
+        IDWriteTextFormat&     get_text_format(DWriteFontNames font, FLOAT font_size, int font_weight, DWriteFontStyles style, DWriteFontStretch stretch);
 
         void               open_sink();
         void               close_sink();

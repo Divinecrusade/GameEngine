@@ -264,7 +264,7 @@ void Arkanoid::spawn_bricks() noexcept
     constexpr Vec2i brick_size{ Brick::WIDTH, Brick::HEIGHT };
     for (int i{ 0 }; i != N_BRICKS_TOTAL; ++i)
     {
-        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * Vec2i{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[i / N_BRICKS_IN_ROW]);
+        bricks.emplace_back(GRID_BRICKS_BEG + brick_size * Vec2i{ i % N_BRICKS_IN_ROW, i / N_BRICKS_IN_ROW }, ROW_COLOURS[static_cast<std::array<GameEngine::Colour, 5>::size_type>(i / N_BRICKS_IN_ROW)]);
     }
 }
 

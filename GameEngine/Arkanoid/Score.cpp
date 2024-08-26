@@ -3,8 +3,8 @@
 
 Score::Score(GameEngine::Geometry::Vector2D<int> const& left_top_pos, GameEngine::Colour font_colour) noexcept
 :
-left_top_pos{ left_top_pos },
-POINTS_FONT_COLOUR{ font_colour }
+POINTS_FONT_COLOUR{ font_colour },
+left_top_pos{ left_top_pos }
 { }
 
 void Score::brick_destroyed(int cur_n_lives) noexcept

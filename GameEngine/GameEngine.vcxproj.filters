@@ -114,9 +114,6 @@
     <ClInclude Include="DWriteFontNames.hpp">
       <Filter>Файлы заголовков\DWrite</Filter>
     </ClInclude>
-    <ClInclude Include="DWriteFontStretch.hpp">
-      <Filter>Файлы заголовков\DWrite</Filter>
-    </ClInclude>
     <ClInclude Include="DWriteTextHorizontalAlignment.hpp">
       <Filter>Файлы заголовков\DWrite</Filter>
     </ClInclude>
