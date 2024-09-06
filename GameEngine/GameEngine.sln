@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainWindow", "MainWindow\Ma
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Arkanoid", "Arkanoid\Arkanoid.vcxproj", "{5971B4C1-6E5E-441D-B26F-0C78DCA38E7C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PaintItGit", "PaintItGit\PaintItGit.vcxproj", "{DF46275C-D510-4382-843A-4756981DFEF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{5971B4C1-6E5E-441D-B26F-0C78DCA38E7C}.Release|x64.Build.0 = Release|x64
 		{5971B4C1-6E5E-441D-B26F-0C78DCA38E7C}.Release|x86.ActiveCfg = Release|Win32
 		{5971B4C1-6E5E-441D-B26F-0C78DCA38E7C}.Release|x86.Build.0 = Release|Win32
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Debug|x64.ActiveCfg = Debug|x64
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Debug|x64.Build.0 = Debug|x64
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Debug|x86.ActiveCfg = Debug|Win32
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Debug|x86.Build.0 = Debug|Win32
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Release|x64.ActiveCfg = Release|x64
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Release|x64.Build.0 = Release|x64
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Release|x86.ActiveCfg = Release|Win32
+		{DF46275C-D510-4382-843A-4756981DFEF0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
