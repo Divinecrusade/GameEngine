@@ -1,9 +1,6 @@
 # Game Engine
 
-## [EN] Brief | [РУС] Краткое описание
+## Краткое описание
 
-[EN]
-A open-source C++ WinAPI project that supposed to be a object based simple game engine made from scratch. Graphical library is DirectX.
-
-[РУС]
-В рамках данного проекта реализуется простой C++ игровой движок на WinAPI и DirectX.
+Данный репозиторий содержит решение (solution) Microsoft Visual Studio 2022, которое представляет собой легковесный, написанный с нуля игровой 2D-движок с использованием DirectX (Direct2D и DirectWrite) для Windows (гарантируется совместимость с Windows 10).
+Его следует воспринимать как 1) адаптор (обёртку, accelerator) для DirectX и WinAPI и 2) небольшую библиотеку классов, реализующих базовые аспекты любой 2D-игры.
