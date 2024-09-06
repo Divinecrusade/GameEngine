@@ -5,11 +5,11 @@ namespace GameEngine
 {
     MainWindow* MainWindow::instance_{ nullptr };
 
-    MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, std::optional<bool> resizable, std::optional<int> init_width, std::optional<int> init_height)
+    MainWindow::MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, std::optional<bool> resizable, std::optional<int> init_width, std::optional<int> init_height, std::optional<int> init_left_top_x_pos, std::optional<int> init_left_top_y_pos)
     :
     H_INSTANCE{ hInstance == NULL ? (HINSTANCE) GetModuleHandleW(NULL) : hInstance },
     WND_TITLE { window_name },
-    H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, resizable.value_or(DEFAULT_RESIZABLE), init_width.value_or(DEFAULT_INIT_WIDTH), init_height.value_or(DEFAULT_INIT_HEIGHT)) }
+    H_WND     { MainWindow::register_and_create_window(H_INSTANCE, WND_TITLE, resizable.value_or(DEFAULT_RESIZABLE), init_width.value_or(DEFAULT_INIT_WIDTH), init_height.value_or(DEFAULT_INIT_HEIGHT), init_left_top_x_pos.value_or(DEFAULT_INIT_LEFT_TOP_X_POS), init_left_top_y_pos.value_or(DEFAULT_INIT_LEFT_TOP_Y_POS)) }
     {
         assert(H_WND);
         assert(!instance_);
@@ -79,7 +79,7 @@ namespace GameEngine
         return MESSAGE_HANDLED;
     }
 
-    HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring_view window_name, bool resizable, int init_width, int init_height)
+    HWND MainWindow::register_and_create_window(HINSTANCE hInstance, std::wstring_view window_name, bool resizable, int init_width, int init_height, int init_left_top_x_pos, int init_left_top_y_pos)
     {
         assert(hInstance);
         assert(init_width  > 0);
@@ -106,9 +106,9 @@ namespace GameEngine
               throw WinApiException{ "Failed to register class" };
 
         RECT window_pos{ };
-        window_pos.left = 350;
-        window_pos.right = init_width + window_pos.left;
-        window_pos.top = 100;
+        window_pos.left   = init_left_top_x_pos;
+        window_pos.right  = init_width + window_pos.left;
+        window_pos.top    = init_left_top_y_pos;
         window_pos.bottom = init_height + window_pos.top;
         DWORD const style{ static_cast<DWORD>((resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX))) };
         DWORD const ex_style{ static_cast<DWORD>(WS_EX_OVERLAPPEDWINDOW) };

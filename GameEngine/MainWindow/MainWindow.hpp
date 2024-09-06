@@ -10,30 +10,32 @@ namespace GameEngine
     {
     public:
 
-        static constexpr bool DEFAULT_RESIZABLE  { false };
-        static constexpr int  DEFAULT_INIT_WIDTH {  640  };
-        static constexpr int  DEFAULT_INIT_HEIGHT{  480  };
+        static constexpr bool  DEFAULT_RESIZABLE         { false };
+        static constexpr int   DEFAULT_INIT_WIDTH        {  640  };
+        static constexpr int   DEFAULT_INIT_HEIGHT       {  480  };
+        static constexpr int DEFAULT_INIT_LEFT_TOP_X_POS {    0  };
+        static constexpr int DEFAULT_INIT_LEFT_TOP_Y_POS {   30  };
 
     public:
 
         MainWindow() = delete;
-        MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, std::optional<bool> resizable = std::nullopt, std::optional<int> init_width = std::nullopt, std::optional<int> init_height = std::nullopt);
+        MainWindow(HINSTANCE hInstance, int nCmdShow, std::wstring_view window_name, std::optional<bool> resizable = std::nullopt, std::optional<int> init_width = std::nullopt, std::optional<int> init_height = std::nullopt, std::optional<int> init_left_top_x_pos = std::nullopt, std::optional<int> init_left_top_y_pos = std::nullopt);
         MainWindow(MainWindow const&) = delete;
-        MainWindow(MainWindow&&) = delete;
+        MainWindow(MainWindow&&)      = delete;
 
         virtual ~MainWindow() noexcept;
 
         MainWindow& operator=(MainWindow const&) = delete;
-        MainWindow& operator=(MainWindow&&) = delete;
+        MainWindow& operator=(MainWindow&&)      = delete;
 
-        bool is_fun_key_pressed(WinKey key) const noexcept override;
+        bool is_fun_key_pressed(WinKey key)   const noexcept override;
         bool is_non_fun_key_pressed(int code) const noexcept override;
 
-        std::optional<WinKey> get_last_pressed_functional_key() const noexcept override;
+        std::optional<WinKey> get_last_pressed_functional_key()  const noexcept override;
         std::optional<int> get_last_pressed_non_functional_key() const noexcept override;
 
-        void process_messages_queue() noexcept override;
-        bool is_terminated() const noexcept override;
+        void process_messages_queue()   noexcept override;
+        bool is_terminated()      const noexcept override;
         HWND get_window_handler() const noexcept override;
 
         __forceinline MSG start_message_loop() noexcept
@@ -51,7 +53,7 @@ namespace GameEngine
     private:
 
         static LRESULT CALLBACK message_handler(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) noexcept;
-        static HWND register_and_create_window(HINSTANCE hInstance, std::wstring_view window_name, bool resizable, int init_width, int init_height);
+        static HWND register_and_create_window(HINSTANCE hInstance, std::wstring_view window_name, bool resizable, int init_width, int init_height, int init_left_top_x_pos, int init_left_top_y_pos);
 
         void key_pressed(WPARAM code) noexcept;
         void key_released(WPARAM code) noexcept;
