@@ -9,8 +9,8 @@
 #include <ranges>
 
 
-template<int size, int n_blocks_in_row, GameEngine::Geometry::Vector2D<int> pos>
-requires (size > 0 && n_blocks_in_row > 0 && size % n_blocks_in_row == 0)
+template<int SIZE, int N_BLOCKS_IN_ROW, GameEngine::Geometry::Vector2D<int> LEFT_TOP_POS>
+requires (SIZE > 0 && N_BLOCKS_IN_ROW > 0 && SIZE % N_BLOCKS_IN_ROW == 0)
 class ColorField : public GameEngine::Interfaces::IDrawable
 {
 public:
@@ -39,14 +39,13 @@ public:
     {
         for (int i{ 0 }; i != static_cast<int>(grid.size()); ++i)
         {
-            gfx.fill_rectangle(GameEngine::Geometry::Rectangle2D<int>{ LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i % n_blocks_in_row, i / n_blocks_in_row }, BLOCK_SIZE, BLOCK_SIZE }, grid[static_cast<std::size_t>(i)]);
+            gfx.fill_rectangle(GameEngine::Geometry::Rectangle2D<int>{ LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i % N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, BLOCK_SIZE, BLOCK_SIZE }, grid[static_cast<std::size_t>(i)]);
         }
     }
 
 private:
 
-    static constexpr GameEngine::Geometry::Vector2D<int> LEFT_TOP_POS{ pos };
-    static constexpr int BLOCK_SIZE{ size / n_blocks_in_row };
+    static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
 
-    std::array<GameEngine::Colour, n_blocks_in_row * n_blocks_in_row> grid;
+    std::array<GameEngine::Colour, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;
 };
