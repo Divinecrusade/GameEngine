@@ -20,13 +20,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR, _In
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
     
 #endif // _DEBUG
-#ifdef _DEBUG
-    {
-#endif // _DEBUG
-        PaintItGit::get_game(hInstance, nCmdShow).start();
-#ifdef _DEBUG
-    }
-#endif // _DEBUG
+
+    PaintItGit::get_game(hInstance, nCmdShow).start();
 
 #ifdef _DEBUG
     assert(_CrtDumpMemoryLeaks() == FALSE);

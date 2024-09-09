@@ -15,6 +15,10 @@ class ColorField : public GameEngine::Interfaces::IDrawable
 {
 public:
 
+    static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
+
+public:
+
     ColorField() = delete;
 
     template<std::size_t N>
@@ -44,8 +48,6 @@ public:
     }
 
 private:
-
-    static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
 
     std::array<GameEngine::Colour, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;
 };

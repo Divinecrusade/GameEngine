@@ -4,6 +4,7 @@
 #include <MainWindow/MainWindow.hpp>
 #include <GraphicsDirect2D.hpp>
 #include <Rectangle2D.hpp>
+#include <Mouse.hpp>
 
 #include "ColorField.hpp"
 
@@ -31,11 +32,22 @@ private:
 
     static constexpr std::array<GameEngine::Colour, N_COLORS> MAIN_COLOURS
     { 
+        GameEngine::Colours::RED,
         GameEngine::Colours::GREEN, 
         GameEngine::Colours::YELLOW,  
-        GameEngine::Colours::RED,
         GameEngine::Colours::BLUE,
         GameEngine::Colours::WHITE
+    };
+
+    static constexpr int MINIATURE_SIZE{ ColorField < COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top } >::BLOCK_SIZE / 2 };
+    static constexpr int MINIATURE_STROKE_WIDTH{ 1 };
+    static constexpr GameEngine::Colour MINIATURE_C{ GameEngine::Colours::BLACK };
+
+private:
+
+    enum class GameStage
+    {
+        INIT_COMMIT, COMITTING
     };
 
 public:
@@ -65,7 +77,15 @@ private:
     virtual void update();
     virtual void render();
 
+    void update_init_commit();
+
 private:
 
+    GameStage cur_stage{ GameStage::INIT_COMMIT };
     ColorField<COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top }> blocks{ MAIN_COLOURS };
+
+    bool  hovered{ false };
+    Vec2i cursor_pos{ };
+    std::size_t cur_color_index{ 0U };
+
 };
