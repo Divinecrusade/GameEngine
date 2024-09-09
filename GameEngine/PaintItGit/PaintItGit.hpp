@@ -4,6 +4,7 @@
 #include <MainWindow/MainWindow.hpp>
 #include <GraphicsDirect2D.hpp>
 #include <Rectangle2D.hpp>
+#include <FrameTimer.hpp>
 
 #include "ColorField.hpp"
 
@@ -76,7 +77,7 @@ private:
     virtual void update();
     virtual void render();
 
-    void update_cursor();
+    void update_cursor(float dt);
 
 private:
 
@@ -87,4 +88,5 @@ private:
     Vec2i cursor_pos{ };
     std::size_t cur_color_index{ 0U };
 
+    GameEngine::FrameTimer ft{ };
 };
