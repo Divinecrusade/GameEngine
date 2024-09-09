@@ -38,6 +38,8 @@ namespace GameEngine
         bool is_terminated()      const noexcept override;
         HWND get_window_handler() const noexcept override;
 
+        Geometry::Vector2D<int> get_mouse_pos() const noexcept override;
+
         __forceinline MSG start_message_loop() noexcept
         {
             MSG msg{ };
@@ -71,6 +73,8 @@ namespace GameEngine
         HWND const H_WND;
 
         std::vector<WinKey> pressed_fun_keys{ };
-        std::vector<int> pressed_non_fun_keys{ };
+        std::vector<int>    pressed_non_fun_keys{ };
+
+        Geometry::Vector2D<int> cur_mouse_pos{ };
     };
 }

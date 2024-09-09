@@ -4,7 +4,6 @@
 #include <MainWindow/MainWindow.hpp>
 #include <GraphicsDirect2D.hpp>
 #include <Rectangle2D.hpp>
-#include <Mouse.hpp>
 
 #include "ColorField.hpp"
 

@@ -73,6 +73,7 @@ namespace GameEngine
             case WM_DISPLAYCHANGE: (void) InvalidateRect(hWnd, NULL, FALSE);        break;
             case WM_PAINT:         (void) ValidateRect(hWnd, NULL);                 break;
             case WM_DESTROY:       PostQuitMessage(EXIT_SUCCESS); MainWindow::instance_->terminated = true; break;
+            case WM_MOUSEMOVE:     MainWindow::instance_->cur_mouse_pos = Geometry::Vector2D<int>{ LOWORD(lParam), HIWORD(lParam) }; break;
             default:               return DefWindowProcW(hWnd, message, wParam, lParam);
         }
 
@@ -263,6 +264,11 @@ namespace GameEngine
     bool MainWindow::is_terminated() const noexcept
     {
         return terminated;
+    }
+
+    Geometry::Vector2D<int> MainWindow::get_mouse_pos() const noexcept
+    {
+        return cur_mouse_pos;
     }
 }
 

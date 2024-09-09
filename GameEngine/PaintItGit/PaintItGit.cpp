@@ -32,7 +32,7 @@ void PaintItGit::update()
 
 void PaintItGit::update_cursor()
 {
-    if (Vec2i const mouse_pos{ GameEngine::Mouse::get_cursor_pos(get_wnd()) }; COLOR_FIELD_AREA.contains(mouse_pos))
+    if (Vec2i const mouse_pos{ get_wnd().get_mouse_pos()}; COLOR_FIELD_AREA.contains(mouse_pos))
     {
         hovered = true;
         cursor_pos = mouse_pos;
