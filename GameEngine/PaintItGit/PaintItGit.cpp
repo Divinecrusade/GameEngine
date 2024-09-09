@@ -22,14 +22,15 @@ Game{ window, graphics }
 
 void PaintItGit::update()
 {
+    update_cursor();
     switch (cur_stage)
     {
-        case GameStage::INIT_COMMIT: update_init_commit(); break;
+        case GameStage::INIT_COMMIT: break;
         case GameStage::COMITTING:   break;
     }
 }
 
-void PaintItGit::update_init_commit()
+void PaintItGit::update_cursor()
 {
     if (Vec2i const mouse_pos{ GameEngine::Mouse::get_cursor_pos(get_wnd()) }; COLOR_FIELD_AREA.contains(mouse_pos))
     {

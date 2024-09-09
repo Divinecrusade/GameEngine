@@ -77,7 +77,7 @@ private:
     virtual void update();
     virtual void render();
 
-    void update_init_commit();
+    void update_cursor();
 
 private:
 
