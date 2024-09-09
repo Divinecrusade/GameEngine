@@ -67,6 +67,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColorField.hpp" />
     <ClInclude Include="PaintItGit.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ void PaintItGit::update()
 
 void PaintItGit::render()
 {
-    Game::render();
+    blocks.draw(gfx);
 }
 
 
