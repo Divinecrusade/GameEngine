@@ -74,6 +74,7 @@ namespace GameEngine
             case WM_PAINT:         (void) ValidateRect(hWnd, NULL);                 break;
             case WM_DESTROY:       PostQuitMessage(EXIT_SUCCESS); MainWindow::instance_->terminated = true; break;
             case WM_MOUSEMOVE:     MainWindow::instance_->cur_mouse_pos = Geometry::Vector2D<int>{ LOWORD(lParam), HIWORD(lParam) }; break;
+            case WM_MOUSEWHEEL:    MainWindow::instance_->mouse_wheel_distance_rotation = HIWORD(wParam) / WHEEL_DELTA; break;
             default:               return DefWindowProcW(hWnd, message, wParam, lParam);
         }
 
@@ -269,6 +270,11 @@ namespace GameEngine
     Geometry::Vector2D<int> MainWindow::get_mouse_pos() const noexcept
     {
         return cur_mouse_pos;
+    }
+
+    int MainWindow::get_mouse_wheel_rotation_destance() const noexcept
+    {
+        return std::exchange(mouse_wheel_distance_rotation, 0);
     }
 }
 

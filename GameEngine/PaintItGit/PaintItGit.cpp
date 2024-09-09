@@ -36,25 +36,18 @@ void PaintItGit::update_cursor(float dt)
     static constexpr float MAX_INPUT_DELAY{ 0.15f };
     static float cur_input_delay{ 0.f };
 
-    cur_input_delay -= dt;
-
     if (Vec2i const mouse_pos{ get_wnd().get_mouse_pos()}; COLOR_FIELD_AREA.contains(mouse_pos))
     {
         hovered = true;
         cursor_pos = mouse_pos;
 
-        if (cur_input_delay < 0.f)
+        if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
         {
-            if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_UP))
-            {
-                cur_color_index = (cur_color_index + 1U) % MAIN_COLOURS.size();
-                cur_input_delay = MAX_INPUT_DELAY;
-            }
-            else if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_DOWN))
-            {
-                cur_color_index = (cur_color_index == 0U ? MAIN_COLOURS.size() - 1U : cur_color_index - 1U);
-                cur_input_delay = MAX_INPUT_DELAY;
-            }
+            cur_color_index = (cur_color_index + 1U) % MAIN_COLOURS.size();
+        }
+        else if (mouse_wheel_rotation_destance < 0)
+        {
+            cur_color_index = (cur_color_index == 0U ? MAIN_COLOURS.size() - 1U : cur_color_index - 1U);
         }
     }
     else hovered = false;

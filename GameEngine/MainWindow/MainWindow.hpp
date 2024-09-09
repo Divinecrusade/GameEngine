@@ -40,6 +40,8 @@ namespace GameEngine
 
         Geometry::Vector2D<int> get_mouse_pos() const noexcept override;
 
+        int get_mouse_wheel_rotation_destance() const noexcept override;
+
         __forceinline MSG start_message_loop() noexcept
         {
             MSG msg{ };
@@ -76,5 +78,7 @@ namespace GameEngine
         std::vector<int>    pressed_non_fun_keys{ };
 
         Geometry::Vector2D<int> cur_mouse_pos{ };
+
+        int mutable mouse_wheel_distance_rotation{ 0 };
     };
 }
