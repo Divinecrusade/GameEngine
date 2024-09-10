@@ -17,7 +17,8 @@ PaintItGit& PaintItGit::get_game()
 
 PaintItGit::PaintItGit(GameEngine::MainWindow& window, GameEngine::GraphicsDirect2D& graphics)
 :
-Game{ window, graphics }
+Game{ window, graphics },
+CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 }
 { }
 
 void PaintItGit::update()
@@ -61,7 +62,7 @@ void PaintItGit::render()
 
     if (hovered)
     {
-        Rec2i const miniature_area{ cursor_pos, MINIATURE_SIZE, MINIATURE_SIZE };
+        Rec2i const miniature_area{ cursor_pos + CURSOR_COLLISION_BOX_WIDTH_HEIGHT, MINIATURE_SIZE, MINIATURE_SIZE};
         gfx.draw_rectangle(miniature_area.get_expanded(MINIATURE_STROKE_WIDTH), MINIATURE_STROKE_WIDTH, MINIATURE_C);
         gfx.fill_rectangle(miniature_area, MAIN_COLOURS[cur_color_index]);
     }

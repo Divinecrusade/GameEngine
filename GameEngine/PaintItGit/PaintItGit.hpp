@@ -5,6 +5,7 @@
 #include <GraphicsDirect2D.hpp>
 #include <Rectangle2D.hpp>
 #include <FrameTimer.hpp>
+#include <Mouse.hpp>
 
 #include "ColorField.hpp"
 
@@ -85,6 +86,8 @@ private:
     void update_cursor(float dt);
 
 private:
+
+    Vec2i const CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
     ColorField<COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top }> blocks{ MAIN_COLOURS };
