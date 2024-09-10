@@ -42,7 +42,6 @@ private:
 
     static constexpr int MINIATURE_SIZE{ ColourField < COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top } >::BLOCK_SIZE / 2 };
     static constexpr int MINIATURE_STROKE_WIDTH{ 1 };
-    static constexpr GameEngine::Colour MINIATURE_C{ GameEngine::Colours::BLACK };
 
     static constexpr GameEngine::Colour INNER_BORDER_C{ GameEngine::Colours::ROYAL_BLUE };
     static constexpr int INNER_BORDER_THICKNESS{ 2 };
