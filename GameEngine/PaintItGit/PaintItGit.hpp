@@ -4,10 +4,10 @@
 #include <MainWindow/MainWindow.hpp>
 #include <GraphicsDirect2D.hpp>
 #include <Rectangle2D.hpp>
-#include <FrameTimer.hpp>
 #include <Mouse.hpp>
+#include <FrameTimer.hpp>
 
-#include "ColorField.hpp"
+#include "ColourField.hpp"
 
 
 class PaintItGit final : private GameEngine::Game
@@ -25,13 +25,13 @@ private:
 
     static constexpr Rec2i PADDING{ 20, 20, 20, 20 };
 
-    static constexpr int   COLOR_FIELD_SIZE{ WINDOW.get_height() - PADDING.top - PADDING.bottom };
-    static constexpr Rec2i COLOR_FIELD_AREA{ PADDING.left, PADDING.left + COLOR_FIELD_SIZE, PADDING.top + COLOR_FIELD_SIZE, PADDING.top };
+    static constexpr int   COLOUR_FIELD_SIZE{ WINDOW.get_height() - PADDING.top - PADDING.bottom };
+    static constexpr Rec2i COLOUR_FIELD_AREA{ PADDING.left, PADDING.left + COLOUR_FIELD_SIZE, PADDING.top + COLOUR_FIELD_SIZE, PADDING.top };
     static constexpr int   N_BLOCKS_IN_ROW{ 10 };
 
-    static constexpr std::size_t N_COLORS{ 5 };
+    static constexpr std::size_t N_COLOURS{ 5 };
 
-    static constexpr std::array<GameEngine::Colour, N_COLORS> MAIN_COLOURS
+    static constexpr std::array<GameEngine::Colour, N_COLOURS> MAIN_COLOURS
     { 
         GameEngine::Colours::RED,
         GameEngine::Colours::GREEN, 
@@ -40,7 +40,7 @@ private:
         GameEngine::Colours::WHITE
     };
 
-    static constexpr int MINIATURE_SIZE{ ColorField < COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top } >::BLOCK_SIZE / 2 };
+    static constexpr int MINIATURE_SIZE{ ColourField < COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top } >::BLOCK_SIZE / 2 };
     static constexpr int MINIATURE_STROKE_WIDTH{ 1 };
     static constexpr GameEngine::Colour MINIATURE_C{ GameEngine::Colours::BLACK };
 
@@ -53,7 +53,7 @@ private:
 
     enum class GameStage
     {
-        INIT_COMMIT, COMITTING
+        INIT_COMMIT, COMMITING
     };
 
 public:
@@ -83,18 +83,20 @@ private:
     virtual void update();
     virtual void render();
 
-    void update_cursor(float dt);
+    void update_gamestage_first_commit(float dt);
+    void update_gamestage_commiting();
 
 private:
 
     Vec2i const CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
-    ColorField<COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top }> blocks{ MAIN_COLOURS };
+    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks{ MAIN_COLOURS };
 
-    bool  hovered{ false };
     Vec2i const& cursor_pos;
-    std::size_t cur_color_index{ 0U };
+
+    bool blocks_hovered{ false };
+    std::size_t cur_colour_index{ 0U };
 
     GameEngine::FrameTimer ft{ };
 };

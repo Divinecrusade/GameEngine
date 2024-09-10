@@ -24,7 +24,7 @@
     <ClInclude Include="PaintItGit.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ColorField.hpp">
+    <ClInclude Include="ColourField.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
