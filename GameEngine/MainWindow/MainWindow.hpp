@@ -38,7 +38,7 @@ namespace GameEngine
         bool is_terminated()      const noexcept override;
         HWND get_window_handler() const noexcept override;
 
-        Geometry::Vector2D<int> get_mouse_pos() const noexcept override;
+        Geometry::Vector2D<int> const& get_mouse_pos() const noexcept override;
 
         int get_mouse_wheel_rotation_destance() const noexcept override;
 

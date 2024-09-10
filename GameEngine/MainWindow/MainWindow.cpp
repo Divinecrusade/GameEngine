@@ -267,7 +267,7 @@ namespace GameEngine
         return terminated;
     }
 
-    Geometry::Vector2D<int> MainWindow::get_mouse_pos() const noexcept
+    Geometry::Vector2D<int> const& MainWindow::get_mouse_pos() const noexcept
     {
         return cur_mouse_pos;
     }

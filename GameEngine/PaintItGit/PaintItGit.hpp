@@ -93,7 +93,7 @@ private:
     ColorField<COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top }> blocks{ MAIN_COLOURS };
 
     bool  hovered{ false };
-    Vec2i cursor_pos{ };
+    Vec2i const& cursor_pos;
     std::size_t cur_color_index{ 0U };
 
     GameEngine::FrameTimer ft{ };

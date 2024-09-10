@@ -19,7 +19,7 @@ namespace GameEngine::Interfaces
         virtual void process_messages_queue()   = 0;
         virtual bool is_terminated()      const = 0;
         virtual HWND get_window_handler() const = 0;
-        virtual Geometry::Vector2D<int> get_mouse_pos() const = 0;
+        virtual Geometry::Vector2D<int> const& get_mouse_pos() const = 0;
         virtual int get_mouse_wheel_rotation_destance() const = 0;
     };
 }

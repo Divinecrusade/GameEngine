@@ -18,7 +18,8 @@ PaintItGit& PaintItGit::get_game()
 PaintItGit::PaintItGit(GameEngine::MainWindow& window, GameEngine::GraphicsDirect2D& graphics)
 :
 Game{ window, graphics },
-CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 }
+CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 },
+cursor_pos{ window.get_mouse_pos() }
 { }
 
 void PaintItGit::update()
@@ -37,10 +38,9 @@ void PaintItGit::update_cursor(float dt)
     static constexpr float MAX_INPUT_DELAY{ 0.15f };
     static float cur_input_delay{ 0.f };
 
-    if (Vec2i const mouse_pos{ get_wnd().get_mouse_pos()}; COLOR_FIELD_AREA.contains(mouse_pos))
+    if (COLOR_FIELD_AREA.contains(cursor_pos))
     {
         hovered = true;
-        cursor_pos = mouse_pos;
 
         if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
         {
