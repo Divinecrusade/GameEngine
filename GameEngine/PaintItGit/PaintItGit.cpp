@@ -49,7 +49,7 @@ void PaintItGit::update_gamestage_first_commit(float dt)
             cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
 
         if (cur_input_delay < 0.f && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
-            blocks.set_colour(cursor_pos, MAIN_COLOURS[cur_colour_index]);
+            *blocks.get_block(cursor_pos) = MAIN_COLOURS[cur_colour_index];
     }
     else blocks_hovered = false;
 }

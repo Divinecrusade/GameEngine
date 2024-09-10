@@ -3,6 +3,8 @@
 #include <Vector2D.hpp>
 #include <KeyColor.hpp>
 #include <IDrawable.hpp>
+#include <ContiguousIterator.hpp>
+
 #include <array>
 #include <random>
 #include <algorithm>
@@ -16,6 +18,8 @@ class ColourField : public GameEngine::Interfaces::IDrawable
 public:
 
     static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
+
+    using iterator = GameEngine::Auxiliary::ContiguousIterator<GameEngine::Colour, ColourField>;
 
 public:
 
@@ -47,12 +51,12 @@ public:
         }
     }
 
-    void set_colour(GameEngine::Geometry::Vector2D<int> coordinate, GameEngine::Colour c)
+    iterator get_block(GameEngine::Geometry::Vector2D<int> coordinate)
     {
         coordinate -= LEFT_TOP_POS;
         coordinate /= BLOCK_SIZE;
 
-        grid[coordinate.y * N_BLOCKS_IN_ROW + coordinate.x ] = c;
+        return iterator{ grid.data() + coordinate.y * N_BLOCKS_IN_ROW + coordinate.x };
     }
 
 private:
