@@ -93,9 +93,13 @@ namespace GameEngine::Geometry
             return left <= rect.left && right >= rect.right && 
                    bottom >= rect.bottom && top <= rect.top;
         }
-        [[maybe_unused]] bool is_contained(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() > std::declval<T const&>()) && noexcept(std::declval<T const&>() < std::declval<T const&>()))
+        [[maybe_unused]] constexpr bool is_contained(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() > std::declval<T const&>()) && noexcept(std::declval<T const&>() < std::declval<T const&>()))
         {
             return rect.contains(*this);
+        }
+        [[maybe_unused]] constexpr Vector2D<T> get_width_n_height() const noexcept(noexcept(Rectangle2D<T>::get_width()) && noexcept(Rectangle2D<T>::get_height()) && noexcept(Vector2D<T>{ std::declval<T>(), std::declval<T>() }))
+        {
+            return Vector2D<T>{ get_width(), get_height() };
         }
 
 
