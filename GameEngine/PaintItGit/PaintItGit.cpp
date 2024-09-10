@@ -55,6 +55,8 @@ void PaintItGit::update_cursor(float dt)
 
 void PaintItGit::render()
 {
+    gfx.draw_rectangle(COLOR_FIELD_AREA.get_expanded(INNER_BORDER_THICKNESS), INNER_BORDER_THICKNESS, INNER_BORDER_C);
+    gfx.draw_rectangle(COLOR_FIELD_AREA.get_expanded(INNER_BORDER_THICKNESS + OUTER_BORDER_THICKNESS), OUTER_BORDER_THICKNESS, OUTER_BORDER_C);
     blocks.draw(gfx);
 
     if (hovered)

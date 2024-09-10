@@ -17,7 +17,7 @@ private:
     using Vec2i = GameEngine::Geometry::Vector2D<int>;
     using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
 
-    static constexpr Rec2i WINDOW   { 0, 1200, 800, 0 };
+    static constexpr Rec2i WINDOW   { 0, 1000, 600, 0 };
     static constexpr bool  RESIZABLE{ false };
 
     static constexpr std::wstring_view GAME_TITLE{ L"Paint it Git" };
@@ -42,6 +42,11 @@ private:
     static constexpr int MINIATURE_SIZE{ ColorField < COLOR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOR_FIELD_AREA.left, COLOR_FIELD_AREA.top } >::BLOCK_SIZE / 2 };
     static constexpr int MINIATURE_STROKE_WIDTH{ 1 };
     static constexpr GameEngine::Colour MINIATURE_C{ GameEngine::Colours::BLACK };
+
+    static constexpr GameEngine::Colour INNER_BORDER_C{ GameEngine::Colours::ROYAL_BLUE };
+    static constexpr int INNER_BORDER_THICKNESS{ 2 };
+    static constexpr GameEngine::Colour OUTER_BORDER_C{ GameEngine::Colours::CYAN };
+    static constexpr int OUTER_BORDER_THICKNESS{ INNER_BORDER_THICKNESS };
 
 private:
 
