@@ -86,6 +86,16 @@ namespace GameEngine
             return colors[static_cast<std::size_t>(index)];
         }
 
+        [[maybe_unused]] static constexpr KeyColor blend(KeyColor const& beg, KeyColor const& end, uint8_t a) noexcept
+        {
+            return KeyColor
+            { 
+                static_cast<uint8_t>((end[ComponentIndex::R] - beg[ComponentIndex::R]) * a / 100 + beg[ComponentIndex::R]),
+                static_cast<uint8_t>((end[ComponentIndex::G] - beg[ComponentIndex::G]) * a / 100 + beg[ComponentIndex::G]),
+                static_cast<uint8_t>((end[ComponentIndex::B] - beg[ComponentIndex::B]) * a / 100 + beg[ComponentIndex::B]),
+            };
+        }
+
     private:
 
         uint8_t colors[4U];
