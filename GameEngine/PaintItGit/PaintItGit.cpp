@@ -21,7 +21,7 @@ Game{ window, graphics },
 CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 },
 cursor_pos{ window.get_mouse_pos() }
 {
-    highlight_cur_colour();
+    update_pulsation();
 }
 
 void PaintItGit::update()
@@ -41,30 +41,29 @@ void PaintItGit::update()
         mouse_rotated = true;
     }
 
-    if (mouse_rotated) highlight_cur_colour();
+    if (mouse_rotated) update_pulsation();
 
     switch (cur_stage)
     {
-        case GameStage::INIT_COMMIT: update_gamestage_first_commit(dt); break;
+        case GameStage::INIT_COMMIT: update_gamestage_first_commit(); break;
         case GameStage::COMMITING:   update_gamestage_commiting();    break;
     }
 }
 
-void PaintItGit::update_gamestage_first_commit(float dt)
+void PaintItGit::update_gamestage_first_commit()
 {
-    static constexpr float MAX_INPUT_DELAY{ 0.15f };
-    static float cur_input_delay{ -MAX_INPUT_DELAY };
-
-    if (cur_input_delay > 0.f) cur_input_delay -= dt;
-
     if (COLOUR_FIELD_AREA.contains(cursor_pos))
     {
-        hovered_block = blocks.get_block(cursor_pos);
-
-        if (cur_input_delay < 0.f && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
+        if (auto const hovered_block{ blocks.get_block(cursor_pos) }; (*hovered_block).first != MAIN_COLOURS[cur_colour_index] && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
+        {
             (*hovered_block).first = MAIN_COLOURS[cur_colour_index];
+            cur_block = hovered_block;
+
+            pulsator.reset();
+            cur_stage = GameStage::COMMITING;
+            update_pulsation();
+        }
     }
-    else hovered_block = blocks.end();
 }
 
 void PaintItGit::update_gamestage_commiting()
@@ -72,12 +71,32 @@ void PaintItGit::update_gamestage_commiting()
 
 }
 
-void PaintItGit::highlight_cur_colour()
+void PaintItGit::update_pulsation()
 {
-    for (auto& block : blocks)
+    switch (cur_stage)
     {
-        if (block.first != MAIN_COLOURS[cur_colour_index]) block.second = pulsation;
-        else                                               block.second = std::nullopt;
+        case GameStage::INIT_COMMIT:
+        {
+            for (auto& block : blocks)
+            {
+                if (block.first != MAIN_COLOURS[cur_colour_index]) block.second = pulsation;
+                else                                               block.second = std::nullopt;
+            }
+        }
+        break;
+
+        case GameStage::COMMITING:
+        {
+            for (auto& block : blocks)
+            {
+                block.second = std::nullopt;
+            }
+            for (auto& block : blocks.get_adject_blocks(cur_block) | std::views::filter([cur_color = MAIN_COLOURS[cur_colour_index]](auto const& block){ return block->first != cur_color; }))
+            {
+                block->second = pulsation;
+            }
+        }
+        break;
     }
 }
 

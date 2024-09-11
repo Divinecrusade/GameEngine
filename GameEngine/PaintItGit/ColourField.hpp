@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <ranges>
 #include <functional>
+#include <ranges>
 
 
 template<int SIZE, int N_BLOCKS_IN_ROW, GameEngine::Geometry::Vector2D<int> LEFT_TOP_POS>
@@ -73,6 +74,23 @@ public:
     constexpr iterator end()   noexcept
     {
         return iterator{ grid.data() + grid.size() };
+    }
+
+    auto get_adject_blocks(iterator block)
+    {
+        constexpr std::size_t MAX_N_NEIGHBOURS{ 4U };
+        static std::array<iterator, MAX_N_NEIGHBOURS> adject_blocks{ };
+        std::size_t cur_n_neighbours{ 0U };
+        auto const  index{ std::distance(begin(), block) };
+        auto const row{ index / N_BLOCKS_IN_ROW };
+        auto const col{ index % N_BLOCKS_IN_ROW };
+
+        if (row != 0)                   adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col };
+        if (row != N_BLOCKS_IN_ROW)     adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col };
+        if (col != 0)                   adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };
+        if (col != N_BLOCKS_IN_ROW - 1) adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };
+
+        return std::views::take(adject_blocks, cur_n_neighbours);
     }
 
 private:

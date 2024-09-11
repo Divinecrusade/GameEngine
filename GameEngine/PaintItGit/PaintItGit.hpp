@@ -86,10 +86,10 @@ private:
     virtual void update();
     virtual void render();
 
-    void update_gamestage_first_commit(float dt);
+    void update_gamestage_first_commit();
     void update_gamestage_commiting();
 
-    void highlight_cur_colour();
+    void update_pulsation();
 
 private:
 
@@ -100,8 +100,8 @@ private:
 
     Vec2i const& cursor_pos;
 
-    std::size_t cur_colour_index{ 0U };
-    decltype(blocks.end()) hovered_block{ blocks.end() };
+    std::size_t            cur_colour_index{ 0U };
+    decltype(blocks.end()) cur_block{ blocks.end() };
 
     GameEngine::FrameTimer ft{ };
 
