@@ -76,7 +76,7 @@ public:
         return iterator{ grid.data() + grid.size() };
     }
 
-    auto get_adject_blocks(iterator block)
+    auto get_adject_blocks_with_not_equal_color(iterator block, GameEngine::Colour c)
     {
         constexpr std::size_t MAX_N_NEIGHBOURS{ 4U };
         static std::array<iterator, MAX_N_NEIGHBOURS> adject_blocks{ };
@@ -85,12 +85,12 @@ public:
         auto const row{ index / N_BLOCKS_IN_ROW };
         auto const col{ index % N_BLOCKS_IN_ROW };
 
-        if (row != 0)                   adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col };
-        if (row != N_BLOCKS_IN_ROW)     adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col };
-        if (col != 0)                   adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };
-        if (col != N_BLOCKS_IN_ROW - 1) adject_blocks[cur_n_neighbours++] = iterator{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };
+        if (iterator const it{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col }; row != 0 && it->first != c)                   adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col }; row != N_BLOCKS_IN_ROW + 1 && it->first != c) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };   col != 0 && it->first != c)                   adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };   col != N_BLOCKS_IN_ROW - 1 && it->first != c) adject_blocks[cur_n_neighbours++] = it;
 
-        return std::views::take(adject_blocks, cur_n_neighbours);
+        return std::make_pair(adject_blocks.begin(), adject_blocks.begin() + cur_n_neighbours);
     }
 
 private:

@@ -21,7 +21,7 @@ Game{ window, graphics },
 CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 },
 cursor_pos{ window.get_mouse_pos() }
 {
-    update_pulsation();
+    update_available_moves();
 }
 
 void PaintItGit::update()
@@ -41,7 +41,7 @@ void PaintItGit::update()
         mouse_rotated = true;
     }
 
-    if (mouse_rotated) update_pulsation();
+    if (mouse_rotated) update_available_moves();
 
     switch (cur_stage)
     {
@@ -61,17 +61,36 @@ void PaintItGit::update_gamestage_first_commit()
 
             pulsator.reset();
             cur_stage = GameStage::COMMITING;
-            update_pulsation();
+            update_available_moves();
         }
     }
 }
 
 void PaintItGit::update_gamestage_commiting()
 {
-
+    if (COLOUR_FIELD_AREA.contains(cursor_pos) && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
+    {
+        auto const hovered_block{ blocks.get_block(cursor_pos) };
+        bool available_move{ false };
+        for (auto cur{ adject_cur_blocks.first }; cur != adject_cur_blocks.second; ++cur)
+        {
+            if (*cur == hovered_block)
+            {
+                available_move = true;
+                break;
+            }
+        }
+        if (available_move)
+        {
+            (*hovered_block).first = MAIN_COLOURS[cur_colour_index];
+            cur_block = hovered_block;
+            pulsator.reset();
+            update_available_moves();
+        }
+    }
 }
 
-void PaintItGit::update_pulsation()
+void PaintItGit::update_available_moves()
 {
     switch (cur_stage)
     {
@@ -91,9 +110,10 @@ void PaintItGit::update_pulsation()
             {
                 block.second = std::nullopt;
             }
-            for (auto& block : blocks.get_adject_blocks(cur_block) | std::views::filter([cur_color = MAIN_COLOURS[cur_colour_index]](auto const& block){ return block->first != cur_color; }))
+            adject_cur_blocks = blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index]);
+            for (auto cur{ adject_cur_blocks.first }; cur != adject_cur_blocks.second; ++cur)
             {
-                block->second = pulsation;
+                (*cur)->second = pulsation;
             }
         }
         break;

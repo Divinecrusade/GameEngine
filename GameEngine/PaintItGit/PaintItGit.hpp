@@ -89,7 +89,7 @@ private:
     void update_gamestage_first_commit();
     void update_gamestage_commiting();
 
-    void update_pulsation();
+    void update_available_moves();
 
 private:
 
@@ -102,6 +102,7 @@ private:
 
     std::size_t            cur_colour_index{ 0U };
     decltype(blocks.end()) cur_block{ blocks.end() };
+    decltype(blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index])) adject_cur_blocks{};
 
     GameEngine::FrameTimer ft{ };
 
