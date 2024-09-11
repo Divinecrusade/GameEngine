@@ -51,12 +51,22 @@ public:
         }
     }
 
-    iterator get_block(GameEngine::Geometry::Vector2D<int> coordinate)
+    constexpr iterator get_block(GameEngine::Geometry::Vector2D<int> coordinate) noexcept
     {
         coordinate -= LEFT_TOP_POS;
         coordinate /= BLOCK_SIZE;
 
         return iterator{ grid.data() + coordinate.y * N_BLOCKS_IN_ROW + coordinate.x };
+    }
+
+    constexpr iterator begin() noexcept
+    {
+        return iterator{ grid.data() };
+    }
+
+    constexpr iterator end()   noexcept
+    {
+        return iterator{ grid.data() + grid.size() };
     }
 
 private:

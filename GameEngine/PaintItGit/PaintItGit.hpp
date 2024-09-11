@@ -94,8 +94,8 @@ private:
 
     Vec2i const& cursor_pos;
 
-    bool blocks_hovered{ false };
     std::size_t cur_colour_index{ 0U };
+    decltype(blocks.end()) hovered_block{ blocks.end() };
 
     GameEngine::FrameTimer ft{ };
 };
