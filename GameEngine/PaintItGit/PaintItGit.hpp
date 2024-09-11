@@ -50,7 +50,7 @@ private:
     static constexpr int OUTER_BORDER_THICKNESS{ INNER_BORDER_THICKNESS };
 
     static constexpr GameEngine::Colour BACKGROUND_COLOUR{ GameEngine::Colours::BLACK };
-    static constexpr int MAX_BLOCK_TRANSPERENCY{ 50 };
+    static constexpr int MAX_BLOCK_TRANSPERENCY{ 70 };
 
 private:
 
@@ -89,6 +89,8 @@ private:
     void update_gamestage_first_commit(float dt);
     void update_gamestage_commiting();
 
+    void highlight_cur_colour();
+
 private:
 
     Vec2i const CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
@@ -104,4 +106,5 @@ private:
     GameEngine::FrameTimer ft{ };
 
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
+    std::function<GameEngine::Colour(GameEngine::Colour)> pulsation{ [&pulsator = this->pulsator](GameEngine::Colour c) { return pulsator(c); } };
 };

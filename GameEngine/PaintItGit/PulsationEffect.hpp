@@ -44,7 +44,7 @@ private:
     static constexpr float INIT_ELAPSED_DURATION{ 0.f };
     static constexpr float INIT_DELTA_SIGN{ +1.f };
 
-    static constexpr float ITERATION_DURATION{ 2.f };
+    static constexpr float ITERATION_DURATION{ 1.5f };
 
     float                  elapsed_duration  { INIT_ELAPSED_DURATION };
     float                  delta_sign        { INIT_DELTA_SIGN };

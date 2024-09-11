@@ -9,17 +9,23 @@
 #include <random>
 #include <algorithm>
 #include <ranges>
+#include <functional>
 
 
 template<int SIZE, int N_BLOCKS_IN_ROW, GameEngine::Geometry::Vector2D<int> LEFT_TOP_POS>
 requires (SIZE > 0 && N_BLOCKS_IN_ROW > 0 && SIZE % N_BLOCKS_IN_ROW == 0)
 class ColourField final : public GameEngine::Interfaces::IDrawable
 {
+private:
+
+    using effect = std::optional<std::function<GameEngine::Colour(GameEngine::Colour)>>;
+    using block  = std::pair<GameEngine::Colour, effect>;
+
 public:
 
     static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
 
-    using iterator = GameEngine::Auxiliary::ContiguousIterator<GameEngine::Colour, ColourField>;
+    using iterator = GameEngine::Auxiliary::ContiguousIterator<block, ColourField>;
 
 public:
 
@@ -31,7 +37,7 @@ public:
         std::ranges::generate(grid, 
         [rng{ std::mt19937{ std::random_device{}() } }, color_distr{ std::uniform_int_distribution<std::size_t>{ 0U, N - 1U } }, &colors_pull]
         () mutable
-        { return colors_pull[color_distr(rng)]; });
+        { return block{ colors_pull[color_distr(rng)], std::nullopt }; });
     }
     
     ColourField(ColourField const&) = delete;
@@ -47,7 +53,8 @@ public:
     {
         for (int i{ 0 }; i != static_cast<int>(grid.size()); ++i)
         {
-            gfx.fill_rectangle(GameEngine::Geometry::Rectangle2D<int>{ LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i % N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, BLOCK_SIZE, BLOCK_SIZE }, grid[static_cast<std::size_t>(i)]);
+            gfx.fill_rectangle(GameEngine::Geometry::Rectangle2D<int>{ LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i % N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, BLOCK_SIZE, BLOCK_SIZE }, 
+            grid[static_cast<std::size_t>(i)].second.value_or([](GameEngine::Colour c){ return c; })(grid[static_cast<std::size_t>(i)].first));
         }
     }
 
@@ -70,5 +77,5 @@ public:
 
 private:
 
-    std::array<GameEngine::Colour, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;
+    std::array<block, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;
 };
