@@ -34,125 +34,125 @@ namespace GameEngine::Auxiliary
 
     public:
 
-        ContiguousIterator() noexcept = default;
-        ContiguousIterator(ContiguousIterator const&) noexcept = default;
-        ContiguousIterator(ContiguousIterator&&)      noexcept = default;
+        constexpr ContiguousIterator() noexcept = default;
+        constexpr ContiguousIterator(ContiguousIterator const&) noexcept = default;
+        constexpr ContiguousIterator(ContiguousIterator&&)      noexcept = default;
 
         template<class AnyContainer>
-        ContiguousIterator(ContiguousIterator<T, AnyContainer, !reversed> const& it) noexcept
+        constexpr ContiguousIterator(ContiguousIterator<T, AnyContainer, !reversed> const& it) noexcept
         :
         data{ it.data     + static_cast<difference_type>(reversed ? -1 : 1) }
         { }
         template<class AnyContainer>
-        ContiguousIterator(ContiguousIterator<T, AnyContainer, !reversed>&& it_tmp)  noexcept
+        constexpr ContiguousIterator(ContiguousIterator<T, AnyContainer, !reversed>&& it_tmp)  noexcept
         :
         data{ it_tmp.data + static_cast<difference_type>(reversed ? -1 : 1) }
         { }
 
-        ContiguousIterator& operator=(ContiguousIterator const&) noexcept = default;
-        ContiguousIterator& operator=(ContiguousIterator&&)      noexcept = default;
+        constexpr ContiguousIterator& operator=(ContiguousIterator const&) noexcept = default;
+        constexpr ContiguousIterator& operator=(ContiguousIterator&&)      noexcept = default;
 
         template<class AnyContainer>
-        ContiguousIterator& operator=(ContiguousIterator<T, AnyContainer, !reversed> const& it) noexcept
+        constexpr ContiguousIterator& operator=(ContiguousIterator<T, AnyContainer, !reversed> const& it) noexcept
         { 
             data = it.data    + static_cast<difference_type>(reversed ? -1 : 1);
         }
         template<class AnyContainer>
-        ContiguousIterator& operator=(ContiguousIterator<T, AnyContainer, !reversed>&& it_tmp)  noexcept
+        constexpr ContiguousIterator& operator=(ContiguousIterator<T, AnyContainer, !reversed>&& it_tmp)  noexcept
         { 
             data = it_tmp.data + static_cast<difference_type>(reversed ? -1 : 1);
         }
 
-        ~ContiguousIterator() = default;
+        constexpr ~ContiguousIterator() noexcept = default;
 
-        pointer   operator->() const noexcept
+        constexpr pointer   operator->() const noexcept
         {
             return &(*data);
         }
-        reference operator*()  const noexcept
+        constexpr reference operator*()  const noexcept
         {
             return *data;
         }
-        reference operator[](difference_type delta) const noexcept
+        constexpr reference operator[](difference_type delta) const noexcept
         {
             return *(*this + delta);
         }
 
-        ContiguousIterator& operator+=(difference_type delta) noexcept
+        constexpr ContiguousIterator& operator+=(difference_type delta) noexcept
         {
             if constexpr(reversed) this->data -= delta;
             else                   this->data += delta;
             return *this;
         }
-        ContiguousIterator& operator-=(difference_type delta) noexcept
+        constexpr ContiguousIterator& operator-=(difference_type delta) noexcept
         {
             if constexpr(reversed) this->data += delta;
             else                   this->data -= delta;
             return *this;
         }
 
-        ContiguousIterator& operator++()    noexcept
+        constexpr ContiguousIterator& operator++()    noexcept
         {
             return (*this += static_cast<difference_type>(1));
         }
-        ContiguousIterator  operator++(int) noexcept
+        constexpr ContiguousIterator  operator++(int) noexcept
         {
             return std::exchange(*this, *this + static_cast<difference_type>(1));
         }
 
-        ContiguousIterator& operator--()    noexcept
+        constexpr ContiguousIterator& operator--()    noexcept
         {
             return (*this -= static_cast<difference_type>(1));
         }
-        ContiguousIterator  operator--(int) noexcept
+        constexpr ContiguousIterator  operator--(int) noexcept
         {
             return std::exchange(*this, *this - static_cast<difference_type>(1));
         }
 
-        friend ContiguousIterator operator+(ContiguousIterator const& lhs, difference_type rhs) noexcept
+        friend constexpr ContiguousIterator operator+(ContiguousIterator const& lhs, difference_type rhs) noexcept
         {
             return ContiguousIterator{ lhs } += rhs;
         }
-        friend ContiguousIterator operator+(difference_type lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr ContiguousIterator operator+(difference_type lhs, ContiguousIterator const& rhs) noexcept
         {
             return ContiguousIterator{ rhs } += lhs;
         }
 
-        friend ContiguousIterator operator-(ContiguousIterator const& lhs, difference_type rhs) noexcept
+        friend constexpr ContiguousIterator operator-(ContiguousIterator const& lhs, difference_type rhs) noexcept
         {
             return ContiguousIterator{ lhs } -= rhs;
         }
-        friend ContiguousIterator operator-(difference_type lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr ContiguousIterator operator-(difference_type lhs, ContiguousIterator const& rhs) noexcept
         {
             return ContiguousIterator{ rhs } -= lhs;
         }
-        friend difference_type operator-(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr difference_type operator-(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return lhs.data - rhs.data;
         }
 
-        friend bool operator==(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr bool operator==(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return lhs.data == rhs.data;
         }
-        friend bool operator!=(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr bool operator!=(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return !(lhs == rhs);
         }
 
-        friend bool operator< (ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr bool operator< (ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return lhs.data < rhs.data;
         }
-        friend bool operator> (ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr bool operator> (ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return (lhs < rhs) && lhs != rhs;
         }
-        friend bool operator<=(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr bool operator<=(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return lhs < rhs || lhs == rhs;
         }
-        friend bool operator>=(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
+        friend constexpr bool operator>=(ContiguousIterator const& lhs, ContiguousIterator const& rhs) noexcept
         {
             return lhs > rhs || lhs == rhs;
         }
