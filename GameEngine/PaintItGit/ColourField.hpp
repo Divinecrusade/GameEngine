@@ -13,7 +13,7 @@
 
 template<int SIZE, int N_BLOCKS_IN_ROW, GameEngine::Geometry::Vector2D<int> LEFT_TOP_POS>
 requires (SIZE > 0 && N_BLOCKS_IN_ROW > 0 && SIZE % N_BLOCKS_IN_ROW == 0)
-class ColourField : public GameEngine::Interfaces::IDrawable
+class ColourField final : public GameEngine::Interfaces::IDrawable
 {
 public:
 
@@ -63,7 +63,6 @@ public:
     {
         return iterator{ grid.data() };
     }
-
     constexpr iterator end()   noexcept
     {
         return iterator{ grid.data() + grid.size() };

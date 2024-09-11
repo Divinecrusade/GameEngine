@@ -8,6 +8,7 @@
 #include <FrameTimer.hpp>
 
 #include "ColourField.hpp"
+#include "PulsationEffect.hpp"
 
 
 class PaintItGit final : private GameEngine::Game
@@ -47,6 +48,9 @@ private:
     static constexpr int INNER_BORDER_THICKNESS{ 2 };
     static constexpr GameEngine::Colour OUTER_BORDER_C{ GameEngine::Colours::CYAN };
     static constexpr int OUTER_BORDER_THICKNESS{ INNER_BORDER_THICKNESS };
+
+    static constexpr GameEngine::Colour BACKGROUND_COLOUR{ GameEngine::Colours::BLACK };
+    static constexpr int MAX_BLOCK_TRANSPERENCY{ 50 };
 
 private:
 
@@ -98,4 +102,6 @@ private:
     decltype(blocks.end()) hovered_block{ blocks.end() };
 
     GameEngine::FrameTimer ft{ };
+
+    PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
 };

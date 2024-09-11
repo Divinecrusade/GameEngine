@@ -25,6 +25,7 @@ cursor_pos{ window.get_mouse_pos() }
 void PaintItGit::update()
 {
     float const dt{ ft.mark() };
+    pulsator.update(dt);
     switch (cur_stage)
     {
         case GameStage::INIT_COMMIT: update_gamestage_first_commit(dt); break;
@@ -70,6 +71,6 @@ void PaintItGit::render()
         Rec2i const miniature_area{ cursor_pos + CURSOR_COLLISION_BOX_WIDTH_HEIGHT, MINIATURE_SIZE, MINIATURE_SIZE};
         gfx.draw_rectangle(miniature_area, MINIATURE_STROKE_WIDTH, INNER_BORDER_C);
         gfx.draw_rectangle(miniature_area.get_expanded(MINIATURE_STROKE_WIDTH), MINIATURE_STROKE_WIDTH, OUTER_BORDER_C);
-        gfx.fill_rectangle(miniature_area, MAIN_COLOURS[cur_colour_index]);
+        gfx.fill_rectangle(miniature_area, pulsator(MAIN_COLOURS[cur_colour_index]));
     }
 }

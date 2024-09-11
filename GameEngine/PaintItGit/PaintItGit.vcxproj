@@ -69,6 +69,7 @@
   <ItemGroup>
     <ClInclude Include="ColourField.hpp" />
     <ClInclude Include="PaintItGit.hpp" />
+    <ClInclude Include="PulsationEffect.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Animation.cpp" />
