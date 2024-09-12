@@ -69,6 +69,10 @@ void PaintItGit::update_gamestage_first_commit()
             (*hovered_block).first = MAIN_COLOURS[cur_colour_index];
             cur_block = hovered_block;
 
+            for (auto& block : blocks)
+            {
+                block.second = std::nullopt;
+            }
             cur_stage = GameStage::COMMITING;
             pulsator.reset();
             update_available_moves();
@@ -116,15 +120,9 @@ void PaintItGit::update_available_moves()
 
         case GameStage::COMMITING:
         {
-            for (auto& block : blocks)
-            {
-                block.second = std::nullopt;
-            }
+            std::ranges::for_each_n(adject_cur_blocks.begin(), n_adject_cur_blocks_with_diff_colours, [](auto& block) { block->second.reset(); });
             n_adject_cur_blocks_with_diff_colours = blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index], adject_cur_blocks);
-            for (auto cur{ adject_cur_blocks.begin() }; cur != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours; ++cur)
-            {
-                (*cur)->second = pulsation;
-            }
+            std::ranges::for_each_n(adject_cur_blocks.begin(), n_adject_cur_blocks_with_diff_colours, [&pulsation = this->pulsation](auto& block) { block->second = pulsation; });
         }
         break;
     }

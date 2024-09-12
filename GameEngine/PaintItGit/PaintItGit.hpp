@@ -7,6 +7,8 @@
 #include <Mouse.hpp>
 #include <FrameTimer.hpp>
 
+#include <algorithm>
+
 #include "ColourField.hpp"
 #include "PulsationEffect.hpp"
 
