@@ -112,4 +112,7 @@ private:
 
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
     decltype(blocks)::effect pulsation{ [&pulsator = this->pulsator](GameEngine::Colour c) { return pulsator(c); } };
+
+    static constexpr float MAX_INPUT_DELAY{ 1.f };
+    float cur_input_delay{ -MAX_INPUT_DELAY };
 };
