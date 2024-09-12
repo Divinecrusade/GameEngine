@@ -101,12 +101,13 @@ private:
     Vec2i const& cursor_pos;
 
     std::size_t            cur_colour_index{ 0U };
+    GameEngine::Colour     prev_colour{ };
     decltype(blocks.end()) cur_block{ blocks.end() };
     std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
-    std::size_t n_adject_cur_blocks_with_diff_colours{ };
+    std::size_t n_adject_cur_blocks_with_diff_colours{ 0U };
 
     GameEngine::FrameTimer ft{ };
 
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
-    std::function<GameEngine::Colour(GameEngine::Colour)> pulsation{ [&pulsator = this->pulsator](GameEngine::Colour c) { return pulsator(c); } };
+    decltype(blocks)::effect pulsation{ [&pulsator = this->pulsator](GameEngine::Colour c) { return pulsator(c); } };
 };

@@ -40,11 +40,13 @@ void PaintItGit::update()
     bool mouse_rotated{ false };
     if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
     {
+        prev_colour = MAIN_COLOURS[cur_colour_index];
         cur_colour_index = (cur_colour_index + 1U) % MAIN_COLOURS.size();
         mouse_rotated = true;
     }
     else if (mouse_wheel_rotation_destance < 0)
     {
+        prev_colour = MAIN_COLOURS[cur_colour_index];
         cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
         mouse_rotated = true;
     }
@@ -67,8 +69,8 @@ void PaintItGit::update_gamestage_first_commit()
             (*hovered_block).first = MAIN_COLOURS[cur_colour_index];
             cur_block = hovered_block;
 
-            pulsator.reset();
             cur_stage = GameStage::COMMITING;
+            pulsator.reset();
             update_available_moves();
         }
     }
@@ -106,8 +108,8 @@ void PaintItGit::update_available_moves()
         {
             for (auto& block : blocks)
             {
-                if (block.first != MAIN_COLOURS[cur_colour_index]) block.second = pulsation;
-                else                                               block.second = std::nullopt;
+                if (block.first == MAIN_COLOURS[cur_colour_index]) block.second.reset();
+                else if (block.first == prev_colour) block.second = pulsation;
             }
         }
         break;
