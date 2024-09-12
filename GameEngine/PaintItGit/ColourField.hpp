@@ -17,31 +17,18 @@ template<int SIZE, int N_BLOCKS_IN_ROW, GameEngine::Geometry::Vector2D<int> LEFT
 requires (SIZE > 0 && N_BLOCKS_IN_ROW > 0 && SIZE % N_BLOCKS_IN_ROW == 0)
 class ColourField final : public GameEngine::Interfaces::IDrawable
 {
-private:
-
-    using effect = std::optional<std::function<GameEngine::Colour(GameEngine::Colour)>>;
-    using block  = std::pair<GameEngine::Colour, effect>;
-
 public:
 
     static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
     static constexpr std::size_t MAX_N_ADJECT_BLOCKS{ 4U };
 
+    using effect = std::optional<std::function<GameEngine::Colour(GameEngine::Colour)>>;
+    using block = std::pair<GameEngine::Colour, effect>;
     using iterator = GameEngine::Auxiliary::ContiguousIterator<block, ColourField>;
 
 public:
 
-    ColourField() = delete;
-
-    template<std::size_t N>
-    ColourField(std::array<GameEngine::Colour, N> const& colors_pull)
-    {
-        std::ranges::generate(grid, 
-        [rng{ std::mt19937{ std::random_device{}() } }, color_distr{ std::uniform_int_distribution<std::size_t>{ 0U, N - 1U } }, &colors_pull]
-        () mutable
-        { return block{ colors_pull[color_distr(rng)], std::nullopt }; });
-    }
-    
+    ColourField() = default;
     ColourField(ColourField const&) = delete;
     ColourField(ColourField&&)      = delete;
 

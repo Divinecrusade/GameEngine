@@ -21,7 +21,15 @@ Game{ window, graphics },
 CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 },
 cursor_pos{ window.get_mouse_pos() }
 {
-    update_available_moves();
+    std::ranges::generate(blocks,
+        [rng{ std::mt19937{ std::random_device{}() } }, color_distr{ std::uniform_int_distribution<std::size_t>{ 0U, MAIN_COLOURS.size() - 1U }}, &colors_pull = MAIN_COLOURS, &pulsation_effect = pulsation, cur_colour = MAIN_COLOURS[cur_colour_index]]
+        () mutable
+        { 
+            GameEngine::Colour const c      { colors_pull[color_distr(rng)] };
+            decltype(blocks)::effect const e{ (c == cur_colour) ? decltype(blocks)::effect{ std::nullopt } : decltype(blocks)::effect{ pulsation_effect } };
+
+            return decltype(blocks)::block{ c, e }; 
+        });
 }
 
 void PaintItGit::update()

@@ -96,7 +96,7 @@ private:
     Vec2i const CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
-    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks{ MAIN_COLOURS };
+    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks{ };
 
     Vec2i const& cursor_pos;
 
