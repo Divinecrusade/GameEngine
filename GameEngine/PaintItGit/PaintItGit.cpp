@@ -84,17 +84,9 @@ void PaintItGit::update_gamestage_commiting()
 {
     if (COLOUR_FIELD_AREA.contains(cursor_pos) && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
     {
-        auto const hovered_block{ blocks.get_block(cursor_pos) };
-        bool available_move{ false };
-        for (auto cur{ adject_cur_blocks.begin() }; cur != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours; ++cur)
-        {
-            if (*cur == hovered_block)
-            {
-                available_move = true;
-                break;
-            }
-        }
-        if (available_move)
+        if (auto const hovered_block{ blocks.get_block(cursor_pos) }; 
+        std::ranges::find_if(adject_cur_blocks | std::views::take(n_adject_cur_blocks_with_diff_colours), 
+        [&hovered_block](auto const& block){ return block == hovered_block; }) != adject_cur_blocks.end())
         {
             (*hovered_block).first = MAIN_COLOURS[cur_colour_index];
             cur_block = hovered_block;
