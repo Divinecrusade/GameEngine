@@ -102,7 +102,8 @@ private:
 
     std::size_t            cur_colour_index{ 0U };
     decltype(blocks.end()) cur_block{ blocks.end() };
-    decltype(blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index])) adject_cur_blocks{};
+    std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
+    std::size_t n_adject_cur_blocks_with_diff_colours{ };
 
     GameEngine::FrameTimer ft{ };
 

@@ -72,7 +72,7 @@ void PaintItGit::update_gamestage_commiting()
     {
         auto const hovered_block{ blocks.get_block(cursor_pos) };
         bool available_move{ false };
-        for (auto cur{ adject_cur_blocks.first }; cur != adject_cur_blocks.second; ++cur)
+        for (auto cur{ adject_cur_blocks.begin() }; cur != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours; ++cur)
         {
             if (*cur == hovered_block)
             {
@@ -110,8 +110,8 @@ void PaintItGit::update_available_moves()
             {
                 block.second = std::nullopt;
             }
-            adject_cur_blocks = blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index]);
-            for (auto cur{ adject_cur_blocks.first }; cur != adject_cur_blocks.second; ++cur)
+            n_adject_cur_blocks_with_diff_colours = blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index], adject_cur_blocks);
+            for (auto cur{ adject_cur_blocks.begin() }; cur != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours; ++cur)
             {
                 (*cur)->second = pulsation;
             }

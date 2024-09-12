@@ -25,6 +25,7 @@ private:
 public:
 
     static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
+    static constexpr std::size_t MAX_N_ADJECT_BLOCKS{ 4U };
 
     using iterator = GameEngine::Auxiliary::ContiguousIterator<block, ColourField>;
 
@@ -76,12 +77,10 @@ public:
         return iterator{ grid.data() + grid.size() };
     }
 
-    auto get_adject_blocks_with_not_equal_color(iterator block, GameEngine::Colour c)
+    std::size_t get_adject_blocks_with_not_equal_color(iterator cur_block, GameEngine::Colour c, std::array<iterator, MAX_N_ADJECT_BLOCKS>& adject_blocks)
     {
-        constexpr std::size_t MAX_N_NEIGHBOURS{ 4U };
-        static std::array<iterator, MAX_N_NEIGHBOURS> adject_blocks{ };
         std::size_t cur_n_neighbours{ 0U };
-        auto const  index{ std::distance(begin(), block) };
+        auto const index{ std::distance(begin(), cur_block) };
         auto const row{ index / N_BLOCKS_IN_ROW };
         auto const col{ index % N_BLOCKS_IN_ROW };
 
@@ -90,7 +89,7 @@ public:
         if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };   col != 0 && it->first != c)                   adject_blocks[cur_n_neighbours++] = it;
         if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };   col != N_BLOCKS_IN_ROW - 1 && it->first != c) adject_blocks[cur_n_neighbours++] = it;
 
-        return std::make_pair(adject_blocks.begin(), adject_blocks.begin() + cur_n_neighbours);
+        return cur_n_neighbours;
     }
 
 private:
