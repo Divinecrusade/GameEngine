@@ -96,8 +96,6 @@ namespace GameEngine
             };
         }
 
-    private:
-
         uint8_t colors[4U];
         uint32_t rgba{ 0U };
     };
