@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 
-template<typename field, GameEngine::Geometry::Rectangle2D<int> frame>
+template<typename field, GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c>
 class ColourGit final : public GameEngine::Interfaces::IDrawable
 {
 private:
@@ -119,8 +119,8 @@ public:
 
         if (no_parents)
         {
-            cur_branch->second.set_offset(GameEngine::Geometry::Vector2D<int>{ frame.left + frame.get_width() / 2, frame.top + 20 });
-            cur_branch->second.set_distance_between_commits(40);
+            cur_branch->second.set_offset(GameEngine::Geometry::Vector2D<int>{ frame.left + frame.get_width() / 2, frame.top + DISTANCE_BETWEEN_COMMITS });
+            cur_branch->second.set_distance_between_commits(DISTANCE_BETWEEN_COMMITS);
         }
     }
 
@@ -149,15 +149,21 @@ public:
     {
         for (auto const& branch : branches)
         {
-            gfx.draw_line(branch.second.get_polyline().front(), branch.second.get_polyline().back(), 2, branch.first);
+            gfx.draw_line(branch.second.get_polyline().front(), branch.second.get_polyline().back(), BRANCH_LINE_THICKNESS, branch.first);
             for (auto const& point : branch.second.get_polyline())
             {
-                gfx.draw_ellipse(point, 5, 5, 5, branch.first);
+                gfx.fill_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, background_c);
+                gfx.draw_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_BORDER_THICKNESS, branch.first);
             }
         }
     }
 
 private:
+
+    static constexpr int COMMIT_CIRCLE_RADIUS{ 4 };
+    static constexpr int BRANCH_LINE_THICKNESS{ 2 };
+    static constexpr int COMMIT_CIRCLE_BORDER_THICKNESS{ BRANCH_LINE_THICKNESS };
+    static constexpr int DISTANCE_BETWEEN_COMMITS{ 20 };
 
     std::unordered_map<GameEngine::Colour, Branch> branches;
     std::unordered_map<GameEngine::Colour, Branch>::iterator cur_branch{ branches.end() };

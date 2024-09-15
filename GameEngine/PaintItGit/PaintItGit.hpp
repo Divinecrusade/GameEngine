@@ -107,7 +107,7 @@ private:
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
     ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks{ };
-    ColourGit<decltype(blocks), GIT_COLOUR_AREA> git{ };
+    ColourGit<decltype(blocks), GIT_COLOUR_AREA, BACKGROUND_COLOUR> git{ };
 
     Vec2i const& cursor_pos;
 
