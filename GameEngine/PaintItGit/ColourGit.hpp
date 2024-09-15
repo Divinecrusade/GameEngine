@@ -4,7 +4,6 @@
 
 #include <unordered_map>
 
-
 template<typename field, GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c>
 class ColourGit final : public GameEngine::Interfaces::IDrawable
 {
@@ -26,31 +25,29 @@ private:
     {
     public:
 
-        Branch(pcommit parent)
+        static constexpr int DISTANCE_BETWEEN_COMMITS{ 20 };
+
+    public:
+
+        Branch(GameEngine::Geometry::Vector2D<int> const& init_offset = { 0, 0 })
         :
-        parent{ parent }
+        cur_offset{ init_offset }
         { }
 
         void commit(field::iterator block, GameEngine::Colour old_c, GameEngine::Colour new_c)
         {
-            commits.emplace_back(block, old_c, new_c);
-            polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * cur_distance_between_commits);
-        }
-
-        pcommit get_parent() const noexcept
-        {
-            return parent;
+            commits.emplace_back((block->first = new_c, block), old_c, new_c);
+            polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS);
         }
          
-        std::vector<pcommit const> const& get_commits() const noexcept
+        auto const& get_commits() const noexcept
         {
             return commits;
         }
 
         void set_offset(GameEngine::Geometry::Vector2D<int> const& new_offset)
         {
-            auto const delta{ new_offset - cur_offset };
-            for (auto& point : polyline)
+            for (auto const delta{ new_offset - cur_offset }; auto& point : polyline)
             {
                 point += delta;
             }
@@ -60,21 +57,6 @@ private:
         GameEngine::Geometry::Vector2D<int> get_offset() const noexcept
         {
             return cur_offset;
-        }
-
-        void set_distance_between_commits(int new_distance)
-        {
-            auto const delta{ new_distance - cur_distance_between_commits };
-            for (auto& point : polyline)
-            {
-                point.y += delta;
-            }
-            cur_distance_between_commits = new_distance;
-        }
-
-        int get_distance_between_commits() const noexcept
-        {
-            return cur_distance_between_commits;
         }
 
         auto const& get_polyline() const noexcept
@@ -88,10 +70,13 @@ private:
 
         pcommit const parent;
 
-        GameEngine::Geometry::Vector2D<int> cur_offset{ 0, 0 };
-        int cur_distance_between_commits{ 0 };
+        GameEngine::Geometry::Vector2D<int> cur_offset;
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
     };
+
+private:
+
+    using branch_it = std::unordered_map<GameEngine::Colour, Branch>::iterator;
 
 public:
 
@@ -111,22 +96,25 @@ public:
 
     void branch(GameEngine::Colour branch_c)
     {
-        bool const no_parents{ cur_head == pcommit{ } };
-        GameEngine::Geometry::Vector2D<int> offset{ };
-        auto const prev_branch{ cur_branch };
-
-        cur_branch = branches.emplace(branch_c, cur_head).first;
-
-        if (no_parents)
+        if (cur_branch == branches.end())
         {
-            cur_branch->second.set_offset(GameEngine::Geometry::Vector2D<int>{ frame.left + frame.get_width() / 2, frame.top + DISTANCE_BETWEEN_COMMITS });
-            cur_branch->second.set_distance_between_commits(DISTANCE_BETWEEN_COMMITS);
+            cur_branch = branches.emplace(branch_c, GameEngine::Geometry::Vector2D<int>{ frame.left + frame.get_width() / 2, frame.top + Branch::DISTANCE_BETWEEN_COMMITS }).first;
+        }
+        else
+        {
+            branch_it const prev_branch{ std::exchange(cur_branch, branches.emplace(branch_c, cur_branch->second.get_offset() + GameEngine::Geometry::Vector2D<int>{ Branch::DISTANCE_BETWEEN_COMMITS, Branch::DISTANCE_BETWEEN_COMMITS * static_cast<int>(cur_branch->second.get_commits().size()) }).first) };
+        
+            connections.emplace
+            (
+                cur_branch->first, 
+                std::tuple<std::size_t, branch_it, std::size_t>{ 0U, prev_branch, prev_branch->second.get_polyline().size() - 1 }
+            );
         }
     }
 
     void checkout(GameEngine::Colour branch_c)
     {
-        auto const branch{ branches.find(branch_c) };
+        /*auto const branch{branches.find(branch_c)};
 
         for (; cur_head != branch->get_parent(); --cur_head)
         {
@@ -137,7 +125,7 @@ public:
             commit->loc.first = commit->after_c;
         }
         cur_branch = branch;
-        cur_head = std::prev(cur_branch->get_commits().end());
+        cur_head = std::prev(cur_branch->get_commits().end());*/
     }
 
     void merge(GameEngine::Colour branch_c)
@@ -147,6 +135,16 @@ public:
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override
     {
+        for (auto const& connection : connections)
+        {
+            gfx.draw_line
+            (
+                branches.at(connection.first).get_polyline()[std::get<0U>(connection.second)],
+                std::get<1U>(connection.second)->second.get_polyline()[std::get<2U>(connection.second)],
+                BRANCH_LINE_THICKNESS, 
+                connection.first
+            );
+        }
         for (auto const& branch : branches)
         {
             gfx.draw_line(branch.second.get_polyline().front(), branch.second.get_polyline().back(), BRANCH_LINE_THICKNESS, branch.first);
@@ -158,14 +156,18 @@ public:
         }
     }
 
+    GameEngine::Colour get_cur_branch() const
+    {
+        return cur_branch->first;
+    }
+
 private:
 
     static constexpr int COMMIT_CIRCLE_RADIUS{ 4 };
     static constexpr int BRANCH_LINE_THICKNESS{ 2 };
     static constexpr int COMMIT_CIRCLE_BORDER_THICKNESS{ BRANCH_LINE_THICKNESS };
-    static constexpr int DISTANCE_BETWEEN_COMMITS{ 20 };
 
     std::unordered_map<GameEngine::Colour, Branch> branches;
-    std::unordered_map<GameEngine::Colour, Branch>::iterator cur_branch{ branches.end() };
-    pcommit cur_head{ };
+    branch_it cur_branch{ branches.end() };
+    std::unordered_multimap<GameEngine::Colour, std::tuple<std::size_t, branch_it, std::size_t>> connections;
 };

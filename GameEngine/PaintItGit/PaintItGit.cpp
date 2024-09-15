@@ -71,10 +71,7 @@ void PaintItGit::update_gamestage_first_commit()
             cur_input_delay = MAX_INPUT_DELAY;
 
             git.branch(MAIN_COLOURS[cur_colour_index]);
-            git.commit(hovered_block, MAIN_COLOURS[cur_colour_index]);
-
-            hovered_block->first = MAIN_COLOURS[cur_colour_index];
-            cur_block = hovered_block;
+            git.commit(cur_block = hovered_block, MAIN_COLOURS[cur_colour_index]);
 
             for (auto& block : blocks)
             {
@@ -92,16 +89,14 @@ void PaintItGit::update_gamestage_commiting()
     if (COLOUR_FIELD_AREA.contains(cursor_pos) && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON) && cur_input_delay < 0.f)
     {
         cur_input_delay = MAX_INPUT_DELAY;
+
         if (auto const hovered_block{ blocks.get_block(cursor_pos) }; 
         std::ranges::find_if(adject_cur_blocks | std::views::take(n_adject_cur_blocks_with_diff_colours), 
         [&hovered_block](auto const& block){ return block == hovered_block; }) != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours)
         {
-            assert(hovered_block->first != MAIN_COLOURS[cur_colour_index]);
-            
-            git.commit(hovered_block, MAIN_COLOURS[cur_colour_index]);
+            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
 
-            hovered_block->first = MAIN_COLOURS[cur_colour_index];
-            cur_block = hovered_block;
+            git.commit(cur_block = hovered_block, MAIN_COLOURS[cur_colour_index]);
 
             pulsator.reset();
             update_available_moves();
