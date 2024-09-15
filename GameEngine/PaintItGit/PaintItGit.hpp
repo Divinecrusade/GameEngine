@@ -11,6 +11,7 @@
 
 #include "ColourField.hpp"
 #include "PulsationEffect.hpp"
+#include "ColourGit.hpp"
 
 
 class PaintItGit final : private GameEngine::Game
@@ -31,6 +32,13 @@ private:
     static constexpr int   COLOUR_FIELD_SIZE{ WINDOW.get_height() - PADDING.top - PADDING.bottom };
     static constexpr Rec2i COLOUR_FIELD_AREA{ PADDING.left, PADDING.left + COLOUR_FIELD_SIZE, PADDING.top + COLOUR_FIELD_SIZE, PADDING.top };
     static constexpr int   N_BLOCKS_IN_ROW{ 10 };
+    
+    static constexpr int   HORIZONTAL_PADDING_BETWEEN_FIELD_AND_GIT{ 50 };
+
+    static constexpr int   GIT_COLOUR_WIDTH { WINDOW.get_width() - PADDING.left - PADDING.right - HORIZONTAL_PADDING_BETWEEN_FIELD_AND_GIT - COLOUR_FIELD_SIZE };
+    static constexpr int   GIT_COLOUR_HEIGHT{ COLOUR_FIELD_SIZE };
+
+    static constexpr Rec2i GIT_COLOUR_AREA  { Vec2i{ COLOUR_FIELD_AREA.right + HORIZONTAL_PADDING_BETWEEN_FIELD_AND_GIT, COLOUR_FIELD_AREA.top }, GIT_COLOUR_WIDTH, GIT_COLOUR_HEIGHT };
 
     static constexpr std::size_t N_COLOURS{ 5 };
 
@@ -99,6 +107,7 @@ private:
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
     ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks{ };
+    ColourGit<decltype(blocks), GIT_COLOUR_AREA> git{ };
 
     Vec2i const& cursor_pos;
 
@@ -113,6 +122,6 @@ private:
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
     decltype(blocks)::effect pulsation{ [&pulsator = this->pulsator](GameEngine::Colour c) { return pulsator(c); } };
 
-    static constexpr float MAX_INPUT_DELAY{ 0.75f };
+    static constexpr float MAX_INPUT_DELAY{ 0.5f };
     float cur_input_delay{ -MAX_INPUT_DELAY };
 };

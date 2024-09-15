@@ -69,6 +69,10 @@ void PaintItGit::update_gamestage_first_commit()
         if (auto const hovered_block{ blocks.get_block(cursor_pos) }; (*hovered_block).first != MAIN_COLOURS[cur_colour_index] && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON) && cur_input_delay < 0.f)
         {
             cur_input_delay = MAX_INPUT_DELAY;
+
+            git.branch(MAIN_COLOURS[cur_colour_index]);
+            git.commit(hovered_block, MAIN_COLOURS[cur_colour_index]);
+
             hovered_block->first = MAIN_COLOURS[cur_colour_index];
             cur_block = hovered_block;
 
@@ -94,8 +98,11 @@ void PaintItGit::update_gamestage_commiting()
         {
             assert(hovered_block->first != MAIN_COLOURS[cur_colour_index]);
             
+            git.commit(hovered_block, MAIN_COLOURS[cur_colour_index]);
+
             hovered_block->first = MAIN_COLOURS[cur_colour_index];
             cur_block = hovered_block;
+
             pulsator.reset();
             update_available_moves();
         }
@@ -136,4 +143,6 @@ void PaintItGit::render()
     gfx.draw_rectangle(miniature_area, MINIATURE_STROKE_WIDTH, INNER_BORDER_C);
     gfx.draw_rectangle(miniature_area.get_expanded(MINIATURE_STROKE_WIDTH), MINIATURE_STROKE_WIDTH, OUTER_BORDER_C);
     gfx.fill_rectangle(miniature_area, MAIN_COLOURS[cur_colour_index]);
+
+    git.draw(gfx, std::nullopt);
 }
