@@ -91,8 +91,7 @@ void PaintItGit::update_gamestage_commiting()
         cur_input_delay = MAX_INPUT_DELAY;
 
         if (auto const hovered_block{ blocks.get_block(cursor_pos) }; 
-        std::ranges::find_if(adject_cur_blocks | std::views::take(n_adject_cur_blocks_with_diff_colours), 
-        [&hovered_block](auto const& block){ return block == hovered_block; }) != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours)
+        std::ranges::find(adject_cur_blocks | std::views::take(n_adject_cur_blocks_with_diff_colours), hovered_block) != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours)
         {
             if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
 
