@@ -101,12 +101,23 @@ public:
         }
         else
         {
-            branch_it const prev_branch{ std::exchange(cur_branch, branches.emplace(branch_c, cur_branch->second.get_offset() + GameEngine::Geometry::Vector2D<int>{ Branch::DISTANCE_BETWEEN_COMMITS, Branch::DISTANCE_BETWEEN_COMMITS * static_cast<int>(cur_branch->second.get_commits().size()) }).first) };
+            branch_it const prev_branch
+            { 
+                std::exchange
+                (
+                    cur_branch, 
+                    branches.emplace
+                    (
+                        branch_c, 
+                        cur_branch->second.get_offset() + GameEngine::Geometry::Vector2D<int>{ Branch::DISTANCE_BETWEEN_COMMITS, Branch::DISTANCE_BETWEEN_COMMITS * static_cast<int>(head.value() + 1) }
+                    ).first
+                ) 
+            };
         
             connections.emplace
             (
                 cur_branch->first, 
-                std::tuple<std::size_t, branch_it, std::size_t>{ 0U, prev_branch, prev_branch->second.get_polyline().size() - 1 }
+                std::tuple<std::size_t, branch_it, std::size_t>{ 0U, prev_branch, *head }
             );
         }
     }
