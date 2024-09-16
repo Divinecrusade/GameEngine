@@ -3,6 +3,7 @@
 #include "ColourField.hpp"  
 
 #include <unordered_map>
+#include <iterator>
 
 template<typename field, GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c>
 class ColourGit final : public GameEngine::Interfaces::IDrawable
@@ -19,8 +20,6 @@ private:
         GameEngine::Colour const after_c;
     };
 
-    using pcommit = std::vector<Commit>::const_iterator;
-
     class Branch final
     {
     public:
@@ -34,10 +33,12 @@ private:
         cur_offset{ init_offset }
         { }
 
-        void commit(field::iterator block, GameEngine::Colour old_c, GameEngine::Colour new_c)
+        std::size_t commit(field::iterator block, GameEngine::Colour old_c, GameEngine::Colour new_c)
         {
             commits.emplace_back((block->first = new_c, block), old_c, new_c);
             polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS);
+
+            return commits.size() - 1U;
         }
          
         auto const& get_commits() const noexcept
@@ -68,8 +69,6 @@ private:
 
         std::vector<Commit> commits;
 
-        pcommit const parent;
-
         GameEngine::Geometry::Vector2D<int> cur_offset;
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
     };
@@ -91,7 +90,7 @@ public:
 
     void commit(field::iterator block, GameEngine::Colour new_c)
     {
-        cur_branch->second.commit(block, block->first, new_c);
+        head = cur_branch->second.commit(block, block->first, new_c);
     }
 
     void branch(GameEngine::Colour branch_c)
@@ -154,6 +153,16 @@ public:
                 gfx.draw_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_BORDER_THICKNESS, branch.first);
             }
         }
+        if (head)
+        {
+            gfx.fill_ellipse
+            (
+                (cur_branch->second.get_polyline())[head.value()], 
+                HEAD_CIRCLE_RADIUS,
+                HEAD_CIRCLE_RADIUS,
+                cur_branch->first
+            );
+        }
     }
 
     GameEngine::Colour get_cur_branch() const
@@ -169,10 +178,12 @@ public:
 private:
 
     static constexpr int COMMIT_CIRCLE_RADIUS{ 4 };
+    static constexpr int HEAD_CIRCLE_RADIUS{ 6 };
     static constexpr int BRANCH_LINE_THICKNESS{ 2 };
     static constexpr int COMMIT_CIRCLE_BORDER_THICKNESS{ BRANCH_LINE_THICKNESS };
 
     std::unordered_map<GameEngine::Colour, Branch> branches;
     branch_it cur_branch{ branches.end() };
     std::unordered_multimap<GameEngine::Colour, std::tuple<std::size_t, branch_it, std::size_t>> connections;
+    std::optional<std::size_t> head{ std::nullopt };
 };
