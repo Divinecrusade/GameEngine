@@ -161,6 +161,11 @@ public:
         return cur_branch->first;
     }
 
+    bool has_branch(GameEngine::Colour c) const noexcept
+    {
+        return branches.contains(c);
+    }
+
 private:
 
     static constexpr int COMMIT_CIRCLE_RADIUS{ 4 };

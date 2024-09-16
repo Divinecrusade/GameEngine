@@ -64,17 +64,17 @@ public:
         return iterator{ grid.data() + grid.size() };
     }
 
-    std::size_t get_adject_blocks_with_not_equal_color(iterator cur_block, GameEngine::Colour c, std::array<iterator, MAX_N_ADJECT_BLOCKS>& adject_blocks)
+    std::size_t get_adject_blocks(iterator cur_block, std::array<iterator, MAX_N_ADJECT_BLOCKS>& adject_blocks, std::function<bool(GameEngine::Colour)> const& filter)
     {
         std::size_t cur_n_neighbours{ 0U };
         auto const index{ std::distance(begin(), cur_block) };
         auto const row{ index / N_BLOCKS_IN_ROW };
         auto const col{ index % N_BLOCKS_IN_ROW };
 
-        if (iterator const it{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col }; row != 0 && it->first != c)                   adject_blocks[cur_n_neighbours++] = it;
-        if (iterator const it{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col }; row != N_BLOCKS_IN_ROW + 1 && it->first != c) adject_blocks[cur_n_neighbours++] = it;
-        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };   col != 0 && it->first != c)                   adject_blocks[cur_n_neighbours++] = it;
-        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };   col != N_BLOCKS_IN_ROW - 1 && it->first != c) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col }; row != 0                   && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col }; row != N_BLOCKS_IN_ROW + 1 && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };   col != 0                   && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };   col != N_BLOCKS_IN_ROW - 1 && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
 
         return cur_n_neighbours;
     }

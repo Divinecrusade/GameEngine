@@ -121,7 +121,14 @@ void PaintItGit::update_available_moves()
         case GameStage::COMMITING:
         {
             std::ranges::for_each_n(adject_cur_blocks.begin(), n_adject_cur_blocks_with_diff_colours, [](auto& block) { block->second.reset(); });
-            n_adject_cur_blocks_with_diff_colours = blocks.get_adject_blocks_with_not_equal_color(cur_block, MAIN_COLOURS[cur_colour_index], adject_cur_blocks);
+            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index])) 
+                n_adject_cur_blocks_with_diff_colours = 0U;
+            else
+                n_adject_cur_blocks_with_diff_colours = blocks.get_adject_blocks(cur_block, adject_cur_blocks, 
+                [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
+                { 
+                    return c != main_colours[main_colour_index];
+                });
             std::ranges::for_each_n(adject_cur_blocks.begin(), n_adject_cur_blocks_with_diff_colours, [&pulsation = this->pulsation](auto& block) { block->second = pulsation; });
         }
         break;
