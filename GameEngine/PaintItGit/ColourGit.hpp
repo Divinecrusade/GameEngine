@@ -14,7 +14,7 @@ private:
     {
     public: 
 
-        field::iterator const loc;
+        field::iterator loc;
 
         GameEngine::Colour const before_c;
         GameEngine::Colour const after_c;
@@ -173,6 +173,32 @@ public:
     bool has_branch(GameEngine::Colour c) const noexcept
     {
         return branches.contains(c);
+    }
+
+    field::iterator rollback() noexcept
+    {
+        std::vector<Commit> const& commits{ cur_branch->second.get_commits() };
+
+        if (head && head.value() != 0U)
+        {
+            Commit commit{ commits[*head] };
+            commit.loc->first = commit.before_c;
+            --(*head);
+        }
+        return commits[*head].loc;
+    }
+
+    field::iterator rollforward() noexcept
+    {
+        std::vector<Commit> const& commits{ cur_branch->second.get_commits() };
+
+        if (head && head.value() != commits.size() - 1U)
+        {
+            ++(*head);
+            Commit commit{ commits[*head] };
+            commit.loc->first = commit.after_c;
+        }
+        return commits[*head].loc;
     }
 
 private:

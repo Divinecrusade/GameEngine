@@ -101,6 +101,22 @@ void PaintItGit::update_gamestage_commiting()
             update_available_moves();
         }
     }
+    if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_UP) && cur_input_delay < 0.f)
+    {
+        cur_input_delay = MAX_INPUT_DELAY;
+        
+        cur_block = git.rollback();
+        pulsator.reset();
+        update_available_moves();
+    }
+    else if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_DOWN) && cur_input_delay < 0.f)
+    {
+        cur_input_delay = MAX_INPUT_DELAY;
+
+        cur_block = git.rollforward();
+        pulsator.reset();
+        update_available_moves();
+    }
 }
 
 void PaintItGit::update_available_moves()
