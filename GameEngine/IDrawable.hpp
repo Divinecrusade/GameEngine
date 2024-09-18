@@ -6,7 +6,7 @@
 
 namespace GameEngine::Interfaces
 {
-    __interface IDrawable
+    class IDrawable
     {
     public:
 

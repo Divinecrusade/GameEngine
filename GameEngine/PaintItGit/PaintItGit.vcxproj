@@ -67,9 +67,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColourBlock.hpp" />
     <ClInclude Include="ColourField.hpp" />
     <ClInclude Include="ColourGit.hpp" />
+    <ClInclude Include="DrawableBlock.hpp" />
     <ClInclude Include="PaintItGit.hpp" />
+    <ClInclude Include="PulsatingBlock.hpp" />
     <ClInclude Include="PulsationEffect.hpp" />
   </ItemGroup>
   <ItemGroup>

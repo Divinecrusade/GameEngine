@@ -6,11 +6,11 @@
 #include <ContiguousIterator.hpp>
 
 #include <array>
-#include <random>
 #include <algorithm>
 #include <ranges>
-#include <functional>
-#include <ranges>
+#include <random>
+
+#include "PulsatingBlock.hpp"
 
 
 template<int SIZE, int N_BLOCKS_IN_ROW, GameEngine::Geometry::Vector2D<int> LEFT_TOP_POS>
@@ -22,13 +22,30 @@ public:
     static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
     static constexpr std::size_t MAX_N_ADJECT_BLOCKS{ 4U };
 
-    using effect = std::optional<std::function<GameEngine::Colour(GameEngine::Colour)>>;
-    using block = std::pair<GameEngine::Colour, effect>;
-    using iterator = GameEngine::Auxiliary::ContiguousIterator<block, ColourField>;
+    using iterator = GameEngine::Auxiliary::ContiguousIterator<PulsatingBlock<BLOCK_SIZE>, ColourField>;
 
 public:
 
-    ColourField() = default;
+    ColourField() = delete;
+
+    template<std::size_t N>
+    requires (N > 0U)
+    ColourField(PulsationEffect const* pulsator, std::array<GameEngine::Colour, N> const& colours_pull, std::size_t cur_colour_index)
+    {
+        assert(pulsator != nullptr);
+        assert(cur_colour_index < N);
+
+        std::mt19937 rng{ std::random_device{}() };
+        std::uniform_int_distribution<std::size_t> colour_indecies_distr{ 0U, N - 1U };
+
+
+        for (int i{ 0 }; i != N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW; ++i)
+        {
+            GameEngine::Colour const c{ colours_pull[colour_indecies_distr(rng)] };
+
+            grid[i] = PulsatingBlock<BLOCK_SIZE>{ pulsator, c != colours_pull[cur_colour_index], LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i% N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, c };
+        }
+    }
     ColourField(ColourField const&) = delete;
     ColourField(ColourField&&)      = delete;
 
@@ -40,10 +57,9 @@ public:
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
-        for (int i{ 0 }; i != static_cast<int>(grid.size()); ++i)
+        for (auto const& block : grid)
         {
-            gfx.fill_rectangle(GameEngine::Geometry::Rectangle2D<int>{ LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i % N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, BLOCK_SIZE, BLOCK_SIZE }, 
-            grid[static_cast<std::size_t>(i)].second.value_or([](GameEngine::Colour c){ return c; })(grid[static_cast<std::size_t>(i)].first));
+            block.draw(gfx);
         }
     }
 
@@ -52,16 +68,24 @@ public:
         coordinate -= LEFT_TOP_POS;
         coordinate /= BLOCK_SIZE;
 
-        return iterator{ grid.data() + coordinate.y * N_BLOCKS_IN_ROW + coordinate.x };
+        return std::to_address(grid.begin() + coordinate.y * N_BLOCKS_IN_ROW + coordinate.x);
+    }
+    
+    constexpr iterator get_iterator(PulsatingBlock<BLOCK_SIZE>* ptr) noexcept
+    {
+        assert(ptr >= std::to_address(begin()));
+        assert(ptr <= std::to_address(end()));
+        
+        return iterator{ ptr };
     }
 
     constexpr iterator begin() noexcept
     {
-        return iterator{ grid.data() };
+        return std::to_address(grid.begin());
     }
     constexpr iterator end()   noexcept
     {
-        return iterator{ grid.data() + grid.size() };
+        return std::to_address(grid.end());
     }
 
     std::size_t get_adject_blocks(iterator cur_block, std::array<iterator, MAX_N_ADJECT_BLOCKS>& adject_blocks, std::function<bool(GameEngine::Colour)> const& filter)
@@ -71,15 +95,15 @@ public:
         auto const row{ index / N_BLOCKS_IN_ROW };
         auto const col{ index % N_BLOCKS_IN_ROW };
 
-        if (iterator const it{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col }; row != 0                   && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
-        if (iterator const it{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col }; row != N_BLOCKS_IN_ROW + 1 && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
-        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };   col != 0                   && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
-        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };   col != N_BLOCKS_IN_ROW - 1 && filter(it->first)) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + (row - 1) * N_BLOCKS_IN_ROW + col }; row != 0                   && filter(it->get_colour())) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + (row + 1) * N_BLOCKS_IN_ROW + col }; row != N_BLOCKS_IN_ROW - 1 && filter(it->get_colour())) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col - 1 };   col != 0                   && filter(it->get_colour())) adject_blocks[cur_n_neighbours++] = it;
+        if (iterator const it{ grid.data() + row * N_BLOCKS_IN_ROW + col + 1 };   col != N_BLOCKS_IN_ROW - 1 && filter(it->get_colour())) adject_blocks[cur_n_neighbours++] = it;
 
         return cur_n_neighbours;
     }
 
 private:
 
-    std::array<block, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;
+    std::array<PulsatingBlock<BLOCK_SIZE>, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;
 };

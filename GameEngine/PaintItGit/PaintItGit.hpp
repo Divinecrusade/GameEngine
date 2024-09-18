@@ -10,7 +10,6 @@
 #include <algorithm>
 
 #include "ColourField.hpp"
-#include "PulsationEffect.hpp"
 #include "ColourGit.hpp"
 
 
@@ -62,6 +61,8 @@ private:
     static constexpr GameEngine::Colour BACKGROUND_COLOUR{ GameEngine::Colours::BLACK };
     static constexpr int MAX_BLOCK_TRANSPERENCY{ 70 };
 
+    static constexpr float MAX_INPUT_DELAY{ 0.5f };
+
 private:
 
     enum class GameStage
@@ -106,22 +107,20 @@ private:
     Vec2i const CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
-    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks{ };
-    ColourGit<decltype(blocks), GIT_COLOUR_AREA, BACKGROUND_COLOUR> git{ };
+    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks;
+    ColourGit<GIT_COLOUR_AREA, BACKGROUND_COLOUR> git{ };
 
     Vec2i const& cursor_pos;
 
     std::size_t            cur_colour_index{ 0U };
     GameEngine::Colour     prev_colour{ };
-    decltype(blocks.end()) cur_block{ blocks.end() };
+    decltype(blocks)::iterator cur_block{ blocks.end() };
     std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
     std::size_t n_adject_cur_blocks_with_diff_colours{ 0U };
 
     GameEngine::FrameTimer ft{ };
 
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
-    decltype(blocks)::effect pulsation{ [&pulsator = this->pulsator](GameEngine::Colour c) { return pulsator(c); } };
 
-    static constexpr float MAX_INPUT_DELAY{ 0.5f };
     float cur_input_delay{ -MAX_INPUT_DELAY };
 };
