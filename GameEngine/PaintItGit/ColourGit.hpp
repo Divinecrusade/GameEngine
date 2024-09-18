@@ -82,6 +82,11 @@ private:
             return commits.size();
         }
 
+        id_commit get_last_commit_id() const noexcept
+        {
+            return get_n_commits() - 1U;
+        }
+
         Commit const& get_commit(id_commit i) const noexcept
         {
             assert(i < commits.size());
@@ -152,7 +157,7 @@ public:
     void commit(ColourBlock& block, GameEngine::Colour new_c)
     {
         cur_branch->second.commit(block, block.get_colour(), new_c);
-        head = cur_branch->second.get_n_commits() - 1U;
+        head = cur_branch->second.get_last_commit_id();
     }
 
     void branch(GameEngine::Colour branch_c)
@@ -181,9 +186,32 @@ public:
             ).first;
     }
 
-    void checkout(GameEngine::Colour branch_c)
+    ColourBlock& checkout(GameEngine::Colour branch_c)
     {
-        return {};
+        assert(branches.contains(branch_c));
+
+        auto begin_branch_trans{ cur_branch->second.get_prev_transitions() };
+        auto end_branch_trans  { branches.at(branch_c).get_prev_transitions() };
+        const auto[ begin_it, end_it ] = std::ranges::mismatch(begin_branch_trans, end_branch_trans);
+
+        for (auto it{ begin_branch_trans.end() }; it != begin_it;)
+        {
+            rollback_cur_branch();
+            --it;
+            cur_branch = branches.find(it->first);
+            head = it->second;
+        }
+        for (auto it{ end_it }; it != end_branch_trans.end(); ++it)
+        {
+            cur_branch = branches.find(it->first);
+            head.reset();
+            rollforward_cur_branch_to(it->second);
+        }
+        cur_branch = branches.find(branch_c);
+        head.reset();
+        rollforward_cur_branch_to(cur_branch->second.get_last_commit_id());
+
+        return cur_branch->second.get_commit(head.value()).get_block();
     }
 
     void merge(GameEngine::Colour branch_c)
@@ -239,14 +267,48 @@ public:
 
     ColourBlock& rollback() noexcept
     {
-        if (head.has_value() && head.value() != 0U) cur_branch->second.get_commit((head.value())--).undo();
+        assert(head.has_value());
+
+        if (head.value() != 0U) cur_branch->second.get_commit((head.value())--).undo();
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
     ColourBlock& rollforward() noexcept
     {
-        if (head.has_value() && head.value() != cur_branch->second.get_n_commits() - 1U) cur_branch->second.get_commit(++(head.value())).apply();
+        assert(head.has_value());
+
+        if (head.value() != cur_branch->second.get_n_commits() - 1U) cur_branch->second.get_commit(++(head.value())).apply();
         return cur_branch->second.get_commit(head.value()).get_block();
+    }
+
+private:
+
+    void rollback_cur_branch() noexcept
+    {
+        assert(head.has_value());
+
+        while (head.value() != 0U)
+        {
+            cur_branch->second.get_commit((head.value())--).undo();
+        }
+        cur_branch->second.get_commit(head.value()).undo();
+        head.reset();
+    }
+
+    void rollforward_cur_branch_to(id_commit end) noexcept
+    {
+        if (!head.has_value())
+        {
+            head = 0U;
+            cur_branch->second.get_commit(head.value()).apply();
+        }
+
+        assert(head.value() <= end);
+
+        while (head.value() != end)
+        {
+            cur_branch->second.get_commit(++(head.value())).apply();
+        } 
     }
 
 private:

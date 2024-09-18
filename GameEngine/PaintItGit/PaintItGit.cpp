@@ -115,7 +115,7 @@ void PaintItGit::update_gamestage_commiting()
 
         if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
         {
-            //cur_block = git.checkout(MAIN_COLOURS[cur_colour_index]);
+            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.checkout(MAIN_COLOURS[cur_colour_index])));
             pulsator.reset();
             update_available_moves();
         }
