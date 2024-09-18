@@ -20,7 +20,8 @@ PaintItGit::PaintItGit(GameEngine::MainWindow& window, GameEngine::GraphicsDirec
 Game{ window, graphics },
 CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 },
 cursor_pos{ window.get_mouse_pos() },
-blocks{ &pulsator, MAIN_COLOURS, cur_colour_index }
+blocks{ &pulsator, MAIN_COLOURS, cur_colour_index },
+git{ N_COLOURS }
 { }
 
 void PaintItGit::update()

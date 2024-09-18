@@ -70,13 +70,11 @@ private:
             prev_transitions.emplace_back(parent_colour, head);
         }
 
-        id_commit commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
+        void commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
         {
             assert(old_c != new_c);
             commits.emplace_back((block.set_colour(new_c), block), old_c, new_c);
             polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS);
-        
-            return get_n_commits() - 1U;
         }
          
         std::size_t get_n_commits() const noexcept
@@ -153,7 +151,8 @@ public:
 
     void commit(ColourBlock& block, GameEngine::Colour new_c)
     {
-        head = cur_branch->second.commit(block, block.get_colour(), new_c);
+        cur_branch->second.commit(block, block.get_colour(), new_c);
+        head = cur_branch->second.get_n_commits() - 1U;
     }
 
     void branch(GameEngine::Colour branch_c)

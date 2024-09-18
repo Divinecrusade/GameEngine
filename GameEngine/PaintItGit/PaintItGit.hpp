@@ -104,23 +104,22 @@ private:
 
 private:
 
-    Vec2i const CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
+    Vec2i const  CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
+    Vec2i const& cursor_pos;
+
+    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks;
+    ColourGit<GIT_COLOUR_AREA, BACKGROUND_COLOUR> git;
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
-    ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks;
-    ColourGit<GIT_COLOUR_AREA, BACKGROUND_COLOUR> git{ };
-
-    Vec2i const& cursor_pos;
 
     std::size_t            cur_colour_index{ 0U };
     GameEngine::Colour     prev_colour{ };
+
     decltype(blocks)::iterator cur_block{ blocks.end() };
     std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
     std::size_t n_adject_cur_blocks_with_diff_colours{ 0U };
 
     GameEngine::FrameTimer ft{ };
-
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
-
     float cur_input_delay{ -MAX_INPUT_DELAY };
 };
