@@ -94,7 +94,7 @@ void PaintItGit::update_gamestage_commiting()
             cur_input_delay = MAX_INPUT_DELAY;
 
             if (auto const hovered_block{ blocks.get_block(cursor_pos) };
-                std::ranges::find(adject_cur_blocks | std::views::take(n_available_adject_blocks), hovered_block) != adject_cur_blocks.begin() + n_available_adject_blocks)
+                std::ranges::find(adject_cur_blocks | std::views::take(n_available_adject_cur_blocks), hovered_block) != adject_cur_blocks.begin() + n_available_adject_cur_blocks)
             {
                 if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
 
@@ -157,16 +157,16 @@ void PaintItGit::update_available_moves()
 
         case GameStage::COMMITING:
         {
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_blocks, [](auto& block) { block->pulsation_off(); });
+            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_off(); });
             if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index])) 
-                n_available_adject_blocks = 0U;
+                n_available_adject_cur_blocks = 0U;
             else
-                n_available_adject_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks, 
+                n_available_adject_cur_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks, 
                 [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
                 { 
                     return c != main_colours[main_colour_index];
                 });
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_blocks, [](auto& block) { block->pulsation_on(); });
+            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_on(); });
         }
         break;
     }

@@ -117,7 +117,7 @@ private:
 
     decltype(blocks)::iterator cur_block{ blocks.end() };
     std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
-    std::size_t n_available_adject_blocks{ 0U };
+    std::size_t n_available_adject_cur_blocks{ 0U };
 
     GameEngine::FrameTimer ft{ };
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
