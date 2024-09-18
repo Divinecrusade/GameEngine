@@ -11,6 +11,8 @@ class ColourGit final : public GameEngine::Interfaces::IDrawable
 {
 private:
 
+    using id_commit = std::size_t;
+
     class Commit final
     {
     public: 
@@ -55,19 +57,26 @@ private:
 
     public:
 
-        Branch(GameEngine::Geometry::Vector2D<int> const& init_offset = { 0, 0 }, std::optional<std::pair<GameEngine::Colour, std::size_t>> const& parent = std::nullopt)
+        Branch(GameEngine::Geometry::Vector2D<int> const& init_offset)
         :
-        cur_offset{ init_offset },
-        from{ parent }
+        cur_offset{ init_offset }
         { }
 
-        std::size_t commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
+        Branch(GameEngine::Geometry::Vector2D<int> const& init_offset, Branch const& parent, GameEngine::Colour parent_colour, id_commit head)
+        :
+        Branch{ init_offset }
+        { 
+            std::ranges::copy(parent.get_prev_transitions(), std::back_inserter(prev_transitions));
+            prev_transitions.emplace_back(parent_colour, head);
+        }
+
+        id_commit commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
         {
             assert(old_c != new_c);
             commits.emplace_back((block.set_colour(new_c), block), old_c, new_c);
             polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS);
-
-            return commits.size() - 1U;
+        
+            return get_n_commits() - 1U;
         }
          
         std::size_t get_n_commits() const noexcept
@@ -75,7 +84,7 @@ private:
             return commits.size();
         }
 
-        Commit const& get_commit(std::size_t i) const noexcept
+        Commit const& get_commit(id_commit i) const noexcept
         {
             assert(i < commits.size());
             return commits[i];
@@ -100,15 +109,21 @@ private:
             return polyline;
         }
 
-        auto const& get_point(std::size_t i) const noexcept
+        auto const& get_point(id_commit i) const noexcept
         {
             assert(i < polyline.size());
             return polyline[i];
         }
-
-        std::optional<std::pair<GameEngine::Colour, std::size_t>> get_parent() const noexcept
+        
+        std::vector<std::pair<GameEngine::Colour, id_commit>> const& get_prev_transitions() const
         {
-            return from;
+            return prev_transitions;
+        }
+
+        std::optional<std::pair<GameEngine::Colour, id_commit>> get_parent() const
+        {
+            if (!prev_transitions.empty()) return prev_transitions.back();
+            else                           return std::nullopt;
         }
 
     private:
@@ -117,13 +132,17 @@ private:
 
         GameEngine::Geometry::Vector2D<int> cur_offset;
 
-        std::optional<std::pair<GameEngine::Colour, std::size_t>> const from;
+        std::vector<std::pair<GameEngine::Colour, id_commit>> prev_transitions{ };
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
     };
 
 public:
 
     ColourGit() noexcept = default;
+    ColourGit(std::size_t expected_n_branches)
+    {
+        branches.reserve(expected_n_branches);
+    }
     ColourGit(ColourGit const&) = delete;
     ColourGit(ColourGit&&)      = delete;
 
@@ -156,7 +175,9 @@ public:
                 Branch
                 {
                     cur_branch->second.get_offset() + GameEngine::Geometry::Vector2D<int>{ Branch::DISTANCE_BETWEEN_COMMITS, Branch::DISTANCE_BETWEEN_COMMITS * static_cast<int>(head.value() + 1) },
-                    std::make_optional(std::make_pair(cur_branch->first, head.value()))
+                    cur_branch->second,
+                    cur_branch->first,
+                    head.value()
                 }
             ).first;
     }
@@ -195,7 +216,7 @@ public:
                 gfx.draw_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_BORDER_THICKNESS, branch.first);
             }
         }
-        if (head)
+        if (head.has_value())
         {
             gfx.fill_ellipse
             (
@@ -238,5 +259,5 @@ private:
 
     std::unordered_map<GameEngine::Colour, Branch> branches{ };
     std::unordered_map<GameEngine::Colour, Branch>::iterator cur_branch{ branches.end() };
-    std::optional<std::size_t> head{ std::nullopt };
+    std::optional<id_commit> head{ std::nullopt };
 };
