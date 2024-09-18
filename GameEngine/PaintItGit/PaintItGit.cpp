@@ -56,9 +56,11 @@ void PaintItGit::update()
 
 void PaintItGit::update_gamestage_first_commit()
 {
-    if (COLOUR_FIELD_AREA.contains(cursor_pos))
+    if (COLOUR_FIELD_AREA.contains(cursor_pos) && cur_input_delay < 0.f)
     {
-        if (auto const hovered_block{ blocks.get_block(cursor_pos) }; hovered_block->get_colour() != MAIN_COLOURS[cur_colour_index] && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON) && cur_input_delay < 0.f)
+        if (auto const hovered_block{ blocks.get_block(cursor_pos) }; 
+            hovered_block->get_colour() != MAIN_COLOURS[cur_colour_index] && 
+            get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
         {
             cur_input_delay = MAX_INPUT_DELAY;
 
@@ -78,47 +80,64 @@ void PaintItGit::update_gamestage_first_commit()
 
 void PaintItGit::update_gamestage_commiting()
 {
-    if (COLOUR_FIELD_AREA.contains(cursor_pos) && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON) && cur_input_delay < 0.f)
+    if (cur_input_delay > 0.f) return;
+
+    auto const pressed_key{ get_wnd().get_last_pressed_functional_key() };
+
+    if (pressed_key.has_value())
+    switch (pressed_key.value())
     {
-        cur_input_delay = MAX_INPUT_DELAY;
-
-        if (auto const hovered_block{ blocks.get_block(cursor_pos) }; 
-        std::ranges::find(adject_cur_blocks | std::views::take(n_adject_cur_blocks_with_diff_colours), hovered_block) != adject_cur_blocks.begin() + n_adject_cur_blocks_with_diff_colours)
+        case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
         {
-            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
+            if (!COLOUR_FIELD_AREA.contains(cursor_pos)) break;
 
-            git.commit(*(cur_block = hovered_block), MAIN_COLOURS[cur_colour_index]);
+            cur_input_delay = MAX_INPUT_DELAY;
 
+            if (auto const hovered_block{ blocks.get_block(cursor_pos) };
+                std::ranges::find(adject_cur_blocks | std::views::take(n_available_adject_blocks), hovered_block) != adject_cur_blocks.begin() + n_available_adject_blocks)
+            {
+                if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
+
+                git.commit(*(cur_block = hovered_block), MAIN_COLOURS[cur_colour_index]);
+
+                pulsator.reset();
+                update_available_moves();
+            }
+        }
+        break;
+
+        case GameEngine::WinKey::ARROW_UP:
+        {
+            cur_input_delay = MAX_INPUT_DELAY;
+
+            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollback()));
             pulsator.reset();
             update_available_moves();
         }
-    }
-    if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_UP) && cur_input_delay < 0.f)
-    {
-        cur_input_delay = MAX_INPUT_DELAY;
-        
-        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollback()));
-        pulsator.reset();
-        update_available_moves();
-    }
-    if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_DOWN) && cur_input_delay < 0.f)
-    {
-        cur_input_delay = MAX_INPUT_DELAY;
+        break;
 
-        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollforward()));
-        pulsator.reset();
-        update_available_moves();
-    }
-    if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::SHIFT) && cur_input_delay < 0.f)
-    {
-        cur_input_delay = MAX_INPUT_DELAY;
-
-        if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
+        case GameEngine::WinKey::ARROW_DOWN:
         {
-            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.checkout(MAIN_COLOURS[cur_colour_index])));
+            cur_input_delay = MAX_INPUT_DELAY;
+
+            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollforward()));
             pulsator.reset();
             update_available_moves();
         }
+        break;
+
+        case GameEngine::WinKey::SHIFT:
+        {
+            cur_input_delay = MAX_INPUT_DELAY;
+
+            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
+            {
+                cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.checkout(MAIN_COLOURS[cur_colour_index])));
+                pulsator.reset();
+                update_available_moves();
+            }
+        }
+        break;
     }
 }
 
@@ -138,16 +157,16 @@ void PaintItGit::update_available_moves()
 
         case GameStage::COMMITING:
         {
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_adject_cur_blocks_with_diff_colours, [](auto& block) { block->pulsation_off(); });
+            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_blocks, [](auto& block) { block->pulsation_off(); });
             if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index])) 
-                n_adject_cur_blocks_with_diff_colours = 0U;
+                n_available_adject_blocks = 0U;
             else
-                n_adject_cur_blocks_with_diff_colours = blocks.get_adject_blocks(cur_block, adject_cur_blocks, 
+                n_available_adject_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks, 
                 [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
                 { 
                     return c != main_colours[main_colour_index];
                 });
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_adject_cur_blocks_with_diff_colours, [](auto& block) { block->pulsation_on(); });
+            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_blocks, [](auto& block) { block->pulsation_on(); });
         }
         break;
     }

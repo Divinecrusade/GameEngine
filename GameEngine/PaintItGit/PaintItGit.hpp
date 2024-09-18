@@ -61,7 +61,7 @@ private:
     static constexpr GameEngine::Colour BACKGROUND_COLOUR{ GameEngine::Colours::BLACK };
     static constexpr int MAX_BLOCK_TRANSPERENCY{ 70 };
 
-    static constexpr float MAX_INPUT_DELAY{ 0.5f };
+    static constexpr float MAX_INPUT_DELAY{ 0.2f };
 
 private:
 
@@ -81,14 +81,14 @@ private:
     
 public:
 
-    PaintItGit() = delete;
+    PaintItGit()                  = delete;
     PaintItGit(PaintItGit const&) = delete;
     PaintItGit(PaintItGit&&)      = delete;
 
     PaintItGit& operator=(PaintItGit const&) = delete;
     PaintItGit& operator=(PaintItGit&&)      = delete;
 
-    virtual ~PaintItGit() = default;
+    virtual ~PaintItGit() noexcept = default;
 
     using Game::start;
 
@@ -117,7 +117,7 @@ private:
 
     decltype(blocks)::iterator cur_block{ blocks.end() };
     std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
-    std::size_t n_adject_cur_blocks_with_diff_colours{ 0U };
+    std::size_t n_available_adject_blocks{ 0U };
 
     GameEngine::FrameTimer ft{ };
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };

@@ -17,7 +17,9 @@ private:
     {
     public: 
 
-        Commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
+        Commit() = delete;
+
+        constexpr Commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
         :
         block{ block },
         before_c{ old_c },
@@ -25,6 +27,15 @@ private:
         { 
             assert(old_c != new_c);
         }
+
+        constexpr Commit(Commit const&) noexcept = default;
+        constexpr Commit(Commit&&)      noexcept = default;
+
+        Commit& operator=(Commit const&) = delete;
+        Commit& operator=(Commit&&)      = delete;
+
+        constexpr ~Commit() noexcept = default;
+
 
         void undo() const noexcept
         {
@@ -36,7 +47,7 @@ private:
             block.set_colour(after_c);
         }
 
-        ColourBlock& get_block() const noexcept
+        constexpr ColourBlock& get_block() const noexcept
         {
             return block;
         }
@@ -54,15 +65,17 @@ private:
     public:
 
         static constexpr int DISTANCE_BETWEEN_COMMITS{ 20 };
+        static constexpr GameEngine::Geometry::Vector2D<int> DEFAULT_OFFSET{ 0, 0 };
 
     public:
 
-        Branch(GameEngine::Geometry::Vector2D<int> const& init_offset)
+                
+        constexpr Branch(GameEngine::Geometry::Vector2D<int> const& init_offset = DEFAULT_OFFSET) noexcept
         :
         cur_offset{ init_offset }
         { }
 
-        Branch(GameEngine::Geometry::Vector2D<int> const& init_offset, Branch const& parent, GameEngine::Colour parent_colour, id_commit head)
+        constexpr Branch(GameEngine::Geometry::Vector2D<int> const& init_offset, Branch const& parent, GameEngine::Colour parent_colour, id_commit head) noexcept
         :
         Branch{ init_offset }
         { 
@@ -70,30 +83,39 @@ private:
             prev_transitions.emplace_back(parent_colour, head);
         }
 
-        void commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
+        Branch(Branch const&)     = delete;
+        constexpr Branch(Branch&&) noexcept = default;
+
+        Branch& operator=(Branch const&) = delete;
+        Branch& operator=(Branch&&)      = delete;
+
+        constexpr ~Branch() noexcept = default;
+
+
+        constexpr void commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c) noexcept
         {
             assert(old_c != new_c);
             commits.emplace_back((block.set_colour(new_c), block), old_c, new_c);
             polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS);
         }
          
-        std::size_t get_n_commits() const noexcept
+        constexpr std::size_t get_n_commits() const noexcept
         {
             return commits.size();
         }
 
-        id_commit get_last_commit_id() const noexcept
+        constexpr id_commit get_last_commit_id() const noexcept
         {
             return get_n_commits() - 1U;
         }
 
-        Commit const& get_commit(id_commit i) const noexcept
+        constexpr Commit const& get_commit(id_commit i) const noexcept
         {
             assert(i < commits.size());
             return commits[i];
         }
 
-        void set_offset(GameEngine::Geometry::Vector2D<int> const& new_offset)
+        void set_offset(GameEngine::Geometry::Vector2D<int> const& new_offset) noexcept
         {
             for (auto const delta{ new_offset - cur_offset }; auto& point : polyline)
             {
@@ -102,28 +124,28 @@ private:
             cur_offset = new_offset;
         }
 
-        GameEngine::Geometry::Vector2D<int> get_offset() const noexcept
+        constexpr GameEngine::Geometry::Vector2D<int> get_offset() const noexcept
         {
             return cur_offset;
         }
 
-        auto const& get_polyline() const noexcept
+        constexpr auto const& get_polyline() const noexcept
         {
             return polyline;
         }
 
-        auto const& get_point(id_commit i) const noexcept
+        constexpr auto const& get_point(id_commit i) const noexcept
         {
             assert(i < polyline.size());
             return polyline[i];
         }
         
-        std::vector<std::pair<GameEngine::Colour, id_commit>> const& get_prev_transitions() const
+        constexpr auto const& get_prev_transitions() const noexcept
         {
             return prev_transitions;
         }
 
-        std::optional<std::pair<GameEngine::Colour, id_commit>> get_parent() const
+        constexpr std::optional<std::pair<GameEngine::Colour, id_commit>> get_parent() const noexcept
         {
             if (!prev_transitions.empty()) return prev_transitions.back();
             else                           return std::nullopt;
@@ -141,8 +163,8 @@ private:
 
 public:
 
-    ColourGit() noexcept = default;
-    ColourGit(std::size_t expected_n_branches)
+    constexpr ColourGit() noexcept = default;
+    constexpr ColourGit(std::size_t expected_n_branches) noexcept
     {
         branches.reserve(expected_n_branches);
     }
@@ -152,15 +174,15 @@ public:
     ColourGit& operator=(ColourGit const&) = delete;
     ColourGit& operator=(ColourGit&&)      = delete;
 
-    virtual ~ColourGit() noexcept = default;
+    constexpr virtual ~ColourGit() noexcept = default;
 
-    void commit(ColourBlock& block, GameEngine::Colour new_c)
+    constexpr void commit(ColourBlock& block, GameEngine::Colour new_c)
     {
         cur_branch->second.commit(block, block.get_colour(), new_c);
         head = cur_branch->second.get_last_commit_id();
     }
 
-    void branch(GameEngine::Colour branch_c)
+    constexpr void branch(GameEngine::Colour branch_c)
     {
         if (cur_branch == branches.end())
             cur_branch = branches.emplace
@@ -186,7 +208,7 @@ public:
             ).first;
     }
 
-    ColourBlock& checkout(GameEngine::Colour branch_c)
+    constexpr ColourBlock& checkout(GameEngine::Colour branch_c)
     {
         assert(branches.contains(branch_c));
 
@@ -214,7 +236,7 @@ public:
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
-    void merge(GameEngine::Colour branch_c)
+    constexpr void merge(GameEngine::Colour branch_c)
     {
 
     }
@@ -255,17 +277,17 @@ public:
         }
     }
 
-    GameEngine::Colour get_cur_branch() const
+    constexpr GameEngine::Colour get_cur_branch() const
     {
         return cur_branch->first;
     }
 
-    bool has_branch(GameEngine::Colour c) const noexcept
+    constexpr bool has_branch(GameEngine::Colour c) const noexcept
     {
         return branches.contains(c);
     }
 
-    ColourBlock& rollback() noexcept
+    constexpr ColourBlock& rollback() noexcept
     {
         assert(head.has_value());
 
@@ -273,17 +295,17 @@ public:
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
-    ColourBlock& rollforward() noexcept
+    constexpr ColourBlock& rollforward() noexcept
     {
         assert(head.has_value());
 
-        if (head.value() != cur_branch->second.get_n_commits() - 1U) cur_branch->second.get_commit(++(head.value())).apply();
+        if (head.value() != cur_branch->second.get_last_commit_id()) cur_branch->second.get_commit(++(head.value())).apply();
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
 private:
 
-    void rollback_cur_branch() noexcept
+    constexpr void rollback_cur_branch() noexcept
     {
         assert(head.has_value());
 
@@ -295,7 +317,7 @@ private:
         head.reset();
     }
 
-    void rollforward_cur_branch_to(id_commit end) noexcept
+    constexpr void rollforward_cur_branch_to(id_commit end) noexcept
     {
         if (!head.has_value())
         {

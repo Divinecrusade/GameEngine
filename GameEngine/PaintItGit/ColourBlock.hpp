@@ -14,12 +14,13 @@ public:
     c{ c }
     { }
     constexpr ColourBlock(ColourBlock const&) noexcept = default;
-    constexpr ColourBlock(ColourBlock&&) noexcept      = default;
+    constexpr ColourBlock(ColourBlock&&)      noexcept = default;
 
-    constexpr ColourBlock& operator=(ColourBlock const&) = default;
-    constexpr ColourBlock& operator=(ColourBlock&&)      = default;
+    constexpr ColourBlock& operator=(ColourBlock const&) noexcept = default;
+    constexpr ColourBlock& operator=(ColourBlock&&)      noexcept = default;
 
     virtual constexpr ~ColourBlock() noexcept = default;
+
 
     constexpr GameEngine::Colour get_colour() const noexcept
     {

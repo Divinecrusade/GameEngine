@@ -11,16 +11,18 @@ public:
 
     static constexpr GameEngine::Geometry::Vector2D<int> DEFAULT_LEFT_TOP_POS{ 0, 0 };
 
+public:
+
     constexpr DrawableBlock(GameEngine::Geometry::Vector2D<int> const& left_top_pos = DEFAULT_LEFT_TOP_POS, GameEngine::Colour c = ColourBlock::DEFAULT_COLOUR) noexcept
     :
     ColourBlock{ c },
     collision_box{ left_top_pos, SIZE, SIZE }
     { }
     constexpr DrawableBlock(DrawableBlock const&) noexcept = default;
-    constexpr DrawableBlock(DrawableBlock&&) noexcept = default;
+    constexpr DrawableBlock(DrawableBlock&&) noexcept      = default;
 
     constexpr DrawableBlock& operator=(DrawableBlock const&) = default;
-    constexpr DrawableBlock& operator=(DrawableBlock&&) = default;
+    constexpr DrawableBlock& operator=(DrawableBlock&&)      = default;
 
     virtual constexpr ~DrawableBlock() noexcept = default;
 

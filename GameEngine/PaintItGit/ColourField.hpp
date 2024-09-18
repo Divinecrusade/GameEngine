@@ -27,17 +27,15 @@ public:
 public:
 
     ColourField() = delete;
-
     template<std::size_t N>
     requires (N > 0U)
-    ColourField(PulsationEffect const* pulsator, std::array<GameEngine::Colour, N> const& colours_pull, std::size_t cur_colour_index)
+    constexpr ColourField(PulsationEffect const* pulsator, std::array<GameEngine::Colour, N> const& colours_pull, std::size_t cur_colour_index) noexcept
     {
         assert(pulsator != nullptr);
         assert(cur_colour_index < N);
 
         std::mt19937 rng{ std::random_device{}() };
         std::uniform_int_distribution<std::size_t> colour_indecies_distr{ 0U, N - 1U };
-
 
         for (int i{ 0 }; i != N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW; ++i)
         {
@@ -52,7 +50,7 @@ public:
     ColourField& operator=(ColourField const&) = delete;
     ColourField& operator=(ColourField&&)      = delete;
 
-    virtual ~ColourField() = default;
+    constexpr virtual ~ColourField() = default;
 
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
@@ -67,6 +65,9 @@ public:
     {
         coordinate -= LEFT_TOP_POS;
         coordinate /= BLOCK_SIZE;
+
+        assert(coordinate.x >= 0 && coordinate.x < N_BLOCKS_IN_ROW);
+        assert(coordinate.y >= 0 && coordinate.y < N_BLOCKS_IN_ROW);
 
         return std::to_address(grid.begin() + coordinate.y * N_BLOCKS_IN_ROW + coordinate.x);
     }
@@ -88,10 +89,13 @@ public:
         return std::to_address(grid.end());
     }
 
-    std::size_t get_adject_blocks(iterator cur_block, std::array<iterator, MAX_N_ADJECT_BLOCKS>& adject_blocks, std::function<bool(GameEngine::Colour)> const& filter)
+    constexpr std::size_t get_adject_blocks(iterator cur_block, std::array<iterator, MAX_N_ADJECT_BLOCKS>& adject_blocks, std::function<bool(GameEngine::Colour)> const& filter)
     {
+        assert(cur_block >= this->begin());
+        assert(cur_block < this->end());
+
         std::size_t cur_n_neighbours{ 0U };
-        auto const index{ std::distance(begin(), cur_block) };
+        auto const index{ std::distance(this->begin(), cur_block) };
         auto const row{ index / N_BLOCKS_IN_ROW };
         auto const col{ index % N_BLOCKS_IN_ROW };
 

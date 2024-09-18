@@ -7,7 +7,14 @@ class PulsationEffect final
 {
 public:
 
-    PulsationEffect(GameEngine::Colour end_pulse_c, int end_pulse_a)
+    static constexpr float INIT_ELAPSED_DURATION{ 0.f };
+    static constexpr float INIT_DELTA_SIGN{ +1.f };
+
+    static constexpr float ITERATION_DURATION{ 1.5f };
+
+public:
+
+    constexpr PulsationEffect(GameEngine::Colour end_pulse_c, int end_pulse_a)
     :
     end_pulse_c{ end_pulse_c },
     end_pulse_a{ end_pulse_a }
@@ -15,6 +22,8 @@ public:
 
     void update(float dt) noexcept
     {
+        assert(dt > 0.f);
+
         elapsed_duration += dt * delta_sign;
         if (elapsed_duration > ITERATION_DURATION)
         {
@@ -34,21 +43,16 @@ public:
         delta_sign       = INIT_DELTA_SIGN;
     }
 
-    GameEngine::Colour operator()(GameEngine::Colour c) const noexcept
+    constexpr GameEngine::Colour operator()(GameEngine::Colour c) const noexcept
     {
         return GameEngine::Colour::blend(c, end_pulse_c, static_cast<uint8_t>(end_pulse_a * (elapsed_duration / ITERATION_DURATION)));
     }
 
 private:
 
-    static constexpr float INIT_ELAPSED_DURATION{ 0.f };
-    static constexpr float INIT_DELTA_SIGN{ +1.f };
-
-    static constexpr float ITERATION_DURATION{ 1.5f };
-
-    float                  elapsed_duration  { INIT_ELAPSED_DURATION };
-    float                  delta_sign        { INIT_DELTA_SIGN };
-
     GameEngine::Colour const end_pulse_c;
     int const                end_pulse_a;
+
+    float elapsed_duration{ INIT_ELAPSED_DURATION };
+    float delta_sign{ INIT_DELTA_SIGN };
 };
