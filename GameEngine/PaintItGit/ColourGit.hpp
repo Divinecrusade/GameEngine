@@ -4,6 +4,7 @@
 
 #include <unordered_map>
 #include <iterator>
+#include <map>
 
 
 template<GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c>
@@ -151,6 +152,16 @@ private:
             else                           return std::nullopt;
         }
 
+        constexpr int get_side() const noexcept
+        {
+            return side;
+        }
+
+        void reverse_side() noexcept
+        {
+            side *= -1;
+        }
+
     private:
 
         std::vector<Commit> commits;
@@ -159,6 +170,8 @@ private:
 
         std::vector<std::pair<GameEngine::Colour, id_commit>> prev_transitions{ };
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
+
+        int side{ 1 };
     };
 
 public:
@@ -185,27 +198,43 @@ public:
     constexpr void branch(GameEngine::Colour branch_c)
     {
         if (cur_branch == branches.end())
-            cur_branch = branches.emplace
-            (
-                branch_c, 
+        {
+            GameEngine::Geometry::Vector2D<int> const offset{ frame.left + frame.get_width() / 2, frame.top + Branch::DISTANCE_BETWEEN_COMMITS };
+
+            cur_branch = branches.emplace(branch_c, offset).first;
+
+            offsets_x.emplace(offset.x, branch_c);
+        }
+        else
+        {
+            cur_branch->second.reverse_side();
+
+            GameEngine::Geometry::Vector2D<int> offset
+            { 
+                cur_branch->second.get_offset() + 
                 GameEngine::Geometry::Vector2D<int>
                 { 
-                    frame.left + frame.get_width() / 2, 
-                    frame.top + Branch::DISTANCE_BETWEEN_COMMITS 
+                    Branch::DISTANCE_BETWEEN_COMMITS * cur_branch->second.get_side(),
+                    Branch::DISTANCE_BETWEEN_COMMITS * static_cast<int>(head.value() + 1) 
                 }
-            ).first;
-        else
+            };
+
+            restruct_by_x(offset.x);
+
             cur_branch = branches.emplace
             (
                 branch_c,
                 Branch
                 {
-                    cur_branch->second.get_offset() + GameEngine::Geometry::Vector2D<int>{ Branch::DISTANCE_BETWEEN_COMMITS, Branch::DISTANCE_BETWEEN_COMMITS * static_cast<int>(head.value() + 1) },
+                    offset,
                     cur_branch->second,
                     cur_branch->first,
                     head.value()
                 }
             ).first;
+
+            offsets_x.emplace(offset.x, branch_c);
+        }
     }
 
     constexpr ColourBlock& checkout(GameEngine::Colour branch_c)
@@ -333,6 +362,25 @@ private:
         } 
     }
 
+    void restruct_by_x(int new_x)
+    {
+        if (auto const target{ offsets_x.find(new_x) }; target != offsets_x.end())
+        {
+            auto node{ offsets_x.extract(target) };
+            do
+            {
+                node.key() += branches[node.mapped()].get_side() * Branch::DISTANCE_BETWEEN_COMMITS;
+            } while (offsets_x.contains(node.key()));
+            
+            offsets_x.emplace(node.key(), node.mapped());
+            
+            auto new_offset{ branches[node.mapped()].get_offset()};
+            new_offset.x = node.key();
+
+            branches[node.mapped()].set_offset(new_offset);
+        }
+    }
+
 private:
 
     static constexpr int COMMIT_CIRCLE_RADIUS{ 4 };
@@ -343,4 +391,6 @@ private:
     std::unordered_map<GameEngine::Colour, Branch> branches{ };
     std::unordered_map<GameEngine::Colour, Branch>::iterator cur_branch{ branches.end() };
     std::optional<id_commit> head{ std::nullopt };
+
+    std::map<int, GameEngine::Colour> offsets_x{ };
 };
