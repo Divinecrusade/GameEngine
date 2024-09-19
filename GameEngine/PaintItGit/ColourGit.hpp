@@ -332,6 +332,12 @@ public:
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
+    constexpr bool is_behind_head() const noexcept
+    {
+        assert(head.has_value());
+        return head.value() < cur_branch->second.get_last_commit_id();
+    }
+
 private:
 
     constexpr void rollback_cur_branch() noexcept
