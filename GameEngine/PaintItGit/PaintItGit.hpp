@@ -61,7 +61,7 @@ private:
     static constexpr GameEngine::Colour BACKGROUND_COLOUR{ GameEngine::Colours::BLACK };
     static constexpr int MAX_BLOCK_TRANSPERENCY{ 70 };
 
-    static constexpr float MAX_INPUT_DELAY{ 0.2f };
+    static constexpr float MAX_INPUT_DELAY{ 0.15f };
 
 private:
 
@@ -101,9 +101,18 @@ private:
     void update_gamestage_commiting();
     void update_gamestage_rolling();
 
-    void paint_block();
-
     void update_available_moves();
+
+    bool change_branch();
+    void rollbackward();
+    void rollforward();
+
+    bool mlb_on_block_click();
+
+    void unset_pulsation();
+    void set_pulsation();
+
+    void find_adject_blocks();
 
 private:
 

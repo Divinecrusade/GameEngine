@@ -84,52 +84,33 @@ void PaintItGit::update_gamestage_commiting()
     if (cur_input_delay > 0.f) return;
 
     if (auto const pressed_key{ get_wnd().get_last_pressed_functional_key() }; pressed_key.has_value())
-    switch (pressed_key.value())
     {
-        case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
+        cur_input_delay = MAX_INPUT_DELAY;
+
+        switch (pressed_key.value())
         {
-            if (!COLOUR_FIELD_AREA.contains(cursor_pos)) break;
-
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            if (auto const hovered_block{ blocks.get_block(cursor_pos) };
-                std::ranges::find(adject_cur_blocks | std::views::take(n_available_adject_cur_blocks), hovered_block) != adject_cur_blocks.begin() + n_available_adject_cur_blocks)
+            case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
             {
-                if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
-
-                git.commit(*(cur_block = hovered_block), MAIN_COLOURS[cur_colour_index]);
-
-                pulsator.reset();
+                mlb_on_block_click();
                 update_available_moves();
             }
-        }
-        break;
+            break;
 
-        case GameEngine::WinKey::ARROW_UP:
-        {
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollback()));
-
-            cur_stage = GameStage::ROLLING;
-
-            pulsator.reset();
-            update_available_moves();
-        }
-        break;
-
-        case GameEngine::WinKey::SHIFT:
-        {
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
+            case GameEngine::WinKey::ARROW_UP:
             {
-                cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.checkout(MAIN_COLOURS[cur_colour_index])));
-                pulsator.reset();
+                rollbackward();
+                cur_stage = GameStage::ROLLING;
                 update_available_moves();
             }
+            break;
+
+            case GameEngine::WinKey::SHIFT:
+            {
+                change_branch();
+                update_available_moves();
+            }
+            break;
         }
-        break;
     }
 }
 
@@ -138,66 +119,46 @@ void PaintItGit::update_gamestage_rolling()
     if (cur_input_delay > 0.f) return;
 
     if (auto const pressed_key{ get_wnd().get_last_pressed_functional_key() }; pressed_key.has_value())
-    switch (pressed_key.value())
     {
-        case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
+        cur_input_delay = MAX_INPUT_DELAY;
+
+        switch (pressed_key.value())
         {
-            if (!COLOUR_FIELD_AREA.contains(cursor_pos)) break;
-
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            if (auto const hovered_block{ blocks.get_block(cursor_pos) };
-                std::ranges::find(adject_cur_blocks | std::views::take(n_available_adject_cur_blocks), hovered_block) != adject_cur_blocks.begin() + n_available_adject_cur_blocks)
+            case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
             {
-                git.branch(MAIN_COLOURS[cur_colour_index]);
-                git.commit(*(cur_block = hovered_block), MAIN_COLOURS[cur_colour_index]);
+                if (mlb_on_block_click())
+                {
+                    cur_stage = GameStage::COMMITING;
+                    update_available_moves();
+                }
+            }
+            break;
 
-                cur_stage = GameStage::COMMITING;
-
-                pulsator.reset();
+            case GameEngine::WinKey::ARROW_UP:
+            {
+                rollbackward();
                 update_available_moves();
             }
-        }
-        break;
+            break;
 
-        case GameEngine::WinKey::ARROW_UP:
-        {
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollback()));
-            pulsator.reset();
-            update_available_moves();
-        }
-        break;
-
-        case GameEngine::WinKey::ARROW_DOWN:
-        {
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollforward()));
-
-            if (!git.is_behind_head()) cur_stage = GameStage::COMMITING;
-
-            pulsator.reset();
-            update_available_moves();
-        }
-        break;
-
-        case GameEngine::WinKey::SHIFT:
-        {
-            cur_input_delay = MAX_INPUT_DELAY;
-
-            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
+            case GameEngine::WinKey::ARROW_DOWN:
             {
-                cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.checkout(MAIN_COLOURS[cur_colour_index])));
-                
-                cur_stage = GameStage::COMMITING;
-                
-                pulsator.reset();
+                rollforward();
+
+                if (!git.is_behind_head()) cur_stage = GameStage::COMMITING;
+
                 update_available_moves();
             }
+            break;
+
+            case GameEngine::WinKey::SHIFT:
+            {
+                if (change_branch()) cur_stage = GameStage::COMMITING;
+
+                update_available_moves();
+            }
+            break;
         }
-        break;
     }
 }
 
@@ -217,39 +178,81 @@ void PaintItGit::update_available_moves()
 
         case GameStage::COMMITING:
         {
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_off(); });
+            unset_pulsation();
             if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index])) 
                 n_available_adject_cur_blocks = 0U;
             else
-                n_available_adject_cur_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks, 
-                [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
-                { 
-                    return c != main_colours[main_colour_index];
-                });
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_on(); });
+                find_adject_blocks();
+            set_pulsation();
         }
         break;
 
         case GameStage::ROLLING:
         {
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_off(); });
+            unset_pulsation();
             if (MAIN_COLOURS[cur_colour_index] == git.get_cur_branch() || (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index])))
                 n_available_adject_cur_blocks = 0U;
             else
-                n_available_adject_cur_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks,
-                [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
-                {
-                    return c != main_colours[main_colour_index];
-                });
-            std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_on(); });
+                find_adject_blocks();
+            set_pulsation();
         }
         break;
     }
 }
 
-void PaintItGit::paint_block()
+bool PaintItGit::change_branch()
 {
+    if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
+    {
+        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.checkout(MAIN_COLOURS[cur_colour_index])));
 
+        return true;
+    }
+    return false;
+}
+
+void PaintItGit::rollbackward()
+{
+    cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollback()));
+}
+
+void PaintItGit::rollforward()
+{
+    cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollforward()));
+}
+
+bool PaintItGit::mlb_on_block_click()
+{
+    if (!COLOUR_FIELD_AREA.contains(cursor_pos)) return false;
+
+    if (auto const hovered_block{ blocks.get_block(cursor_pos) };
+        std::ranges::find(adject_cur_blocks | std::views::take(n_available_adject_cur_blocks), hovered_block) != adject_cur_blocks.begin() + n_available_adject_cur_blocks)
+    {
+        if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch()) git.branch(MAIN_COLOURS[cur_colour_index]);
+        git.commit(*(cur_block = hovered_block), MAIN_COLOURS[cur_colour_index]);
+
+        return true;
+    }
+    return false;
+}
+
+void PaintItGit::unset_pulsation()
+{
+    std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_off(); });
+}
+
+void PaintItGit::set_pulsation()
+{
+    std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_on(); });
+}
+
+void PaintItGit::find_adject_blocks()
+{
+    n_available_adject_cur_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks,
+        [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
+        {
+            return c != main_colours[main_colour_index];
+        });
 }
 
 void PaintItGit::render()
