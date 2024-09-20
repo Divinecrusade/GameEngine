@@ -51,6 +51,86 @@ namespace GameEngine
         d2d_factory.get_render_target().DrawLine(convert(beg), convert(end), &d2d_factory.get_brush(c), get_dips_from_pixels(stroke_width));
     }
 
+    void GameEngine::GraphicsDirect2D::draw_line(Geometry::Vector2D<int> beg, Geometry::Vector2D<int> end, int stroke_width, Colour c, Geometry::Rectangle2D<int> const& clipping_area)
+    {
+        // Yeah, I know that algorithm below for clipping is not efficient
+        // But I'm in hurry, so let it be
+
+        assert(composing_frame);
+        assert(beg.x >= 0 && beg.x <= get_screen_width());
+        assert(beg.y >= 0 && beg.y <= get_screen_height());
+        assert(end.x >= 0 && end.x <= get_screen_width());
+        assert(end.y >= 0 && end.y <= get_screen_height());
+        assert(stroke_width > 0);
+
+        int const delta_y{ max(beg.y, end.y) - min(beg.y, beg.y) };
+        int const delta_x{ max(beg.x, end.x) - min(beg.x, end.x) };
+
+
+        if (delta_x == 0)
+        {
+            if (beg.y > end.y) std::swap(beg, end);
+
+            if (beg.x < min(clipping_area.left, clipping_area.right) || beg.x > max(clipping_area.left, clipping_area.right)) return;
+            if (beg.y > max(clipping_area.bottom, clipping_area.top) || end.y < min(clipping_area.bottom, clipping_area.top)) return;
+
+            beg.y = std::clamp(beg.y, min(clipping_area.bottom, clipping_area.top), max(clipping_area.bottom, clipping_area.top));
+            end.y = std::clamp(end.y, min(clipping_area.bottom, clipping_area.top), max(clipping_area.bottom, clipping_area.top));
+        }
+        else if (delta_y == 0)
+        {
+            if (beg.x > end.x) std::swap(beg, end);
+
+            if (beg.y < min(clipping_area.bottom, clipping_area.top) || beg.y > max(clipping_area.bottom, clipping_area.top)) return;
+            if (beg.x > max(clipping_area.left, clipping_area.right) || beg.x < min(clipping_area.left, clipping_area.right)) return;
+
+            beg.x = std::clamp(beg.x, min(clipping_area.left, clipping_area.right), max(clipping_area.left, clipping_area.right));
+            end.x = std::clamp(beg.x, min(clipping_area.left, clipping_area.right), max(clipping_area.left, clipping_area.right));
+        }
+        else
+        {
+            if (!clipping_area.contains(beg) && !clipping_area.contains(end)) return;
+
+            if (beg.x > end.x) std::swap(beg, end);
+
+            float const k{ static_cast<float>(delta_y) / delta_x };
+            float const b{ beg.y - k * beg.x };
+
+            if (!clipping_area.contains(beg))
+            {
+                int x{ min(clipping_area.left, clipping_area.right) };
+                float y{ k * x + b };
+                while (y > max(clipping_area.bottom, clipping_area.top) || y < min(clipping_area.bottom, clipping_area.top))
+                {
+                    assert(x <= max(clipping_area.left, clipping_area.right));
+
+                    ++x;
+                    y = k * x + b;
+                }
+
+                beg.x = x;
+                beg.y = std::clamp(static_cast<int>(y), min(clipping_area.bottom, clipping_area.top), max(clipping_area.bottom, clipping_area.top));
+            }
+            if (!clipping_area.contains(end))
+            {
+                int x{ max(clipping_area.left, clipping_area.right) };
+                float y{ k * x + b };
+                while (y > max(clipping_area.bottom, clipping_area.top) || y < min(clipping_area.bottom, clipping_area.top))
+                {
+                    assert(x >= min(clipping_area.left, clipping_area.right));
+
+                    --x;
+                    y = k * x + b;
+                }
+
+                end.x = x;
+                end.y = std::clamp(static_cast<int>(y), min(clipping_area.bottom, clipping_area.top), max(clipping_area.bottom, clipping_area.top));
+            }
+        }
+
+        draw_line(beg, end, stroke_width, c);
+    }
+
     void GraphicsDirect2D::fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c)
     {
         assert(composing_frame);

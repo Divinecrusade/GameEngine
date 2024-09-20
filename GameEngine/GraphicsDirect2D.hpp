@@ -28,6 +28,7 @@ namespace GameEngine
         int get_screen_height() const noexcept override;
 
         void draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c) override;
+        void draw_line(Geometry::Vector2D<int> beg, Geometry::Vector2D<int> end, int stroke_width, Colour c, Geometry::Rectangle2D<int> const& clipping_area) override;
 
         void fill_rectangle(Geometry::Rectangle2D<int> const& rect, Colour c) override;
         void draw_rectangle(Geometry::Rectangle2D<int> const& rect, int stroke_witdth, Colour c) override;

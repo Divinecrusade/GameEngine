@@ -199,7 +199,7 @@ public:
     {
         if (cur_branch == branches.end())
         {
-            GameEngine::Geometry::Vector2D<int> const offset{ frame.left + frame.get_width() / 2, frame.top + Branch::DISTANCE_BETWEEN_COMMITS };
+            GameEngine::Geometry::Vector2D<int> const offset{ frame.left + frame.get_width() / 2, frame.top + Branch::DISTANCE_BETWEEN_COMMITS / 2 };
 
             cur_branch = branches.emplace(branch_c, offset).first;
 
@@ -270,7 +270,7 @@ public:
 
     }
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, std::optional<GameEngine::Geometry::Rectangle2D<int>> const& clipping_area) const override
+    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         for (auto const& branch : branches)
         { 
@@ -280,22 +280,24 @@ public:
                     branches.at(parent.value().first).get_point(parent.value().second),
                     branch.second.get_point(0U),
                     BRANCH_LINE_THICKNESS,
-                    branch.first
+                    branch.first,
+                    frame
                 );
         }
 
         for (auto const& branch : branches)
         {
-            gfx.draw_line(branch.second.get_polyline().front(), branch.second.get_polyline().back(), BRANCH_LINE_THICKNESS, branch.first);
+            gfx.draw_line(branch.second.get_polyline().front(), branch.second.get_polyline().back(), BRANCH_LINE_THICKNESS, branch.first, frame);
            
             for (auto const& point : branch.second.get_polyline())
             {
+                if (!frame.contains(point)) break;
+
                 gfx.fill_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, background_c);
                 gfx.draw_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_BORDER_THICKNESS, branch.first);
             }
         }
-        if (head.has_value())
-        {
+        if (head.has_value() && frame.contains(cur_branch->second.get_point(head.value())))
             gfx.fill_ellipse
             (
                 cur_branch->second.get_point(head.value()), 
@@ -303,7 +305,6 @@ public:
                 HEAD_CIRCLE_RADIUS,
                 cur_branch->first
             );
-        }
     }
 
     constexpr GameEngine::Colour get_cur_branch() const
