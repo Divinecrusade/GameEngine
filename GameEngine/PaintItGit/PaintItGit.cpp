@@ -30,22 +30,9 @@ void PaintItGit::update()
     pulsator.update(dt);
 
     if (cur_input_delay > 0.f) cur_input_delay -= dt;
+    if (check_mouse_wheel()) update_available_moves();
 
-    bool mouse_rotated{ false };
-    if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
-    {
-        prev_colour = MAIN_COLOURS[cur_colour_index];
-        cur_colour_index = (cur_colour_index + 1U) % MAIN_COLOURS.size();
-        mouse_rotated = true;
-    }
-    else if (mouse_wheel_rotation_destance < 0)
-    {
-        prev_colour = MAIN_COLOURS[cur_colour_index];
-        cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
-        mouse_rotated = true;
-    }
-
-    if (mouse_rotated) update_available_moves();
+    update_git_pos();
 
     switch (cur_stage)
     {
@@ -198,6 +185,33 @@ void PaintItGit::update_available_moves()
         }
         break;
     }
+}
+
+bool PaintItGit::check_mouse_wheel()
+{
+    if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
+    {
+        prev_colour = MAIN_COLOURS[cur_colour_index];
+        cur_colour_index = (cur_colour_index + 1U) % MAIN_COLOURS.size();
+        return true;
+    }
+    else if (mouse_wheel_rotation_destance < 0)
+    {
+        prev_colour = MAIN_COLOURS[cur_colour_index];
+        cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
+        return true;
+    }
+    return false;
+}
+
+void PaintItGit::update_git_pos()
+{
+    static Vec2i prev_cursor_pos{ cursor_pos };
+
+    if (GIT_COLOUR_AREA.contains(cursor_pos) && get_wnd().is_fun_key_pressed(GameEngine::WinKey::MOUSE_LEFT_BUTTON))
+        git.move_in_frame(cursor_pos - prev_cursor_pos);
+    
+    prev_cursor_pos = cursor_pos;
 }
 
 bool PaintItGit::change_branch()

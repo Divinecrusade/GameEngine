@@ -53,7 +53,7 @@ namespace GameEngine
 
     void GameEngine::GraphicsDirect2D::draw_line(Geometry::Vector2D<int> beg, Geometry::Vector2D<int> end, int stroke_width, Colour c, Geometry::Rectangle2D<int> const& clipping_area)
     {
-        // Yeah, I know that algorithm below for clipping is not efficient
+        // Yeah, I know that algorithm below for clipping is dumb
         // But I'm in hurry, so let it be
 
         assert(composing_frame);
@@ -89,43 +89,7 @@ namespace GameEngine
         }
         else
         {
-            if (!clipping_area.contains(beg) && !clipping_area.contains(end)) return;
-
-            if (beg.x > end.x) std::swap(beg, end);
-
-            float const k{ static_cast<float>(delta_y) / delta_x };
-            float const b{ beg.y - k * beg.x };
-
-            if (!clipping_area.contains(beg))
-            {
-                int x{ min(clipping_area.left, clipping_area.right) };
-                float y{ k * x + b };
-                while (y > max(clipping_area.bottom, clipping_area.top) || y < min(clipping_area.bottom, clipping_area.top))
-                {
-                    assert(x <= max(clipping_area.left, clipping_area.right));
-
-                    ++x;
-                    y = k * x + b;
-                }
-
-                beg.x = x;
-                beg.y = std::clamp(static_cast<int>(y), min(clipping_area.bottom, clipping_area.top), max(clipping_area.bottom, clipping_area.top));
-            }
-            if (!clipping_area.contains(end))
-            {
-                int x{ max(clipping_area.left, clipping_area.right) };
-                float y{ k * x + b };
-                while (y > max(clipping_area.bottom, clipping_area.top) || y < min(clipping_area.bottom, clipping_area.top))
-                {
-                    assert(x >= min(clipping_area.left, clipping_area.right));
-
-                    --x;
-                    y = k * x + b;
-                }
-
-                end.x = x;
-                end.y = std::clamp(static_cast<int>(y), min(clipping_area.bottom, clipping_area.top), max(clipping_area.bottom, clipping_area.top));
-            }
+            if (!clipping_area.contains(beg) || !clipping_area.contains(end)) return;
         }
 
         draw_line(beg, end, stroke_width, c);

@@ -103,6 +103,9 @@ private:
 
     void update_available_moves();
 
+    bool check_mouse_wheel();
+    void update_git_pos();
+
     bool change_branch();
     void rollbackward();
     void rollforward();

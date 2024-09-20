@@ -82,6 +82,7 @@ private:
         { 
             std::ranges::copy(parent.get_prev_transitions(), std::back_inserter(prev_transitions));
             prev_transitions.emplace_back(parent_colour, head);
+            translation = parent.translation;
         }
 
         Branch(Branch const&)     = delete;
@@ -97,7 +98,7 @@ private:
         {
             assert(old_c != new_c);
             commits.emplace_back((block.set_colour(new_c), block), old_c, new_c);
-            polyline.emplace_back(cur_offset.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS);
+            polyline.emplace_back(cur_offset.x + translation.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS + translation.y);
         }
          
         constexpr std::size_t get_n_commits() const noexcept
@@ -108,6 +109,15 @@ private:
         constexpr id_commit get_last_commit_id() const noexcept
         {
             return get_n_commits() - 1U;
+        }
+
+        void translate_by(GameEngine::Geometry::Vector2D<int> const& delta) noexcept
+        {
+            for (auto& point : polyline)
+            {
+                point += delta;
+            }
+            translation += delta;
         }
 
         constexpr Commit const& get_commit(id_commit i) const noexcept
@@ -169,6 +179,8 @@ private:
         GameEngine::Geometry::Vector2D<int> cur_offset;
 
         std::vector<std::pair<GameEngine::Colour, id_commit>> prev_transitions{ };
+
+        GameEngine::Geometry::Vector2D<int> translation{ 0, 0 };
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
 
         int side{ 1 };
@@ -291,7 +303,7 @@ public:
            
             for (auto const& point : branch.second.get_polyline())
             {
-                if (!frame.contains(point)) break;
+                if (!frame.contains(point)) continue;
 
                 gfx.fill_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, background_c);
                 gfx.draw_ellipse(point, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_RADIUS, COMMIT_CIRCLE_BORDER_THICKNESS, branch.first);
@@ -337,6 +349,14 @@ public:
     {
         assert(head.has_value());
         return head.value() < cur_branch->second.get_last_commit_id();
+    }
+
+    void move_in_frame(GameEngine::Geometry::Vector2D<int> delta)
+    {
+        for (auto& branch : branches)
+        {
+            branch.second.translate_by(delta);
+        }
     }
 
 private:
