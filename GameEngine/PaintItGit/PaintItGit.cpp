@@ -222,6 +222,13 @@ bool PaintItGit::change_branch()
 
         return true;
     }
+    else if (MAIN_COLOURS[cur_colour_index] == git.get_cur_branch())
+    {
+        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.move_to_head()));
+
+        return true;
+    }
+
     return false;
 }
 

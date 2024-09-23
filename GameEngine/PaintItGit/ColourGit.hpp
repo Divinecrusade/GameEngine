@@ -359,6 +359,13 @@ public:
         }
     }
 
+    constexpr ColourBlock& move_to_head()
+    {
+        id_commit const last_commit_id{ cur_branch->second.get_last_commit_id() };
+        rollforward_cur_branch_to(last_commit_id);
+        return cur_branch->second.get_commit(last_commit_id).get_block();
+    }
+
 private:
 
     constexpr void rollback_cur_branch() noexcept
