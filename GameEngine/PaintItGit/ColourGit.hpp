@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <iterator>
 #include <map>
+#include <queue>
 
 
 template<GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c>
@@ -120,6 +121,12 @@ private:
             translation += delta;
         }
 
+        Commit& get_commit(id_commit i) noexcept
+        {
+            assert(i < commits.size());
+            return commits[i];
+        }
+
         constexpr Commit const& get_commit(id_commit i) const noexcept
         {
             assert(i < commits.size());
@@ -170,6 +177,11 @@ private:
         void reverse_side() noexcept
         {
             side *= -1;
+        }
+
+        bool has_transit(GameEngine::Colour c) const noexcept
+        {
+            return std::ranges::any_of(prev_transitions, [c](auto const& pair){ return pair.first == c; });
         }
 
     private:
@@ -366,6 +378,55 @@ public:
         return cur_branch->second.get_commit(last_commit_id).get_block();
     }
 
+    std::optional<std::pair<GameEngine::Colour, ColourBlock*>> delete_branch(GameEngine::Colour branch_c)
+    {
+        assert(branches.contains(c));
+
+        if (cur_branch->second.has_transit(branch_c))
+        {
+            do
+            {
+                rollback_cur_branch();
+                auto const parent{ cur_branch->second.get_parent() };
+                assert(parent.has_value());
+                cur_branch = branches.find(parent->first);
+                head = parent->second;
+            } while (cur_branch->first != branch_c);
+            rollback_cur_branch_to_parent();
+        }
+        else if (cur_branch->first == branch_c)
+        {
+            rollback_cur_branch_to_parent();
+        }
+
+        branches.erase(branches.find(branch_c));
+        std::queue<GameEngine::Colour> to_erase{ { branch_c } };
+        do
+        {
+            std::erase_if(branches, [&offsets_x = this->offsets_x, &to_erase, c{ to_erase.front() }](auto const& pair)
+                {
+                    if (pair.second.has_transit(c))
+                    {
+                        to_erase.push(pair.first);
+                        offsets_x.erase(pair.second.get_offset().x);
+
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            to_erase.pop();
+        } while (!to_erase.empty());
+
+
+        if (!head)
+        {
+            cur_branch = branches.end();
+            return std::nullopt;
+        }
+        else return std::optional<std::pair<GameEngine::Colour, ColourBlock*>>{ std::pair<GameEngine::Colour, ColourBlock*>{ cur_branch->first, &(cur_branch->second.get_commit(head.value()).get_block()) } };
+    }
+
 private:
 
     constexpr void rollback_cur_branch() noexcept
@@ -413,6 +474,19 @@ private:
 
             branches[node.mapped()].set_offset(new_offset);
         }
+    }
+
+    void rollback_cur_branch_to_parent() noexcept
+    {
+        rollback_cur_branch();
+
+        if (auto const parent{ cur_branch->second.get_parent() }; parent)
+        {
+            cur_branch = branches.find(parent->first);
+            head = parent->second;
+        }
+        else
+            head.reset();
     }
 
 private:

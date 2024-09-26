@@ -30,7 +30,7 @@ private:
 
     static constexpr int   COLOUR_FIELD_SIZE{ WINDOW.get_height() - PADDING.top - PADDING.bottom };
     static constexpr Rec2i COLOUR_FIELD_AREA{ PADDING.left, PADDING.left + COLOUR_FIELD_SIZE, PADDING.top + COLOUR_FIELD_SIZE, PADDING.top };
-    static constexpr int   N_BLOCKS_IN_ROW{ 10 };
+    static constexpr int   N_BLOCKS_IN_ROW{ 5 };
     
     static constexpr int   HORIZONTAL_PADDING_BETWEEN_FIELD_AND_GIT{ 50 };
 
@@ -116,6 +116,8 @@ private:
     void set_pulsation();
 
     void find_adject_blocks();
+
+    void delete_branch();
 
 private:
 

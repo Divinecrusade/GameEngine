@@ -182,6 +182,7 @@ namespace GameEngine
             case VK_BACK:
             case VK_TAB:
             case VK_RETURN:
+            case VK_DELETE:
             case VK_SHIFT:
             case VK_LSHIFT:
             case VK_RSHIFT:
@@ -224,6 +225,7 @@ namespace GameEngine
             case VK_BACK:
             case VK_TAB:
             case VK_RETURN:
+            case VK_DELETE:
             case VK_SHIFT:
             case VK_LSHIFT:
             case VK_RSHIFT:

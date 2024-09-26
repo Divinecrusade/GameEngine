@@ -97,6 +97,13 @@ void PaintItGit::update_gamestage_commiting()
                 update_available_moves();
             }
             break;
+
+            case GameEngine::WinKey::DELETE_:
+            {
+                delete_branch();
+                update_available_moves();
+            }
+            break;
         }
     }
 }
@@ -142,6 +149,13 @@ void PaintItGit::update_gamestage_rolling()
             {
                 if (change_branch()) cur_stage = GameStage::COMMITING;
 
+                update_available_moves();
+            }
+            break;
+
+            case GameEngine::WinKey::DELETE_:
+            {
+                delete_branch();
                 update_available_moves();
             }
             break;
@@ -274,6 +288,24 @@ void PaintItGit::find_adject_blocks()
         {
             return c != main_colours[main_colour_index];
         });
+}
+
+void PaintItGit::delete_branch()
+{
+    auto const new_state{ git.delete_branch(MAIN_COLOURS[cur_colour_index]) };
+    if (!new_state) cur_stage = GameStage::INIT_COMMIT;
+    else
+    {
+        for (std::size_t i{ 0U }; i != N_COLOURS; ++i)
+        {
+            if (MAIN_COLOURS[i] == new_state->first)
+            {
+                cur_colour_index = i;
+                break;
+            }
+        }
+        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(new_state->second));
+    }
 }
 
 void PaintItGit::render()
