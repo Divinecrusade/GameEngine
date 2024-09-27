@@ -104,6 +104,21 @@ void PaintItGit::update_gamestage_commiting()
                 update_available_moves();
             }
             break;
+
+            case GameEngine::WinKey::ENTER:
+            {
+                if (git.prepare_merge(MAIN_COLOURS[cur_colour_index]))
+                {
+                    if (!git.get_conflicts().empty()) cur_stage = GameStage::MERGING;
+                    else 
+                    {
+                        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
+                        cur_stage = GameStage::ROLLING;
+                    }
+                    update_available_moves();
+                }
+            }
+            break;
         }
     }
 }
@@ -161,6 +176,11 @@ void PaintItGit::update_gamestage_rolling()
             break;
         }
     }
+}
+
+void PaintItGit::update_gamestage_merging()
+{
+    
 }
 
 void PaintItGit::update_available_moves()

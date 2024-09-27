@@ -67,7 +67,7 @@ private:
 
     enum class GameStage
     {
-        INIT_COMMIT, COMMITING, ROLLING
+        INIT_COMMIT, COMMITING, ROLLING, MERGING
     };
 
 public:
@@ -100,6 +100,7 @@ private:
     void update_gamestage_first_commit();
     void update_gamestage_commiting();
     void update_gamestage_rolling();
+    void update_gamestage_merging();
 
     void update_available_moves();
 

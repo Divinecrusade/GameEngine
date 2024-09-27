@@ -121,6 +121,11 @@ private:
             translation += delta;
         }
 
+        std::vector<Commit>& get_commits() noexcept
+        {
+            return commits;
+        }
+
         Commit& get_commit(id_commit i) noexcept
         {
             assert(i < commits.size());
@@ -184,6 +189,21 @@ private:
             return std::ranges::any_of(prev_transitions, [c](auto const& pair){ return pair.first == c; });
         }
 
+        void merge(GameEngine::Colour branch_c, id_commit head) noexcept
+        {
+            merged_to = std::make_pair(branch_c, head);
+        }
+
+        std::optional<std::pair<GameEngine::Colour, id_commit>> get_merged() const noexcept
+        {
+            return merged_to;
+        }
+
+        bool is_merged() const noexcept
+        {
+            return merged_to.has_value();
+        }
+
     private:
 
         std::vector<Commit> commits;
@@ -191,11 +211,71 @@ private:
         GameEngine::Geometry::Vector2D<int> cur_offset;
 
         std::vector<std::pair<GameEngine::Colour, id_commit>> prev_transitions{ };
+        std::optional<std::pair<GameEngine::Colour, id_commit>> merged_to{ std::nullopt };
 
         GameEngine::Geometry::Vector2D<int> translation{ 0, 0 };
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
 
         int side{ 1 };
+    };
+
+    class Conflict final
+    {
+    public:
+
+        enum class Option
+        {
+            FIRST, SECOND
+        };
+
+    public:
+
+        Conflict(ColourBlock& block, GameEngine::Colour first, GameEngine::Colour second)
+        :
+        block{ block },
+        first{ first },
+        second{ second }
+        { }
+
+        GameEngine::Colour get(Option side) const noexcept
+        {
+            assert(!decision.has_value());
+            switch (side)
+            {
+                case Option::FIRST:  return first;
+                case Option::SECOND: return second;
+            }
+        }
+        GameEngine::Colour resolve(Option side) noexcept
+        {
+            assert(!decision.has_value());
+            decision = side;
+        }
+
+        bool is_resolved() const noexcept
+        {
+            return decision.has_value();
+        }
+
+        GameEngine::Colour get_decision() const noexcept
+        {
+            assert(decision.has_value());
+            return get(decision.value());
+        }
+
+        ColourBlock& get_block() const noexcept
+        {
+            return block;
+        }
+
+    private:
+        
+        ColourBlock& block;
+
+        GameEngine::Colour first;
+        GameEngine::Colour second;
+
+        std::optional<Option> decision;
     };
 
 public:
@@ -289,11 +369,6 @@ public:
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
-    constexpr void merge(GameEngine::Colour branch_c)
-    {
-
-    }
-
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         for (auto const& branch : branches)
@@ -303,6 +378,15 @@ public:
                 (
                     branches.at(parent.value().first).get_point(parent.value().second),
                     branch.second.get_point(0U),
+                    BRANCH_LINE_THICKNESS,
+                    branch.first,
+                    frame
+                );
+            if (auto const merged{ branch.second.get_merged() }; merged.has_value())
+                gfx.draw_line
+                (
+                    branch.second.get_point(branch.second.get_last_commit_id()),
+                    branches.at(merged.value().first).get_point(merged.value().second),
                     BRANCH_LINE_THICKNESS,
                     branch.first,
                     frame
@@ -427,6 +511,60 @@ public:
         else return std::optional<std::pair<GameEngine::Colour, ColourBlock*>>{ std::pair<GameEngine::Colour, ColourBlock*>{ cur_branch->first, &(cur_branch->second.get_commit(head.value()).get_block()) } };
     }
 
+    bool prepare_merge(GameEngine::Colour branch_c)
+    {
+        assert(!prepared_merge.has_value());
+
+        if (cur_branch->first == branch_c)
+        {
+            return false;
+        }
+
+        auto const to_merge{ branches.find(branch_c) };
+        if (to_merge->second.is_merged())
+        {
+            return false;
+        }
+        prepared_merge = branch_c;
+
+        for (auto const& commit : to_merge->second.get_commits())
+        {
+            if (std::ranges::find_if(cur_branch->second.get_commits(), [&commit](auto const& val)
+                {
+                    return &val.get_block() == &commit.get_block();
+                }) != cur_branch->second.get_commits().end())
+                cur_conflicts.emplace_back(commit.get_block(), cur_branch->first, to_merge->first);
+            else
+                this->commit(commit.get_block(), to_merge->first);
+        }
+        return true;
+    }
+
+    ColourBlock& merge()
+    {
+        assert(prepared_merge.has_value());
+
+        auto const to_merge{ branches.find(prepared_merge.value()) };
+
+        assert(to_merge->second.is_merged());
+
+        for (auto const& conflict : cur_conflicts)
+        {
+            this->commit(conflict.get_block(), conflict.get_decision());
+        }
+        to_merge->second.merge(cur_branch->first, *head);
+
+        cur_conflicts.clear();
+        prepared_merge.reset();
+
+        return cur_branch->second.get_commit(*head).get_block();
+    }
+
+    std::vector<Conflict>& get_conflicts() noexcept
+    {
+        return cur_conflicts;
+    }
+
 private:
 
     constexpr void rollback_cur_branch() noexcept
@@ -501,4 +639,7 @@ private:
     std::optional<id_commit> head{ std::nullopt };
 
     std::map<int, GameEngine::Colour> offsets_x{ };
+
+    std::optional<GameEngine::Colour> prepared_merge{ std::nullopt };
+    std::vector<Conflict> cur_conflicts{ };
 };
