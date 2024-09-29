@@ -198,7 +198,46 @@ void PaintItGit::update_gamestage_rolling()
 
 void PaintItGit::update_gamestage_merging()
 {
-    
+    if (std::ranges::all_of(cur_conflicts, [](auto const& pair){ return pair.first.is_option_set(); }))
+    {
+        for (auto const& pair : cur_conflicts)
+        {
+            pair.second->set_option(pair.first.get_option());
+        }
+        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
+        cur_stage = GameStage::COMMITING;
+        update_available_moves();
+
+        return;
+    }
+
+    if (cur_input_delay > 0.f) return;
+
+    if (auto const pressed_key{ get_wnd().get_last_pressed_functional_key() }; pressed_key.has_value())
+    {
+        cur_input_delay = MAX_INPUT_DELAY;
+
+        switch (pressed_key.value())
+        {
+            case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
+            {
+                for (auto& [block, dummy] : cur_conflicts | std::views::filter([](auto const& pair){ return !pair.first.is_option_set(); }))
+                {
+                    block.choose_colour(cursor_pos);
+                }
+            }
+            break;
+
+            case GameEngine::WinKey::BACKSPACE:
+            {
+                for (auto& [block, dummy] : cur_conflicts)
+                {
+                    block.set_option(Option::NONE);
+                }
+            }
+            break;
+        }
+    }
 }
 
 void PaintItGit::update_available_moves()
@@ -218,7 +257,7 @@ void PaintItGit::update_available_moves()
         case GameStage::COMMITING:
         {
             unset_pulsation();
-            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index])) 
+            if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
                 n_available_adject_cur_blocks = 0U;
             else
                 find_adject_blocks();
@@ -361,9 +400,11 @@ void PaintItGit::render()
     gfx.draw_rectangle(GIT_COLOUR_AREA.get_expanded(INNER_BORDER_THICKNESS), OUTER_BORDER_THICKNESS, OUTER_BORDER_C);
     git.draw(gfx);
 
-    Rec2i const miniature_area{ cursor_pos + CURSOR_COLLISION_BOX_WIDTH_HEIGHT, MINIATURE_SIZE, MINIATURE_SIZE};
-    gfx.draw_rectangle(miniature_area, MINIATURE_STROKE_WIDTH, INNER_BORDER_C);
-    gfx.draw_rectangle(miniature_area.get_expanded(MINIATURE_STROKE_WIDTH), MINIATURE_STROKE_WIDTH, OUTER_BORDER_C);
-    gfx.fill_rectangle(miniature_area, MAIN_COLOURS[cur_colour_index]);
-
+    if (cur_stage != GameStage::MERGING)
+    { 
+        Rec2i const miniature_area{ cursor_pos + CURSOR_COLLISION_BOX_WIDTH_HEIGHT, MINIATURE_SIZE, MINIATURE_SIZE};
+        gfx.draw_rectangle(miniature_area, MINIATURE_STROKE_WIDTH, INNER_BORDER_C);
+        gfx.draw_rectangle(miniature_area.get_expanded(MINIATURE_STROKE_WIDTH), MINIATURE_STROKE_WIDTH, OUTER_BORDER_C);
+        gfx.fill_rectangle(miniature_area, MAIN_COLOURS[cur_colour_index]);
+    }
 }

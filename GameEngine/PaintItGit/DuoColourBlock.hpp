@@ -64,6 +64,17 @@ public:
         }
     }
 
+    void choose_colour(GameEngine::Geometry::Vector2D<int> const& pos)
+    {
+        if (!DrawableBlock<SIZE>::get_collision_box().contains(pos)) return;
+
+        int const ly{ -(pos.y - DrawableBlock<SIZE>::get_collision_box().top - SIZE / 2) };
+        int const lx{ pos.x - DrawableBlock<SIZE>::get_collision_box().left - SIZE / 2 };
+
+        if (ly > lx) this->set_option(Option::FIRST);
+        else                                 this->set_option(Option::SECOND);
+    }
+
 private:
 
     void set_triangles(GameEngine::Geometry::Vector2D<int> const& left_top_pos)
