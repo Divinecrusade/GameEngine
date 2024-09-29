@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColourField.hpp"  
+#include "Optionable.hpp"
 
 #include <unordered_map>
 #include <iterator>
@@ -9,7 +10,7 @@
 
 
 template<GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c>
-class ColourGit final : public GameEngine::Interfaces::IDrawable
+class ColourGit final : public GameEngine::Interfaces::IDrawable, public Optionable
 {
 private:
 
@@ -219,48 +220,37 @@ private:
         int side{ 1 };
     };
 
-    class Conflict final
+    class Conflict final : public Optionable
     {
-    public:
-
-        enum class Option
-        {
-            FIRST, SECOND
-        };
-
     public:
 
         Conflict(ColourBlock& block, GameEngine::Colour first, GameEngine::Colour second)
         :
+        Optionable{ },
         block{ block },
         first{ first },
         second{ second }
         { }
 
+
         GameEngine::Colour get(Option side) const noexcept
         {
-            assert(!decision.has_value());
+            assert(side != Option::NONE);
             switch (side)
             {
                 case Option::FIRST:  return first;
                 case Option::SECOND: return second;
             }
         }
-        GameEngine::Colour resolve(Option side) noexcept
-        {
-            assert(!decision.has_value());
-            decision = side;
-        }
-
-        bool is_resolved() const noexcept
-        {
-            return decision.has_value();
-        }
 
         GameEngine::Colour get_decision() const noexcept
         {
-            assert(decision.has_value());
-            return get(decision.value());
+            assert(is_option_set());
+            switch (get_option())
+            {
+                case Option::FIRST:  return first;
+                case Option::SECOND: return second;
+            }
         }
 
         ColourBlock& get_block() const noexcept
@@ -274,8 +264,6 @@ private:
 
         GameEngine::Colour first;
         GameEngine::Colour second;
-
-        std::optional<Option> decision;
     };
 
 public:
@@ -550,6 +538,7 @@ public:
 
         for (auto const& conflict : cur_conflicts)
         {
+            assert(conflict.is_option_set());
             this->commit(conflict.get_block(), conflict.get_decision());
         }
         to_merge->second.merge(cur_branch->first, *head);

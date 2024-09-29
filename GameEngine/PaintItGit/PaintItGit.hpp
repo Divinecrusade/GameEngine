@@ -7,10 +7,9 @@
 #include <Mouse.hpp>
 #include <FrameTimer.hpp>
 
-#include <algorithm>
-
 #include "ColourField.hpp"
 #include "ColourGit.hpp"
+#include "DuoColourBlock.hpp"
 
 
 class PaintItGit final : private GameEngine::Game
@@ -140,4 +139,6 @@ private:
     GameEngine::FrameTimer ft{ };
     PulsationEffect pulsator{ BACKGROUND_COLOUR, MAX_BLOCK_TRANSPERENCY };
     float cur_input_delay{ -MAX_INPUT_DELAY };
+
+    std::vector<std::pair<DuoColourBlock<decltype(blocks)::BLOCK_SIZE>, decltype(git.get_conflicts().begin())>> cur_conflicts{ };
 };

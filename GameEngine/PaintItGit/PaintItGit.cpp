@@ -39,6 +39,7 @@ void PaintItGit::update()
         case GameStage::INIT_COMMIT: update_gamestage_first_commit(); break;
         case GameStage::COMMITING:   update_gamestage_commiting();    break;
         case GameStage::ROLLING:     update_gamestage_rolling();      break;
+        case GameStage::MERGING:     update_gamestage_merging();      break;
     }
 }
 
@@ -109,7 +110,24 @@ void PaintItGit::update_gamestage_commiting()
             {
                 if (git.prepare_merge(MAIN_COLOURS[cur_colour_index]))
                 {
-                    if (!git.get_conflicts().empty()) cur_stage = GameStage::MERGING;
+                    if (!git.get_conflicts().empty())
+                    {
+                        for (auto cur{ git.get_conflicts().begin() }; cur != git.get_conflicts().end(); ++cur)
+                        {
+                            cur_conflicts.emplace_back
+                            (
+                                DuoColourBlock<decltype(blocks)::BLOCK_SIZE>
+                                { 
+                                    *reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&cur->get_block()),
+                                    true,
+                                    cur->get(Option::FIRST),
+                                    cur->get(Option::SECOND)
+                                }, 
+                                cur
+                            );
+                        }
+                        cur_stage = GameStage::MERGING;
+                    }
                     else 
                     {
                         cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
@@ -333,6 +351,11 @@ void PaintItGit::render()
     gfx.draw_rectangle(COLOUR_FIELD_AREA, INNER_BORDER_THICKNESS, INNER_BORDER_C);
     gfx.draw_rectangle(COLOUR_FIELD_AREA.get_expanded(INNER_BORDER_THICKNESS), OUTER_BORDER_THICKNESS, OUTER_BORDER_C);
     blocks.draw(gfx);
+
+    for (auto const& conflict : cur_conflicts)
+    {
+        conflict.first.draw(gfx);
+    }
 
     gfx.draw_rectangle(GIT_COLOUR_AREA, INNER_BORDER_THICKNESS, INNER_BORDER_C);
     gfx.draw_rectangle(GIT_COLOUR_AREA.get_expanded(INNER_BORDER_THICKNESS), OUTER_BORDER_THICKNESS, OUTER_BORDER_C);

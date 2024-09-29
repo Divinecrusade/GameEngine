@@ -3,9 +3,6 @@
 #include "DrawableBlock.hpp"
 #include "PulsationEffect.hpp"
 
-// CUBE
-// Выставлять CLI
-// Выставлять SEI
 
 template<int SIZE>
 requires (SIZE > 0)
@@ -51,6 +48,13 @@ public:
         assert(pulsator != nullptr);
         if (pulsation_in_process) gfx.fill_rectangle(this->get_collision_box(), (*pulsator)(this->get_colour()));
         else                      DrawableBlock<SIZE>::draw(gfx);
+    }
+
+protected:
+
+    constexpr PulsationEffect const* get_pulsator() const noexcept
+    {
+        return pulsator;
     }
 
 private:
