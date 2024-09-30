@@ -471,7 +471,9 @@ public:
             rollback_cur_branch_to_parent();
         }
 
-        branches.erase(branches.find(branch_c));
+        auto const branch_to_delete{ branches.find(branch_c) };
+        offsets_x.erase(branch_to_delete->second.get_offset().x);
+        branches.erase(branch_to_delete);
         std::queue<GameEngine::Colour> to_erase{ { branch_c } };
         do
         {
