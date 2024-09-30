@@ -119,6 +119,11 @@ private:
 
     void delete_branch();
 
+    void colour_pick();
+
+    void select_next_colour();
+    void select_prev_colour();
+
 private:
 
     Vec2i const  CURSOR_COLLISION_BOX_WIDTH_HEIGHT;

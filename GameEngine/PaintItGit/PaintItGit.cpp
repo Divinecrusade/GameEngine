@@ -30,7 +30,7 @@ void PaintItGit::update()
     pulsator.update(dt);
 
     if (cur_input_delay > 0.f) cur_input_delay -= dt;
-    if (check_mouse_wheel()) update_available_moves();
+    colour_pick();
 
     update_git_pos();
 
@@ -282,14 +282,12 @@ bool PaintItGit::check_mouse_wheel()
 {
     if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
     {
-        prev_colour = MAIN_COLOURS[cur_colour_index];
-        cur_colour_index = (cur_colour_index + 1U) % MAIN_COLOURS.size();
+        select_next_colour();
         return true;
     }
     else if (mouse_wheel_rotation_destance < 0)
     {
-        prev_colour = MAIN_COLOURS[cur_colour_index];
-        cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
+        select_prev_colour();
         return true;
     }
     return false;
@@ -383,6 +381,91 @@ void PaintItGit::delete_branch()
         }
         cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(new_state->second));
     }
+}
+
+void PaintItGit::colour_pick()
+{
+    if (cur_input_delay > 0.f) return;
+
+    if (check_mouse_wheel()) update_available_moves();
+    else if (auto const pressed_key{ get_wnd().get_last_pressed_non_functional_key() }; pressed_key.has_value())
+    {
+        cur_input_delay = MAX_INPUT_DELAY;
+
+        switch (pressed_key.value())
+        {
+            case '1':
+            {
+                prev_colour = MAIN_COLOURS[cur_colour_index];
+                cur_colour_index = 0U;
+
+                update_available_moves();
+            }
+            break;
+
+            case '2':
+            {
+                prev_colour = MAIN_COLOURS[cur_colour_index];
+                cur_colour_index = 1U;
+
+                update_available_moves();
+            }
+            break;
+
+            case '3':
+            {
+                prev_colour = MAIN_COLOURS[cur_colour_index];
+                cur_colour_index = 2U;
+
+                update_available_moves();
+            }
+            break;
+
+            case '4':
+            {
+                prev_colour = MAIN_COLOURS[cur_colour_index];
+                cur_colour_index = 3U;
+
+                update_available_moves();
+            }
+            break;
+
+            case '5':
+            {
+                prev_colour = MAIN_COLOURS[cur_colour_index];
+                cur_colour_index = 4U;
+
+                update_available_moves();
+            }
+            break;
+
+            case 33:
+            {
+                select_next_colour();
+                update_available_moves();
+            }
+            break;
+
+            case 34:
+            {
+                select_prev_colour();
+                update_available_moves();
+            }
+            break;
+        }
+    }
+}
+
+void PaintItGit::select_next_colour()
+{
+    prev_colour = MAIN_COLOURS[cur_colour_index];
+    cur_colour_index = (cur_colour_index + 1U) % MAIN_COLOURS.size();
+}
+
+void PaintItGit::select_prev_colour()
+{
+    prev_colour = MAIN_COLOURS[cur_colour_index];
+    cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
 }
 
 void PaintItGit::render()
