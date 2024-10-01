@@ -190,19 +190,29 @@ private:
             return std::ranges::any_of(prev_transitions, [c](auto const& pair){ return pair.first == c; });
         }
 
-        void merge(GameEngine::Colour branch_c, id_commit head) noexcept
+        void mark_as_merged_to(GameEngine::Colour branch_c, id_commit branch_head) noexcept
         {
-            merged_to = std::make_pair(branch_c, head);
+            assert(can_be_merged_to(branch_c));
+
+            merged_to.emplace_back(std::make_tuple(get_last_commit_id(), branch_c, branch_head));
         }
 
-        std::optional<std::pair<GameEngine::Colour, id_commit>> get_merged() const noexcept
+        auto const& get_merged() const noexcept
         {
             return merged_to;
         }
 
-        bool is_merged() const noexcept
+        bool can_be_merged_to(GameEngine::Colour branch_c)
         {
-            return merged_to.has_value();
+            if (auto it{ std::ranges::find_if(std::views::reverse(merged_to), [branch_c](auto const& tuple){ return std::get<1U>(tuple) == branch_c; })}; it == std::views::reverse(merged_to).end())
+            {
+                return true;
+            }
+            else
+            {
+                if (std::get<0U>(*it) == get_last_commit_id()) return false;
+                else return true;
+            }
         }
 
     private:
@@ -212,7 +222,7 @@ private:
         GameEngine::Geometry::Vector2D<int> cur_offset;
 
         std::vector<std::pair<GameEngine::Colour, id_commit>> prev_transitions{ };
-        std::optional<std::pair<GameEngine::Colour, id_commit>> merged_to{ std::nullopt };
+        std::vector<std::tuple<id_commit, GameEngine::Colour, id_commit>> merged_to{ };
 
         GameEngine::Geometry::Vector2D<int> translation{ 0, 0 };
         std::vector<GameEngine::Geometry::Vector2D<int>> polyline{ };
@@ -370,15 +380,18 @@ public:
                     branch.first,
                     frame
                 );
-            if (auto const merged{ branch.second.get_merged() }; merged.has_value())
+
+            for (auto const& merged : branch.second.get_merged())
+            {
                 gfx.draw_line
                 (
-                    branch.second.get_point(branch.second.get_last_commit_id()),
-                    branches.at(merged.value().first).get_point(merged.value().second),
+                    branch.second.get_point(std::get<0U>(merged)),
+                    branches.at(std::get<1U>(merged)).get_point(std::get<2U>(merged)),
                     BRANCH_LINE_THICKNESS,
                     branch.first,
                     frame
                 );
+            }
         }
 
         for (auto const& branch : branches)
@@ -511,7 +524,7 @@ public:
         }
 
         auto const to_merge{ branches.find(branch_c) };
-        if (to_merge->second.is_merged())
+        if (!to_merge->second.can_be_merged_to(cur_branch->first))
         {
             return false;
         }
@@ -543,7 +556,7 @@ public:
             assert(conflict.is_option_set());
             this->commit(conflict.get_block(), conflict.get_decision());
         }
-        to_merge->second.merge(cur_branch->first, *head);
+        to_merge->second.mark_as_merged_to(cur_branch->first, *head);
 
         cur_conflicts.clear();
         prepared_merge.reset();

@@ -131,7 +131,7 @@ void PaintItGit::update_gamestage_commiting()
                     else 
                     {
                         cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
-                        cur_stage = GameStage::ROLLING;
+                        cur_stage = GameStage::COMMITING;
                     }
                     update_available_moves();
                 }
