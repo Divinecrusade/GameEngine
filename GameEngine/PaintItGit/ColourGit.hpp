@@ -53,6 +53,11 @@ private:
             return block;
         }
 
+        constexpr GameEngine::Colour get_c() const noexcept
+        {
+            return after_c;
+        }
+
     private:
         
         ColourBlock& block;
@@ -530,13 +535,13 @@ public:
 
         for (auto const& commit : to_merge->second.get_commits())
         {
-            if (std::ranges::find_if(cur_branch->second.get_commits(), [&commit](auto const& val)
+            if (auto const it{ std::ranges::find_if(cur_branch->second.get_commits(), [&commit](auto const& val)
                 {
                     return &val.get_block() == &commit.get_block();
-                }) != cur_branch->second.get_commits().end())
-                cur_conflicts.emplace_back(commit.get_block(), cur_branch->first, to_merge->first);
+                })}; it != cur_branch->second.get_commits().end())
+                cur_conflicts.emplace_back(commit.get_block(), commit.get_c(), it->get_c());
             else
-                this->commit(commit.get_block(), to_merge->first);
+                this->commit(commit.get_block(), commit.get_c());
         }
         return true;
     }
