@@ -82,10 +82,10 @@ namespace GameEngine
             if (beg.x > end.x) std::swap(beg, end);
 
             if (beg.y < min(clipping_area.bottom, clipping_area.top) || beg.y > max(clipping_area.bottom, clipping_area.top)) return;
-            if (beg.x > max(clipping_area.left, clipping_area.right) || beg.x < min(clipping_area.left, clipping_area.right)) return;
+            if (beg.x > max(clipping_area.left, clipping_area.right) || end.x < min(clipping_area.left, clipping_area.right)) return;
 
             beg.x = std::clamp(beg.x, min(clipping_area.left, clipping_area.right), max(clipping_area.left, clipping_area.right));
-            end.x = std::clamp(beg.x, min(clipping_area.left, clipping_area.right), max(clipping_area.left, clipping_area.right));
+            end.x = std::clamp(end.x, min(clipping_area.left, clipping_area.right), max(clipping_area.left, clipping_area.right));
         }
         else
         {
