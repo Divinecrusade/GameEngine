@@ -21,7 +21,6 @@ private:
     public: 
 
         Commit() = delete;
-
         constexpr Commit(ColourBlock& block, GameEngine::Colour old_c, GameEngine::Colour new_c)
         :
         block{ block },
@@ -30,7 +29,6 @@ private:
         { 
             assert(old_c != new_c);
         }
-
         constexpr Commit(Commit const&) noexcept = default;
         constexpr Commit(Commit&&)      noexcept = default;
 

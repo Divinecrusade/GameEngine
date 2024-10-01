@@ -205,6 +205,8 @@ void PaintItGit::update_gamestage_merging()
             pair.second->set_option(pair.first.get_option());
         }
         cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
+        
+        cur_conflicts.clear();
         cur_stage = GameStage::COMMITING;
         update_available_moves();
 
