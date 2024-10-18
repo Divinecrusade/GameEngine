@@ -126,8 +126,8 @@ private:
     void select_next_colour();
     void select_prev_colour();
 
-    std::function<void(std::wofstream&)> get_saver();
-    std::function<void(std::wifstream&)> get_loader();
+    std::function<void(std::ofstream&)> get_saver();
+    std::function<void(std::ifstream&)> get_loader();
 
 private:
 

@@ -320,8 +320,8 @@ public:
 
     ColourGit(std::function<std::size_t(ColourBlock&)> const& serializer,
               std::function<ColourBlock&(std::size_t)> const& deserializer,
-              std::function<void(std::wofstream&)> const& saver,
-              std::function<void(std::wifstream&)> const& loader,
+              std::function<void(std::ofstream&)> const& saver,
+              std::function<void(std::ifstream&)> const& loader,
               std::optional<std::size_t> expected_n_branches = std::nullopt, 
               std::optional<std::filesystem::path> const& save_file_uri = std::nullopt)
     :
@@ -338,7 +338,7 @@ public:
         }
         else
         {
-            std::wifstream fin{ this->save_file_uri, std::wofstream::binary };
+            std::ifstream fin{ this->save_file_uri, std::ifstream::binary };
 
             loader(fin);
 
@@ -348,11 +348,12 @@ public:
             fin >> has_head;
             if (has_head)
             {
-                fin >> head_c.rgba >> head_id;
+                fin.read(reinterpret_cast<char*>(&head_c.rgba), sizeof(head_c.rgba));
+                fin.read(reinterpret_cast<char*>(&head_id), sizeof(head_id));
             }
 
             std::size_t n_branches{ };
-            fin >> n_branches;
+            fin.read(reinterpret_cast<char*>(&n_branches), sizeof(n_branches));
             branches.reserve(n_branches);
             for (; n_branches != 0U; --n_branches)
             {
@@ -360,30 +361,37 @@ public:
                 int branch_offset_x{ };
                 int branch_offset_y{ };
 
-                fin >> branch_c.rgba >> branch_offset_x >> branch_offset_y;
+                fin.read(reinterpret_cast<char*>(&branch_c.rgba), sizeof(branch_c.rgba));
+                fin.read(reinterpret_cast<char*>(&branch_offset_x), sizeof(branch_offset_x));
+                fin.read(reinterpret_cast<char*>(&branch_offset_y), sizeof(branch_offset_y));
 
                 emplace_branch(branch_c, { branch_offset_x, branch_offset_y });
 
                 std::size_t transitions_n{ };
-                fin >> transitions_n;
+                fin.read(reinterpret_cast<char*>(&transitions_n), sizeof(transitions_n));
                 for (; transitions_n != 0U; --transitions_n)
                 {
                     GameEngine::Colour  transition_c{ };
                     id_commit          transition_id{ };
 
-                    fin >> transition_c.rgba >> transition_id;
+                    fin.read(reinterpret_cast<char*>(&transition_c.rgba), sizeof(transition_c.rgba));
+                    fin.read(reinterpret_cast<char*>(&transition_id), sizeof(transition_id));
+
                     emplace_transition(branch_c, transition_c, transition_id);
                 }
 
-                std::size_t        merges_n{ };
-                fin >> merges_n;
+                std::size_t merges_n{ };
+                fin.read(reinterpret_cast<char*>(&merges_n), sizeof(merges_n));
                 for (; merges_n != 0U; --merges_n)
                 {
                     id_commit         merge_id1{ };
                     GameEngine::Colour  merge_c{ };
                     id_commit         merge_id2{ };
 
-                    fin >> merge_id1 >> merge_c.rgba >> merge_id2;
+                    fin.read(reinterpret_cast<char*>(&merge_id1), sizeof(merge_id1));
+                    fin.read(reinterpret_cast<char*>(&merge_c.rgba), sizeof(merge_c.rgba));
+                    fin.read(reinterpret_cast<char*>(&merge_id2), sizeof(merge_id2));
+
                     emplace_merge(branch_c, merge_id1, merge_c, merge_id2);
                 }
 
@@ -395,7 +403,9 @@ public:
                     GameEngine::Colour commit_before{ };
                     GameEngine::Colour commit_after { };
 
-                    fin >> commit_id >> commit_before.rgba >> commit_after.rgba;
+                    fin.read(reinterpret_cast<char*>(&commit_id), sizeof(commit_id));
+                    fin.read(reinterpret_cast<char*>(&commit_before.rgba), sizeof(commit_before.rgba));
+                    fin.read(reinterpret_cast<char*>(&commit_after.rgba), sizeof(commit_after.rgba));
 
                     emplace_commit(branch_c, commit_id, commit_before, commit_after);
                 }
@@ -415,35 +425,57 @@ public:
 
     virtual ~ColourGit() noexcept
     {
-        std::wofstream fout{ save_file_uri, std::wofstream::binary };
+        std::ofstream fout{ save_file_uri, std::ofstream::binary };
 
         saver(fout);
 
-        fout << head.has_value();
+        auto const b_tmp{head.has_value()};
+        fout.write(reinterpret_cast<char const*>(&b_tmp), sizeof(b_tmp));
         if (head.has_value())
         {
-            fout << cur_branch->first.rgba << *head;
+            fout.write(reinterpret_cast<char const*>(&(cur_branch->first.rgba)), sizeof(cur_branch->first.rgba));
+            fout.write(reinterpret_cast<char const*>(&(*head)), sizeof(*head));
         }
 
-        fout << branches.size();
+        auto tmp{ branches.size() };
+        fout.write(reinterpret_cast<char const*>(&tmp), sizeof(tmp));
         for (auto& [c, branch] : branches)
         {
-            fout << c.rgba << branch.get_offset().x << branch.get_offset().y << branch.get_prev_transitions().size();
+            auto const tmp1{ branch.get_offset().x };
+            auto const tmp2{ branch.get_offset().y };
+            fout.write(reinterpret_cast<char const*>(&c.rgba), sizeof(c.rgba));
+            fout.write(reinterpret_cast<char const*>(&tmp1), sizeof(tmp1));
+            fout.write(reinterpret_cast<char const*>(&tmp2), sizeof(tmp2));
+            
+            tmp = branch.get_prev_transitions().size();
+            fout.write(reinterpret_cast<char const*>(&tmp), sizeof(tmp));
+
             for (auto const& prev_transion : branch.get_prev_transitions())
             {
-                fout << prev_transion.first.rgba << prev_transion.second;
+                fout.write(reinterpret_cast<char const*>(&(prev_transion.first.rgba)), sizeof(prev_transion.first.rgba));
+                fout.write(reinterpret_cast<char const*>(&(prev_transion.second)), sizeof(prev_transion.second));
             }
             
-            fout << branch.get_merges().size();
+            tmp = branch.get_merges().size();
+            fout.write(reinterpret_cast<char const*>(&tmp), sizeof(tmp));
             for (auto const& merge : branch.get_merges())
             {
-                fout << std::get<0U>(merge) << std::get<1U>(merge).rgba << std::get<2U>(merge);
+                fout.write(reinterpret_cast<char const*>(&(std::get<0U>(merge))), sizeof(std::get<0U>(merge)));
+                fout.write(reinterpret_cast<char const*>(&(std::get<1U>(merge))), sizeof(std::get<1U>(merge)));
+                fout.write(reinterpret_cast<char const*>(&(std::get<2U>(merge))), sizeof(std::get<2U>(merge)));
             }
-            
-            fout << branch.get_n_commits();
+
+            tmp = branch.get_n_commits();
+            fout.write(reinterpret_cast<char const*>(&tmp), sizeof(tmp));
             for (auto& commit : branch.get_commits())
             {
-                fout << serializer(commit.get_block()) << commit.get_before().rgba << commit.get_after().rgba;
+                auto const tmp1{ serializer(commit.get_block()) };
+                auto const tmp2{ commit.get_before().rgba };
+                auto const tmp3{ commit.get_after().rgba };
+
+                fout.write(reinterpret_cast<char const*>(&tmp1), sizeof(tmp1));
+                fout.write(reinterpret_cast<char const*>(&tmp2), sizeof(tmp2));
+                fout.write(reinterpret_cast<char const*>(&tmp3), sizeof(tmp3));
             }
         }
     }
@@ -839,7 +871,7 @@ private:
 
     std::function<std::size_t(ColourBlock&)> const serializer;
     std::function<ColourBlock&(std::size_t)> const deserializer;
-    std::function<void(std::wofstream&)>     const saver;
+    std::function<void(std::ofstream&)>     const saver;
 
     std::filesystem::path const save_file_uri;
 };

@@ -470,36 +470,49 @@ void PaintItGit::select_prev_colour()
     cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
 }
 
-std::function<void(std::wofstream&)> PaintItGit::get_saver()
+std::function<void(std::ofstream&)> PaintItGit::get_saver()
 {
     assert(cur_conflicts.empty());
-    return [this](std::wofstream& fout)
+    return [this](std::ofstream& fout)
         {
-            fout << static_cast<int>(cur_stage) << std::distance(cur_block, blocks.end()) << cur_colour_index << n_available_adject_cur_blocks;
+            fout.write(reinterpret_cast<char const*>(&cur_stage), sizeof(cur_stage));
+            auto tmp{ std::distance(cur_block, blocks.end()) };
+            fout.write(reinterpret_cast<char const*>(&tmp), sizeof(tmp));
+            fout.write(reinterpret_cast<char const*>(&cur_colour_index), sizeof(cur_colour_index));
+            fout.write(reinterpret_cast<char const*>(&n_available_adject_cur_blocks), sizeof(n_available_adject_cur_blocks));
+
             for (std::size_t i{ n_available_adject_cur_blocks }; i != 0U; --i)
             {
-                fout << std::distance(adject_cur_blocks[i], blocks.end());
+                tmp = std::distance(adject_cur_blocks[i], blocks.end());
+                fout.write(reinterpret_cast<char const*>(&tmp), sizeof(tmp));
             }
 
             for (auto const& block : blocks)
             {
-                fout << block.get_colour().rgba << block.is_pulsating();
+                auto tmp1{ block.get_colour().rgba };
+                auto tmp2{ block.is_pulsating() };
+
+                fout.write(reinterpret_cast<char const*>(&tmp1), sizeof(tmp1));
+                fout.write(reinterpret_cast<char const*>(&tmp2), sizeof(tmp2));
             }
+
+            fout.flush();
         };
 }
 
-std::function<void(std::wifstream&)> PaintItGit::get_loader()
+std::function<void(std::ifstream&)> PaintItGit::get_loader()
 {
-    return [this](std::wifstream& fin)
+    return [this](std::ifstream& fin)
         {
             int saved_stage{ };
             ptrdiff_t saved_distance{ };
             std::size_t saved_cur_colour_index{ };
             std::size_t saved_n_available{ };
 
-            fin >> saved_stage;
-            fin >> saved_stage;
-            fin >> saved_distance >> saved_cur_colour_index >> saved_n_available;
+            fin.read(reinterpret_cast<char*>(&saved_stage), sizeof(saved_stage));
+            fin.read(reinterpret_cast<char*>(&saved_distance), sizeof(saved_distance));
+            fin.read(reinterpret_cast<char*>(&saved_cur_colour_index), sizeof(saved_cur_colour_index));
+            fin.read(reinterpret_cast<char*>(&saved_n_available), sizeof(saved_n_available));
             
             cur_stage = static_cast<GameStage>(saved_stage);
             cur_block = blocks.begin() + saved_distance;
@@ -508,7 +521,7 @@ std::function<void(std::wifstream&)> PaintItGit::get_loader()
             n_available_adject_cur_blocks = saved_n_available;
             for (std::size_t i{ saved_n_available }; i != 0U; --i)
             {
-                fin >> saved_distance;
+                fin.read(reinterpret_cast<char*>(&saved_distance), sizeof(saved_distance));
                 adject_cur_blocks[i] = blocks.begin() + saved_distance;
             }
 
@@ -517,7 +530,8 @@ std::function<void(std::wifstream&)> PaintItGit::get_loader()
                 GameEngine::Colour c{ };
                 bool pulsation{ };
 
-                fin >> c.rgba >> pulsation;
+                fin.read(reinterpret_cast<char*>(&c.rgba), sizeof(c.rgba));
+                fin.read(reinterpret_cast<char*>(&pulsation), sizeof(pulsation));
 
                 block.set_colour(c);
                 block.set_pulsation(pulsation);
