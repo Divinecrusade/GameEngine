@@ -21,7 +21,7 @@ Game{ window, graphics },
 CURSOR_COLLISION_BOX_WIDTH_HEIGHT{ GameEngine::Mouse::get_cursor_area().get_width_n_height() / 2 },
 cursor_pos{ window.get_mouse_pos() },
 blocks{ &pulsator, MAIN_COLOURS, cur_colour_index },
-git{ N_COLOURS }
+git{ blocks.get_serializer(), blocks.get_deserializer(), get_saver(), get_loader(), N_COLOURS, SAVE_FILE_URI }
 { }
 
 void PaintItGit::update()
@@ -468,6 +468,61 @@ void PaintItGit::select_prev_colour()
 {
     prev_colour = MAIN_COLOURS[cur_colour_index];
     cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
+}
+
+std::function<void(std::wofstream&)> PaintItGit::get_saver()
+{
+    assert(cur_conflicts.empty());
+    return [this](std::wofstream& fout)
+        {
+            fout << static_cast<int>(cur_stage) << std::distance(cur_block, blocks.end()) << cur_colour_index << n_available_adject_cur_blocks;
+            for (std::size_t i{ n_available_adject_cur_blocks }; i != 0U; --i)
+            {
+                fout << std::distance(adject_cur_blocks[i], blocks.end());
+            }
+
+            for (auto const& block : blocks)
+            {
+                fout << block.get_colour().rgba << block.is_pulsating();
+            }
+        };
+}
+
+std::function<void(std::wifstream&)> PaintItGit::get_loader()
+{
+    return [this](std::wifstream& fin)
+        {
+            int saved_stage{ };
+            ptrdiff_t saved_distance{ };
+            std::size_t saved_cur_colour_index{ };
+            std::size_t saved_n_available{ };
+
+            fin >> saved_stage;
+            fin >> saved_stage;
+            fin >> saved_distance >> saved_cur_colour_index >> saved_n_available;
+            
+            cur_stage = static_cast<GameStage>(saved_stage);
+            cur_block = blocks.begin() + saved_distance;
+            cur_colour_index = saved_cur_colour_index;
+
+            n_available_adject_cur_blocks = saved_n_available;
+            for (std::size_t i{ saved_n_available }; i != 0U; --i)
+            {
+                fin >> saved_distance;
+                adject_cur_blocks[i] = blocks.begin() + saved_distance;
+            }
+
+            for (auto& block : blocks)
+            {
+                GameEngine::Colour c{ };
+                bool pulsation{ };
+
+                fin >> c.rgba >> pulsation;
+
+                block.set_colour(c);
+                block.set_pulsation(pulsation);
+            }
+        };
 }
 
 void PaintItGit::render()

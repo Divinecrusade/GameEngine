@@ -107,6 +107,20 @@ public:
         return cur_n_neighbours;
     }
 
+    std::function<std::size_t(ColourBlock&)> get_serializer() const noexcept
+    {
+        return [this](ColourBlock& block) -> std::size_t 
+        { 
+            return std::distance(grid.begin(), std::ranges::find_if(grid, [p = &block](auto const& val){ return p == &val; }));
+        };
+    }
+
+    std::function<ColourBlock& (std::size_t)> get_deserializer() noexcept
+    {
+        return [this](std::size_t i) -> ColourBlock& { return *reinterpret_cast<ColourBlock*>(&(grid[i])); };
+    }
+
+
 private:
 
     std::array<PulsatingBlock<BLOCK_SIZE>, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> grid;

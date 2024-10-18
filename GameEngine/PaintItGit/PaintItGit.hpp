@@ -62,9 +62,11 @@ private:
 
     static constexpr float MAX_INPUT_DELAY{ 0.15f };
 
+    static constexpr std::wstring_view SAVE_FILE_URI{ L"paintit.sav" };
+
 private:
 
-    enum class GameStage
+    enum class GameStage : int
     {
         INIT_COMMIT, COMMITING, ROLLING, MERGING
     };
@@ -124,13 +126,16 @@ private:
     void select_next_colour();
     void select_prev_colour();
 
+    std::function<void(std::wofstream&)> get_saver();
+    std::function<void(std::wifstream&)> get_loader();
+
 private:
 
     Vec2i const  CURSOR_COLLISION_BOX_WIDTH_HEIGHT;
     Vec2i const& cursor_pos;
 
     ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks;
-    ColourGit<GIT_COLOUR_AREA, BACKGROUND_COLOUR> git;
+    ColourGit<GIT_COLOUR_AREA, BACKGROUND_COLOUR, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> git;
 
     GameStage cur_stage{ GameStage::INIT_COMMIT };
 

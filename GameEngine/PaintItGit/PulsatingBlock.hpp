@@ -25,6 +25,11 @@ public:
     constexpr ~PulsatingBlock() noexcept = default;
 
 
+    constexpr bool is_pulsating() const noexcept
+    {
+        return pulsation_in_process;
+    }
+
     constexpr void pulsation_toggle() noexcept
     {
         assert(pulsator != nullptr);
@@ -41,6 +46,11 @@ public:
     {
         assert(pulsator != nullptr);
         pulsation_in_process = false;
+    }
+
+    constexpr void set_pulsation(bool pulsation_in_process) noexcept
+    {
+        this->pulsation_in_process = pulsation_in_process;
     }
 
     void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
