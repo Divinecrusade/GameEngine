@@ -29,7 +29,7 @@ public:
     ColourField() = delete;
     template<std::size_t N>
     requires (N > 0U)
-    constexpr ColourField(PulsationEffect const* pulsator, std::array<GameEngine::Colour, N> const& colours_pull, std::size_t cur_colour_index) noexcept
+    constexpr ColourField(PulsationEffect const* pulsator, std::array<GameEngine::Colour, N> const& colours_pull) noexcept
     {
         assert(pulsator != nullptr);
         assert(cur_colour_index < N);
@@ -41,7 +41,7 @@ public:
         {
             GameEngine::Colour const c{ colours_pull[colour_indecies_distr(rng)] };
 
-            grid[i] = PulsatingBlock<BLOCK_SIZE>{ pulsator, c != colours_pull[cur_colour_index], LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i% N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, c };
+            grid[i] = PulsatingBlock<BLOCK_SIZE>{ pulsator, false, LEFT_TOP_POS + BLOCK_SIZE * GameEngine::Geometry::Vector2D<int>{ i% N_BLOCKS_IN_ROW, i / N_BLOCKS_IN_ROW }, c };
         }
     }
     ColourField(ColourField const&) = delete;

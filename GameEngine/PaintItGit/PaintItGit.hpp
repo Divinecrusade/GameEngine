@@ -135,14 +135,15 @@ private:
     Vec2i const& cursor_pos;
 
     ColourField<COLOUR_FIELD_SIZE, N_BLOCKS_IN_ROW, Vec2i{ COLOUR_FIELD_AREA.left, COLOUR_FIELD_AREA.top }> blocks;
+    
+    std::size_t            cur_colour_index;
+    GameEngine::Colour     prev_colour;
+
+    decltype(blocks)::iterator cur_block;
+    GameStage cur_stage;
+
     ColourGit<GIT_COLOUR_AREA, BACKGROUND_COLOUR, N_BLOCKS_IN_ROW * N_BLOCKS_IN_ROW> git;
 
-    GameStage cur_stage{ GameStage::INIT_COMMIT };
-
-    std::size_t            cur_colour_index{ 0U };
-    GameEngine::Colour     prev_colour{ };
-
-    decltype(blocks)::iterator cur_block{ blocks.end() };
     std::array<decltype(blocks)::iterator, decltype(blocks)::MAX_N_ADJECT_BLOCKS> adject_cur_blocks{ };
     std::size_t n_available_adject_cur_blocks{ 0U };
 
@@ -151,4 +152,6 @@ private:
     float cur_input_delay{ -MAX_INPUT_DELAY };
 
     std::vector<std::pair<DuoColourBlock<decltype(blocks)::BLOCK_SIZE>, decltype(git.get_conflicts().begin())>> cur_conflicts{ };
+
+    std::array<GameEngine::Colour, N_BLOCKS_IN_ROW* N_BLOCKS_IN_ROW> origin_grid{ };
 };

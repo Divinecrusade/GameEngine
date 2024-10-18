@@ -253,6 +253,7 @@ private:
         void emplace_commit(ColourBlock& block, GameEngine::Colour c1, GameEngine::Colour c2)
         {
             commits.emplace_back(block, c1, c2);
+            polyline.emplace_back(cur_offset.x + translation.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS + translation.y);
         }
 
     private:
@@ -345,7 +346,7 @@ public:
             bool has_head{ };
             GameEngine::Colour  head_c{ };
             id_commit           head_id{ };
-            fin >> has_head;
+            fin.read(reinterpret_cast<char*>(&has_head), sizeof(has_head));
             if (has_head)
             {
                 fin.read(reinterpret_cast<char*>(&head_c.rgba), sizeof(head_c.rgba));
@@ -396,7 +397,7 @@ public:
                 }
 
                 std::size_t n_commits{ };
-                fin >> n_commits;
+                fin.read(reinterpret_cast<char*>(&n_commits), sizeof(n_commits));
                 for (; n_commits != 0U; --n_commits)
                 {
                     id_commit commit_id{ };
