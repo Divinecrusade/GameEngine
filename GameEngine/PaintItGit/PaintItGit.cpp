@@ -91,6 +91,7 @@ void PaintItGit::update_gamestage_commiting()
             case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
             {
                 mlb_on_block_click();
+                mlb_on_git_click();
 
                 if (is_all_blocks_one_colour()) cur_stage = GameStage::GAMEOVER;
                 update_available_moves();
@@ -172,7 +173,7 @@ void PaintItGit::update_gamestage_rolling()
                 {
                     cur_stage = GameStage::COMMITING;
                     update_available_moves();
-                }
+                } else mlb_on_git_click();
             }
             break;
 
@@ -374,6 +375,23 @@ bool PaintItGit::mlb_on_block_click()
         return true;
     }
     return false;
+}
+
+void PaintItGit::mlb_on_git_click()
+{
+    if (!GIT_COLOUR_AREA.contains(cursor_pos)) return;
+
+    if (auto git_response{ git.move_to(cursor_pos) }; git_response != std::nullopt)
+    {
+        if (git_response->first != MAIN_COLOURS[cur_colour_index])
+        {
+            prev_colour = MAIN_COLOURS[cur_colour_index];
+            cur_colour_index = get_colour_index(git_response->first);
+        }
+        cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(git_response->second));
+        if (!git.is_behind_head()) cur_stage = GameStage::COMMITING;
+        else cur_stage = GameStage::ROLLING;
+    }
 }
 
 void PaintItGit::unset_pulsation()

@@ -117,6 +117,7 @@ private:
     void rollforward();
 
     bool mlb_on_block_click();
+    void mlb_on_git_click();
 
     void unset_pulsation();
     void set_pulsation();
@@ -134,6 +135,15 @@ private:
     std::function<void(std::ifstream&)> get_loader();
 
     constexpr bool is_all_blocks_one_colour() const noexcept;
+
+    constexpr std::size_t get_colour_index(GameEngine::Colour c) const noexcept
+    {
+        if (MAIN_COLOURS[0U] == c) return 0U;
+        if (MAIN_COLOURS[1U] == c) return 1U;
+        if (MAIN_COLOURS[2U] == c) return 2U;
+        if (MAIN_COLOURS[3U] == c) return 3U;
+        if (MAIN_COLOURS[4U] == c) return 4U;
+    }
 
 private:
 

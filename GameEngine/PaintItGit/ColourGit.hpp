@@ -142,6 +142,11 @@ private:
             translation += delta;
         }
 
+        GameEngine::Geometry::Vector2D<int> get_translation() const noexcept
+        {
+            return translation;
+        }
+
         std::vector<Commit>& get_commits() noexcept
         {
             return commits;
@@ -254,6 +259,22 @@ private:
         {
             commits.emplace_back(block, c1, c2);
             polyline.emplace_back(cur_offset.x + translation.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS + translation.y);
+        }
+
+        std::optional<std::pair<id_commit, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> const& cursor_pos)
+        {
+            assert(!polyline.empty());
+
+            size_t L{ 0U }, R{ polyline.size() }, k{ };
+            while (L < R)
+            {
+                k = (L + R) / 2U;
+                if (polyline[k].y - (DISTANCE_BETWEEN_COMMITS / 2) < cursor_pos.y && polyline[k].y + (DISTANCE_BETWEEN_COMMITS / 2) < cursor_pos.y) L = k + 1U;
+                else R = k;
+            }
+
+            if (L == R) return std::make_pair(L, &commits[L].get_block());
+            else return std::nullopt;
         }
 
     private:
@@ -759,6 +780,41 @@ public:
         return cur_conflicts;
     }
 
+    std::optional<std::pair<GameEngine::Colour, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> const& cursor_pos)
+    {
+        assert(frame.contains(cursor_pos));
+        assert(cur_branch != branches.end());
+
+        static constexpr int BASE{ (frame.left + frame.get_width() / 2) % Branch::DISTANCE_BETWEEN_COMMITS };
+
+        decltype(offsets_x.begin()) it{ };
+        if (int offset{ (cursor_pos.x - cur_branch->second.get_translation().x) % Branch::DISTANCE_BETWEEN_COMMITS };
+            (it = offsets_x.find(cursor_pos.x - offset + BASE)) != offsets_x.end()
+            || (it = offsets_x.find(cursor_pos.x + (Branch::DISTANCE_BETWEEN_COMMITS - offset) + BASE)) != offsets_x.end())
+        {
+            auto const branch{ branches.find(it->second) };
+
+            if (auto commit{ branch->second.move_to(cursor_pos) }; commit != std::nullopt)
+            {
+                 if (cur_branch == branch && head == commit->first) return std::nullopt;
+
+                 if (cur_branch != branch) checkout(branch->first);
+                 while (*head > commit->first)
+                 {
+                     rollback();
+                 }
+                 while (*head < commit->first)
+                 {
+                     rollforward();
+                 }
+
+                 return std::make_pair(branch->first, commit->second);
+            }
+            else return std::nullopt;
+        }
+        else return std::nullopt;
+    }
+
 private:
 
     constexpr void rollback_cur_branch() noexcept
@@ -872,7 +928,7 @@ private:
 
     std::function<std::size_t(ColourBlock&)> const serializer;
     std::function<ColourBlock&(std::size_t)> const deserializer;
-    std::function<void(std::ofstream&)>     const saver;
+    std::function<void(std::ofstream&)>      const saver;
 
     std::filesystem::path const save_file_uri;
 };
