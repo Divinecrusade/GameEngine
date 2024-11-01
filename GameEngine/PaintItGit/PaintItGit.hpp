@@ -57,6 +57,9 @@ private:
     static constexpr GameEngine::Colour OUTER_BORDER_C{ GameEngine::Colours::CYAN };
     static constexpr int OUTER_BORDER_THICKNESS{ INNER_BORDER_THICKNESS };
 
+    static constexpr GameEngine::Colour GAMEOVER_C{ GameEngine::Colours::BISQUE };
+    static constexpr std::wstring_view  GAMEOVER_T{ L"Game Over\nYou won!\n" };
+
     static constexpr GameEngine::Colour BACKGROUND_COLOUR{ GameEngine::Colours::BLACK };
     static constexpr int MAX_BLOCK_TRANSPERENCY{ 70 };
 
@@ -68,7 +71,7 @@ private:
 
     enum class GameStage : int
     {
-        INIT_COMMIT, COMMITING, ROLLING, MERGING
+        INIT_COMMIT, COMMITING, ROLLING, MERGING, GAMEOVER
     };
 
 public:
@@ -102,6 +105,7 @@ private:
     void update_gamestage_commiting();
     void update_gamestage_rolling();
     void update_gamestage_merging();
+    void update_gamestage_gameover();
 
     void update_available_moves();
 
@@ -128,6 +132,8 @@ private:
 
     std::function<void(std::ofstream&)> get_saver();
     std::function<void(std::ifstream&)> get_loader();
+
+    constexpr bool is_all_blocks_one_colour() const noexcept;
 
 private:
 

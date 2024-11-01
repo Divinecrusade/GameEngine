@@ -22,7 +22,8 @@ public:
     static constexpr int BLOCK_SIZE{ SIZE / N_BLOCKS_IN_ROW };
     static constexpr std::size_t MAX_N_ADJECT_BLOCKS{ 4U };
 
-    using iterator = GameEngine::Auxiliary::ContiguousIterator<PulsatingBlock<BLOCK_SIZE>, ColourField>;
+    using iterator       = GameEngine::Auxiliary::ContiguousIterator<PulsatingBlock<BLOCK_SIZE>, ColourField>;
+    using const_iterator = GameEngine::Auxiliary::ContiguousIterator<PulsatingBlock<BLOCK_SIZE> const, ColourField>;
 
 public:
 
@@ -85,6 +86,15 @@ public:
         return std::to_address(grid.begin());
     }
     constexpr iterator end()   noexcept
+    {
+        return std::to_address(grid.end());
+    }
+
+    constexpr const_iterator begin() const noexcept
+    {
+        return std::to_address(grid.begin());
+    }
+    constexpr const_iterator end() const noexcept
     {
         return std::to_address(grid.end());
     }

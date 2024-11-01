@@ -50,6 +50,7 @@ void PaintItGit::update()
         case GameStage::COMMITING:   update_gamestage_commiting();    break;
         case GameStage::ROLLING:     update_gamestage_rolling();      break;
         case GameStage::MERGING:     update_gamestage_merging();      break;
+        case GameStage::GAMEOVER:    update_gamestage_gameover();    break;
     }
 }
 
@@ -90,6 +91,8 @@ void PaintItGit::update_gamestage_commiting()
             case GameEngine::WinKey::MOUSE_LEFT_BUTTON:
             {
                 mlb_on_block_click();
+
+                if (is_all_blocks_one_colour()) cur_stage = GameStage::GAMEOVER;
                 update_available_moves();
             }
             break;
@@ -141,7 +144,9 @@ void PaintItGit::update_gamestage_commiting()
                     else 
                     {
                         cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
-                        cur_stage = GameStage::COMMITING;
+                        
+                        if (is_all_blocks_one_colour()) cur_stage = GameStage::GAMEOVER;
+                        else cur_stage = GameStage::COMMITING;
                     }
                     update_available_moves();
                 }
@@ -217,7 +222,8 @@ void PaintItGit::update_gamestage_merging()
         cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.merge()));
         
         cur_conflicts.clear();
-        cur_stage = GameStage::COMMITING;
+        if (is_all_blocks_one_colour()) cur_stage = GameStage::GAMEOVER;
+        else cur_stage = GameStage::COMMITING;
         update_available_moves();
 
         return;
@@ -250,6 +256,11 @@ void PaintItGit::update_gamestage_merging()
             break;
         }
     }
+}
+
+void PaintItGit::update_gamestage_gameover()
+{
+    
 }
 
 void PaintItGit::update_available_moves()
@@ -285,6 +296,13 @@ void PaintItGit::update_available_moves()
             else
                 find_adject_blocks();
             set_pulsation();
+        }
+        break;
+
+        case GameStage::GAMEOVER:
+        {
+            unset_pulsation();
+            n_available_adject_cur_blocks = 0U;
         }
         break;
     }
@@ -533,6 +551,11 @@ std::function<void(std::ifstream&)> PaintItGit::get_loader()
         };
 }
 
+constexpr bool PaintItGit::is_all_blocks_one_colour() const noexcept
+{
+    return std::ranges::all_of(blocks, [c = cur_block->get_colour()](auto const& block){ return block.get_colour() == c; });
+}
+
 void PaintItGit::render()
 {
     gfx.draw_rectangle(COLOUR_FIELD_AREA, INNER_BORDER_THICKNESS, INNER_BORDER_C);
@@ -548,11 +571,24 @@ void PaintItGit::render()
     gfx.draw_rectangle(GIT_COLOUR_AREA.get_expanded(INNER_BORDER_THICKNESS), OUTER_BORDER_THICKNESS, OUTER_BORDER_C);
     git.draw(gfx);
 
-    if (cur_stage != GameStage::MERGING)
+    if (cur_stage != GameStage::MERGING && cur_stage != GameStage::GAMEOVER)
     { 
         Rec2i const miniature_area{ cursor_pos + CURSOR_COLLISION_BOX_WIDTH_HEIGHT, MINIATURE_SIZE, MINIATURE_SIZE};
         gfx.draw_rectangle(miniature_area, MINIATURE_STROKE_WIDTH, INNER_BORDER_C);
         gfx.draw_rectangle(miniature_area.get_expanded(MINIATURE_STROKE_WIDTH), MINIATURE_STROKE_WIDTH, OUTER_BORDER_C);
         gfx.fill_rectangle(miniature_area, MAIN_COLOURS[cur_colour_index]);
+    }
+    if (cur_stage == GameStage::GAMEOVER)
+    {
+        gfx.draw_text
+        (
+            GAMEOVER_T,
+            GAMEOVER_C,
+            GameEngine::DWriteFontNames::VERDANA, 72, 600, WINDOW,
+            GameEngine::DWriteFontStyles::NORMAL,
+            GameEngine::DWriteFontStretch::NORMAL,
+            GameEngine::DWriteTextHorizontalAlignment::CENTER,
+            GameEngine::DWriteTextVerticalAlignment::CENTER
+        );
     }
 }
