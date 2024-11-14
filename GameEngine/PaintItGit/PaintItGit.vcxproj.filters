@@ -56,12 +56,6 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\Animation.cpp">
-      <Filter>Исходные файлы\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\AnimationFrames.cpp">
-      <Filter>Исходные файлы\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\Direct2DFactory.cpp">
       <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
@@ -71,11 +65,11 @@
     <ClCompile Include="..\GraphicsDirect2D.cpp">
       <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\Surface.cpp">
-      <Filter>Исходные файлы\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\MainWindow\MainWindow.cpp">
       <Filter>Исходные файлы\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Surface.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

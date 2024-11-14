@@ -185,9 +185,11 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <PreferredToolArchitecture>
+    </PreferredToolArchitecture>
     <EnableUnitySupport>true</EnableUnitySupport>
-    <VCToolsVersion>14.39.33519</VCToolsVersion>
+    <VCToolsVersion>
+    </VCToolsVersion>
     <EnableASAN>false</EnableASAN>
     <EnableFuzzer>false</EnableFuzzer>
   </PropertyGroup>
@@ -246,10 +248,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Projects\C++\GameEngineRepo\GameEngine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\Projects\C++\GameEngineRepo\GameEngine;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -465,7 +470,7 @@
     <ClCompile>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;DEBUG;_WINDOWS;WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -474,6 +479,9 @@
       <LanguageStandard_C>Default</LanguageStandard_C>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -500,7 +508,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
@@ -513,6 +521,14 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -522,29 +538,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Animation.hpp" />
-    <ClInclude Include="..\AnimationFrames.hpp" />
-    <ClInclude Include="..\AnimationFramesView.hpp" />
-    <ClInclude Include="..\Auxiliry.hpp" />
-    <ClInclude Include="..\Collidable.hpp" />
-    <ClInclude Include="..\Direct2DFactory.hpp" />
-    <ClInclude Include="..\DWriteFontNames.hpp" />
-    <ClInclude Include="..\DWriteFontStretch.hpp" />
-    <ClInclude Include="..\DWriteFontStyles.hpp" />
-    <ClInclude Include="..\DWriteTextHorizontalAlignment.hpp" />
-    <ClInclude Include="..\DWriteTextVerticalAlignment.hpp" />
-    <ClInclude Include="..\Game.hpp" />
-    <ClInclude Include="..\GraphicsDirect2D.hpp" />
-    <ClInclude Include="..\IDrawable.hpp" />
-    <ClInclude Include="..\IGraphics2D.hpp" />
-    <ClInclude Include="..\ISurface.hpp" />
-    <ClInclude Include="..\IWindow.hpp" />
-    <ClInclude Include="..\KeyColor.hpp" />
-    <ClInclude Include="..\MainWindow\MainWindow.hpp" />
-    <ClInclude Include="..\MainWindow\WinKey.hpp" />
-    <ClInclude Include="..\Mouse.hpp" />
-    <ClInclude Include="..\Surface.hpp" />
-    <ClInclude Include="..\SurfaceView.hpp" />
     <ClInclude Include="Arkanoid.hpp" />
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="Blow.hpp" />

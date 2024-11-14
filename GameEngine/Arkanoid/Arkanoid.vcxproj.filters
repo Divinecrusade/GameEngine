@@ -13,41 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Файлы заголовков\Engine">
-      <UniqueIdentifier>{0c982e08-3c85-47b7-af16-825724209855}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Исходные файлы\Engine">
       <UniqueIdentifier>{d5f10376-da16-4ec4-9525-142ac58cd52b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы заголовков\Window">
-      <UniqueIdentifier>{0efba326-8334-4afa-938b-d0f251330db9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Исходные файлы\Window">
       <UniqueIdentifier>{864b011a-8a9b-40da-8e27-889a8d6be4a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\MainWindow\MainWindow.hpp">
-      <Filter>Файлы заголовков\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MainWindow\WinKey.hpp">
-      <Filter>Файлы заголовков\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Direct2DFactory.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Game.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GraphicsDirect2D.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\IGraphics2D.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\KeyColor.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Arkanoid.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -63,65 +36,17 @@
     <ClInclude Include="Ball.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\Auxiliry.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ISurface.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Surface.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Animation.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Missile.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Blow.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\IWindow.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Mouse.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Collidable.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\AnimationFrames.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\AnimationFramesView.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SurfaceView.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\IDrawable.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="LifeCounter.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Score.hpp">
       <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DWriteFontNames.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DWriteFontStyles.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DWriteTextHorizontalAlignment.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DWriteTextVerticalAlignment.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DWriteFontStretch.hpp">
-      <Filter>Файлы заголовков\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
