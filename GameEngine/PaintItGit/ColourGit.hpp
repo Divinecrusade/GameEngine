@@ -273,7 +273,7 @@ private:
                 else R = k;
             }
 
-            if (L == R) return std::make_pair(L, &commits[L].get_block());
+            if (L == R && L != commits.size()) return std::make_pair(L, &commits[L].get_block());
             else return std::nullopt;
         }
 
@@ -780,15 +780,17 @@ public:
         return cur_conflicts;
     }
 
-    std::optional<std::pair<GameEngine::Colour, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> const& cursor_pos)
+    std::optional<std::pair<GameEngine::Colour, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> cursor_pos)
     {
         assert(frame.contains(cursor_pos));
         assert(cur_branch != branches.end());
 
         static constexpr int BASE{ (frame.left + frame.get_width() / 2) % Branch::DISTANCE_BETWEEN_COMMITS };
 
+        cursor_pos.x -= cur_branch->second.get_translation().x;
+
         decltype(offsets_x.begin()) it{ };
-        if (int offset{ (cursor_pos.x - cur_branch->second.get_translation().x) % Branch::DISTANCE_BETWEEN_COMMITS };
+        if (int offset{ (cursor_pos.x) % Branch::DISTANCE_BETWEEN_COMMITS };
             (it = offsets_x.find(cursor_pos.x - offset + BASE)) != offsets_x.end()
             || (it = offsets_x.find(cursor_pos.x + (Branch::DISTANCE_BETWEEN_COMMITS - offset) + BASE)) != offsets_x.end())
         {
