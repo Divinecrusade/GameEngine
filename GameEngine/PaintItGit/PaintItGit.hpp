@@ -65,7 +65,7 @@ private:
 
     static constexpr float MAX_INPUT_DELAY{ 0.15f };
 
-    static constexpr std::wstring_view SAVE_FILE_URI{ L"paintit.sav" };
+    static constexpr std::wstring_view SAVE_FILE_URI{ L"paintitgit.sav" };
 
 private:
 
