@@ -265,6 +265,8 @@ private:
         {
             assert(!polyline.empty());
 
+            if (cursor_pos.y < polyline.front().y || cursor_pos.y > polyline.back().y) return std::nullopt;
+
             size_t L{ 0U }, R{ polyline.size() }, k{ };
             while (L < R)
             {
@@ -273,7 +275,7 @@ private:
                 else R = k;
             }
 
-            if (L == R && L != commits.size()) return std::make_pair(L, &commits[L].get_block());
+            if (L == R) return std::make_pair(L, &commits[L].get_block());
             else return std::nullopt;
         }
 
