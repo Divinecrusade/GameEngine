@@ -14,7 +14,7 @@
 
 
 template<GameEngine::Geometry::Rectangle2D<int> frame, GameEngine::Colour background_c, std::size_t N>
-class ColourGit final : public GameEngine::Interfaces::IDrawable, public Optionable
+class ColourGit final : public GameEngine::Interfaces::IDrawable
 {
 public:
 
