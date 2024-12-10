@@ -20,7 +20,7 @@ public:
     end_pulse_a{ end_pulse_a }
     { }
 
-    void update(float dt) noexcept
+    constexpr void update(float dt) noexcept
     {
         assert(dt > 0.f);
 
@@ -37,7 +37,7 @@ public:
         }
     }
 
-    void reset() noexcept
+    constexpr void reset() noexcept
     {
         elapsed_duration = INIT_ELAPSED_DURATION;
         delta_sign       = INIT_DELTA_SIGN;

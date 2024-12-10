@@ -26,7 +26,7 @@ public:
 
     virtual constexpr ~DrawableBlock() noexcept = default;
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
+    constexpr void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         gfx.fill_rectangle(collision_box, this->get_colour());
     }

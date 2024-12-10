@@ -53,7 +53,7 @@ public:
         this->pulsation_in_process = pulsation_in_process;
     }
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
+    constexpr void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         assert(pulsator != nullptr);
         if (pulsation_in_process) gfx.fill_rectangle(this->get_collision_box(), (*pulsator)(this->get_colour()));

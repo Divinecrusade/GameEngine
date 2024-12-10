@@ -39,7 +39,7 @@ public:
     constexpr ~DuoColourBlock() noexcept = default;
 
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
+    constexpr void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         switch (get_option())
         {
@@ -64,7 +64,7 @@ public:
         }
     }
 
-    void choose_colour(GameEngine::Geometry::Vector2D<int> const& pos)
+    constexpr void choose_colour(GameEngine::Geometry::Vector2D<int> const& pos)
     {
         if (!DrawableBlock<SIZE>::get_collision_box().contains(pos)) return;
 
@@ -77,7 +77,7 @@ public:
 
 private:
 
-    void set_triangles(GameEngine::Geometry::Vector2D<int> const& left_top_pos)
+    constexpr void set_triangles(GameEngine::Geometry::Vector2D<int> const& left_top_pos)
     {
         triangle1.emplace_back(left_top_pos);
         triangle1.emplace_back(left_top_pos.x + SIZE, left_top_pos.y);

@@ -54,7 +54,7 @@ public:
     constexpr virtual ~ColourField() = default;
 
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
+    constexpr void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         for (auto const& block : grid)
         {
@@ -117,7 +117,7 @@ public:
         return cur_n_neighbours;
     }
 
-    std::function<std::size_t(ColourBlock&)> get_serializer() const noexcept
+    constexpr std::function<std::size_t(ColourBlock&)> get_serializer() const noexcept
     {
         return [this](ColourBlock& block) -> std::size_t 
         { 
@@ -125,7 +125,7 @@ public:
         };
     }
 
-    std::function<ColourBlock& (std::size_t)> get_deserializer() noexcept
+    constexpr std::function<ColourBlock& (std::size_t)> get_deserializer() noexcept
     {
         return [this](std::size_t i) -> ColourBlock& { return *reinterpret_cast<ColourBlock*>(&(grid[i])); };
     }

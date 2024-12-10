@@ -27,7 +27,7 @@ public:
         return c;
     }
 
-    void set_colour(GameEngine::Colour new_c) noexcept
+    constexpr void set_colour(GameEngine::Colour new_c) noexcept
     {
         c = new_c;
     }

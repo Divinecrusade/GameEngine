@@ -13,30 +13,30 @@ public:
 
 public:
 
-    Optionable(Option decision = DEFAULT) noexcept
+    constexpr Optionable(Option decision = DEFAULT) noexcept
     :
     decision{ decision }
     { }
-    Optionable(Optionable const&) noexcept = default;
-    Optionable(Optionable&&) noexcept      = default;
+    constexpr Optionable(Optionable const&) noexcept = default;
+    constexpr Optionable(Optionable&&) noexcept      = default;
 
-    Optionable& operator=(Optionable const&) noexcept = default;
-    Optionable& operator=(Optionable&&) noexcept      = default;
+    constexpr Optionable& operator=(Optionable const&) noexcept = default;
+    constexpr Optionable& operator=(Optionable&&) noexcept      = default;
 
-    virtual ~Optionable() noexcept = default;
+    constexpr virtual ~Optionable() noexcept = default;
     
 
-    void set_option(Option new_decision) noexcept
+    constexpr void set_option(Option new_decision) noexcept
     {
         decision = new_decision;
     }
 
-    Option get_option() const noexcept
+    constexpr Option get_option() const noexcept
     {
         return decision;
     }
 
-    bool is_option_set() const noexcept
+    constexpr bool is_option_set() const noexcept
     {
         return decision != Option::NONE;
     }
