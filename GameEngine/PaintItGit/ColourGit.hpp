@@ -133,7 +133,7 @@ private:
             return get_n_commits() - 1U;
         }
 
-        void translate_by(GameEngine::Geometry::Vector2D<int> const& delta) noexcept
+        constexpr void translate_by(GameEngine::Geometry::Vector2D<int> const& delta) noexcept
         {
             for (auto& point : polyline)
             {
@@ -142,17 +142,17 @@ private:
             translation += delta;
         }
 
-        GameEngine::Geometry::Vector2D<int> get_translation() const noexcept
+        constexpr GameEngine::Geometry::Vector2D<int> get_translation() const noexcept
         {
             return translation;
         }
 
-        std::vector<Commit>& get_commits() noexcept
+        constexpr std::vector<Commit>& get_commits() noexcept
         {
             return commits;
         }
 
-        Commit& get_commit(id_commit i) noexcept
+        constexpr Commit& get_commit(id_commit i) noexcept
         {
             assert(i < commits.size());
             return commits[i];
@@ -164,7 +164,7 @@ private:
             return commits[i];
         }
 
-        void set_offset(GameEngine::Geometry::Vector2D<int> const& new_offset) noexcept
+        constexpr void set_offset(GameEngine::Geometry::Vector2D<int> const& new_offset) noexcept
         {
             for (auto const delta{ new_offset - cur_offset }; auto& point : polyline)
             {
@@ -205,31 +205,31 @@ private:
             return side;
         }
 
-        void reverse_side() noexcept
+        constexpr void reverse_side() noexcept
         {
             side *= -1;
         }
 
-        bool has_transit(GameEngine::Colour c) const noexcept
+        constexpr bool has_transit(GameEngine::Colour c) const noexcept
         {
             return std::ranges::any_of(prev_transitions, [c](auto const& pair){ return pair.first == c; });
         }
 
-        void mark_as_merged_to(GameEngine::Colour branch_c, id_commit branch_head) noexcept
+        constexpr void mark_as_merged_to(GameEngine::Colour branch_c, id_commit branch_head) noexcept
         {
             assert(can_be_merged_to(branch_c));
 
             merged_to.emplace_back(std::make_tuple(get_last_commit_id(), branch_c, branch_head));
         }
 
-        auto const& get_merged() const noexcept
+        constexpr auto const& get_merged() const noexcept
         {
             return merged_to;
         }
 
-        bool can_be_merged_to(GameEngine::Colour branch_c)
+        constexpr bool can_be_merged_to(GameEngine::Colour branch_c)
         {
-            if (auto it{ std::ranges::find_if(std::views::reverse(merged_to), [branch_c](auto const& tuple){ return std::get<1U>(tuple) == branch_c; })}; it == std::views::reverse(merged_to).end())
+            if (auto const it{ std::ranges::find_if(std::views::reverse(merged_to), [branch_c](auto const& tuple){ return std::get<1U>(tuple) == branch_c; })}; it == std::views::reverse(merged_to).end())
             {
                 return true;
             }
@@ -240,28 +240,28 @@ private:
             }
         }
 
-        auto const& get_merges() const noexcept
+        constexpr auto const& get_merges() const noexcept
         {
             return merged_to;
         }
 
-        void emplace_transition(GameEngine::Colour c, id_commit i)
+        constexpr void emplace_transition(GameEngine::Colour c, id_commit i)
         {
             prev_transitions.emplace_back(c, i);
         }
 
-        void emplace_merge(id_commit i1, GameEngine::Colour c, id_commit i2)
+        constexpr void emplace_merge(id_commit i1, GameEngine::Colour c, id_commit i2)
         {
             merged_to.emplace_back(i1, c, i2);
         }
 
-        void emplace_commit(ColourBlock& block, GameEngine::Colour c1, GameEngine::Colour c2)
+        constexpr void emplace_commit(ColourBlock& block, GameEngine::Colour c1, GameEngine::Colour c2)
         {
             commits.emplace_back(block, c1, c2);
             polyline.emplace_back(cur_offset.x + translation.x, cur_offset.y + static_cast<int>(polyline.size()) * DISTANCE_BETWEEN_COMMITS + translation.y);
         }
 
-        std::optional<std::pair<id_commit, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> const& cursor_pos)
+        constexpr std::optional<std::pair<id_commit, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> const& cursor_pos)
         {
             assert(!polyline.empty());
 
@@ -298,7 +298,7 @@ private:
     {
     public:
 
-        Conflict(ColourBlock& block, GameEngine::Colour first, GameEngine::Colour second)
+        constexpr Conflict(ColourBlock& block, GameEngine::Colour first, GameEngine::Colour second)
         :
         Optionable{ },
         block{ block },
@@ -307,7 +307,7 @@ private:
         { }
 
 
-        GameEngine::Colour get(Option side) const noexcept
+        constexpr GameEngine::Colour get(Option side) const noexcept
         {
             assert(side != Option::NONE);
             switch (side)
@@ -317,7 +317,7 @@ private:
             }
         }
 
-        GameEngine::Colour get_decision() const noexcept
+        constexpr GameEngine::Colour get_decision() const noexcept
         {
             assert(is_option_set());
             switch (get_option())
@@ -327,7 +327,7 @@ private:
             }
         }
 
-        ColourBlock& get_block() const noexcept
+        constexpr ColourBlock& get_block() const noexcept
         {
             return block;
         }
@@ -342,12 +342,12 @@ private:
 
 public:
 
-    ColourGit(std::function<std::size_t(ColourBlock&)> const& serializer,
-              std::function<ColourBlock&(std::size_t)> const& deserializer,
-              std::function<void(std::ofstream&)> const& saver,
-              std::function<void(std::ifstream&)> const& loader,
-              std::optional<std::size_t> expected_n_branches = std::nullopt, 
-              std::optional<std::filesystem::path> const& save_file_uri = std::nullopt)
+    constexpr ColourGit(std::function<std::size_t(ColourBlock&)> const& serializer,
+                        std::function<ColourBlock&(std::size_t)> const& deserializer,
+                        std::function<void(std::ofstream&)> const& saver,
+                        std::function<void(std::ifstream&)> const& loader,
+                        std::optional<std::size_t> expected_n_branches = std::nullopt, 
+                        std::optional<std::filesystem::path> const& save_file_uri = std::nullopt)
     :
     serializer{ serializer },
     deserializer{ deserializer },
@@ -447,7 +447,7 @@ public:
     ColourGit& operator=(ColourGit const&) = delete;
     ColourGit& operator=(ColourGit&&)      = delete;
 
-    virtual ~ColourGit() noexcept
+    constexpr ~ColourGit() noexcept
     {
         std::ofstream fout{ save_file_uri, std::ofstream::binary };
 
@@ -580,7 +580,7 @@ public:
         return cur_branch->second.get_commit(head.value()).get_block();
     }
 
-    void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
+    constexpr void draw(GameEngine::Interfaces::IGraphics2D& gfx, [[ maybe_unused ]] std::optional<GameEngine::Geometry::Rectangle2D<int>> const& = std::nullopt) const override
     {
         for (auto const& branch : branches)
         { 
@@ -676,7 +676,7 @@ public:
         return cur_branch->second.get_commit(last_commit_id).get_block();
     }
 
-    std::optional<std::pair<GameEngine::Colour, ColourBlock*>> delete_branch(GameEngine::Colour branch_c)
+    constexpr std::optional<std::pair<GameEngine::Colour, ColourBlock*>> delete_branch(GameEngine::Colour branch_c)
     {
         assert(branches.contains(c));
 
@@ -727,7 +727,7 @@ public:
         else return std::optional<std::pair<GameEngine::Colour, ColourBlock*>>{ std::pair<GameEngine::Colour, ColourBlock*>{ cur_branch->first, &(cur_branch->second.get_commit(head.value()).get_block()) } };
     }
 
-    bool prepare_merge(GameEngine::Colour branch_c)
+    constexpr bool prepare_merge(GameEngine::Colour branch_c)
     {
         assert(!prepared_merge.has_value());
 
@@ -756,7 +756,7 @@ public:
         return true;
     }
 
-    ColourBlock& merge()
+    constexpr ColourBlock& merge()
     {
         assert(prepared_merge.has_value());
 
@@ -777,12 +777,12 @@ public:
         return cur_branch->second.get_commit(*head).get_block();
     }
 
-    std::vector<Conflict>& get_conflicts() noexcept
+    constexpr std::vector<Conflict>& get_conflicts() noexcept
     {
         return cur_conflicts;
     }
 
-    std::optional<std::pair<GameEngine::Colour, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> cursor_pos)
+    constexpr std::optional<std::pair<GameEngine::Colour, ColourBlock*>> move_to(GameEngine::Geometry::Vector2D<int> cursor_pos)
     {
         assert(frame.contains(cursor_pos));
         assert(cur_branch != branches.end());
@@ -849,7 +849,7 @@ private:
         } 
     }
 
-    void restruct_by_x(int new_x)
+    constexpr void restruct_by_x(int new_x)
     {
         if (auto const target{ offsets_x.find(new_x) }; target != offsets_x.end())
         {
@@ -868,7 +868,7 @@ private:
         }
     }
 
-    void rollback_cur_branch_to_parent() noexcept
+    constexpr void rollback_cur_branch_to_parent() noexcept
     {
         rollback_cur_branch();
 
@@ -881,28 +881,28 @@ private:
             head.reset();
     }
 
-    void emplace_branch(GameEngine::Colour c, GameEngine::Geometry::Vector2D<int> const& offset)
+    constexpr void emplace_branch(GameEngine::Colour c, GameEngine::Geometry::Vector2D<int> const& offset)
     {
         branches.emplace(c, offset);
         offsets_x.emplace(offset.x, c);
     }
 
-    void emplace_transition(GameEngine::Colour branch_c, GameEngine::Colour transition_c, id_commit transition_i)
+    constexpr void emplace_transition(GameEngine::Colour branch_c, GameEngine::Colour transition_c, id_commit transition_i)
     {
         branches[branch_c].emplace_transition(transition_c, transition_i);
     }
 
-    void emplace_merge(GameEngine::Colour branch_c, id_commit i1, GameEngine::Colour c, id_commit i2)
+    constexpr void emplace_merge(GameEngine::Colour branch_c, id_commit i1, GameEngine::Colour c, id_commit i2)
     {
         branches[branch_c].emplace_merge(i1, c, i2);
     }
 
-    void emplace_commit(GameEngine::Colour branch_c, id_commit i, GameEngine::Colour c1, GameEngine::Colour c2)
+    constexpr void emplace_commit(GameEngine::Colour branch_c, id_commit i, GameEngine::Colour c1, GameEngine::Colour c2)
     {
         branches[branch_c].emplace_commit(deserializer(i), c1, c2);
     }
 
-    void restore_head(GameEngine::Colour c, id_commit i)
+    constexpr void restore_head(GameEngine::Colour c, id_commit i)
     {
         cur_branch = std::ranges::find_if(branches, [](auto const& pair){ return pair.second.get_prev_transitions().empty(); });
         head = 0U;
