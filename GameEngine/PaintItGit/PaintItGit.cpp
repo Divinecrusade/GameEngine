@@ -54,7 +54,7 @@ void PaintItGit::update()
     }
 }
 
-void PaintItGit::update_gamestage_first_commit()
+constexpr void PaintItGit::update_gamestage_first_commit()
 {
     if (COLOUR_FIELD_AREA.contains(cursor_pos) && cur_input_delay < 0.f)
     {
@@ -78,7 +78,7 @@ void PaintItGit::update_gamestage_first_commit()
     }
 }
 
-void PaintItGit::update_gamestage_commiting()
+constexpr void PaintItGit::update_gamestage_commiting()
 {
     if (cur_input_delay > 0.f) return;
 
@@ -157,7 +157,7 @@ void PaintItGit::update_gamestage_commiting()
     }
 }
 
-void PaintItGit::update_gamestage_rolling()
+constexpr void PaintItGit::update_gamestage_rolling()
 {
     if (cur_input_delay > 0.f) return;
 
@@ -212,7 +212,7 @@ void PaintItGit::update_gamestage_rolling()
     }
 }
 
-void PaintItGit::update_gamestage_merging()
+constexpr void PaintItGit::update_gamestage_merging()
 {
     if (std::ranges::all_of(cur_conflicts, [](auto const& pair){ return pair.first.is_option_set(); }))
     {
@@ -259,12 +259,12 @@ void PaintItGit::update_gamestage_merging()
     }
 }
 
-void PaintItGit::update_gamestage_gameover()
+constexpr void PaintItGit::update_gamestage_gameover()
 {
     
 }
 
-void PaintItGit::update_available_moves()
+constexpr void PaintItGit::update_available_moves()
 {
     switch (cur_stage)
     {
@@ -309,7 +309,7 @@ void PaintItGit::update_available_moves()
     }
 }
 
-bool PaintItGit::check_mouse_wheel()
+constexpr bool PaintItGit::check_mouse_wheel()
 {
     if (int const mouse_wheel_rotation_destance{ get_wnd().get_mouse_wheel_rotation_destance() }; mouse_wheel_rotation_destance > 0)
     {
@@ -334,7 +334,7 @@ void PaintItGit::update_git_pos()
     prev_cursor_pos = cursor_pos;
 }
 
-bool PaintItGit::change_branch()
+constexpr bool PaintItGit::change_branch()
 {
     if (MAIN_COLOURS[cur_colour_index] != git.get_cur_branch() && git.has_branch(MAIN_COLOURS[cur_colour_index]))
     {
@@ -352,17 +352,17 @@ bool PaintItGit::change_branch()
     return false;
 }
 
-void PaintItGit::rollbackward()
+constexpr void PaintItGit::rollbackward()
 {
     cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollback()));
 }
 
-void PaintItGit::rollforward()
+constexpr void PaintItGit::rollforward()
 {
     cur_block = blocks.get_iterator(reinterpret_cast<PulsatingBlock<decltype(blocks)::BLOCK_SIZE>*>(&git.rollforward()));
 }
 
-bool PaintItGit::mlb_on_block_click()
+constexpr bool PaintItGit::mlb_on_block_click()
 {
     if (!COLOUR_FIELD_AREA.contains(cursor_pos)) return false;
 
@@ -377,7 +377,7 @@ bool PaintItGit::mlb_on_block_click()
     return false;
 }
 
-void PaintItGit::mlb_on_git_click()
+constexpr void PaintItGit::mlb_on_git_click()
 {
     if (!GIT_COLOUR_AREA.contains(cursor_pos)) return;
 
@@ -394,17 +394,17 @@ void PaintItGit::mlb_on_git_click()
     }
 }
 
-void PaintItGit::unset_pulsation()
+constexpr void PaintItGit::unset_pulsation()
 {
     std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_off(); });
 }
 
-void PaintItGit::set_pulsation()
+constexpr void PaintItGit::set_pulsation()
 {
     std::ranges::for_each_n(adject_cur_blocks.begin(), n_available_adject_cur_blocks, [](auto& block) { block->pulsation_on(); });
 }
 
-void PaintItGit::find_adject_blocks()
+constexpr void PaintItGit::find_adject_blocks()
 {
     n_available_adject_cur_blocks = blocks.get_adject_blocks(cur_block, adject_cur_blocks,
         [&main_colours = this->MAIN_COLOURS, &main_colour_index = this->cur_colour_index](GameEngine::Colour c)
@@ -413,7 +413,7 @@ void PaintItGit::find_adject_blocks()
         });
 }
 
-void PaintItGit::delete_branch()
+constexpr void PaintItGit::delete_branch()
 {
     auto const new_state{ git.delete_branch(MAIN_COLOURS[cur_colour_index]) };
     if (!new_state) cur_stage = GameStage::INIT_COMMIT;
@@ -431,7 +431,7 @@ void PaintItGit::delete_branch()
     }
 }
 
-void PaintItGit::colour_pick()
+constexpr void PaintItGit::colour_pick()
 {
     if (cur_input_delay > 0.f) return;
 
@@ -504,13 +504,13 @@ void PaintItGit::colour_pick()
     }
 }
 
-void PaintItGit::select_next_colour()
+constexpr void PaintItGit::select_next_colour()
 {
     prev_colour = MAIN_COLOURS[cur_colour_index];
     cur_colour_index = (cur_colour_index + 1U) % MAIN_COLOURS.size();
 }
 
-void PaintItGit::select_prev_colour()
+constexpr void PaintItGit::select_prev_colour()
 {
     prev_colour = MAIN_COLOURS[cur_colour_index];
     cur_colour_index = (cur_colour_index == 0U ? MAIN_COLOURS.size() - 1U : cur_colour_index - 1U);
@@ -574,7 +574,7 @@ constexpr bool PaintItGit::is_all_blocks_one_colour() const noexcept
     return std::ranges::all_of(blocks, [c = cur_block->get_colour()](auto const& block){ return block.get_colour() == c; });
 }
 
-void PaintItGit::render()
+constexpr void PaintItGit::render()
 {
     gfx.draw_rectangle(COLOUR_FIELD_AREA, INNER_BORDER_THICKNESS, INNER_BORDER_C);
     gfx.draw_rectangle(COLOUR_FIELD_AREA.get_expanded(INNER_BORDER_THICKNESS), OUTER_BORDER_THICKNESS, OUTER_BORDER_C);

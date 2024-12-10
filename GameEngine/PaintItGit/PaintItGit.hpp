@@ -92,44 +92,44 @@ public:
     PaintItGit& operator=(PaintItGit const&) = delete;
     PaintItGit& operator=(PaintItGit&&)      = delete;
 
-    virtual ~PaintItGit() noexcept = default;
+    constexpr virtual ~PaintItGit() noexcept = default;
 
     using Game::start;
 
 private:
 
     virtual void update();
-    virtual void render();
+    constexpr virtual void render();
 
-    void update_gamestage_first_commit();
-    void update_gamestage_commiting();
-    void update_gamestage_rolling();
-    void update_gamestage_merging();
-    void update_gamestage_gameover();
+    constexpr void update_gamestage_first_commit();
+    constexpr void update_gamestage_commiting();
+    constexpr void update_gamestage_rolling();
+    constexpr void update_gamestage_merging();
+    constexpr void update_gamestage_gameover();
 
-    void update_available_moves();
+    constexpr void update_available_moves();
 
-    bool check_mouse_wheel();
+    constexpr bool check_mouse_wheel();
     void update_git_pos();
 
-    bool change_branch();
-    void rollbackward();
-    void rollforward();
+    constexpr bool change_branch();
+    constexpr void rollbackward();
+    constexpr void rollforward();
 
-    bool mlb_on_block_click();
-    void mlb_on_git_click();
+    constexpr bool mlb_on_block_click();
+    constexpr void mlb_on_git_click();
 
-    void unset_pulsation();
-    void set_pulsation();
+    constexpr void unset_pulsation();
+    constexpr void set_pulsation();
 
-    void find_adject_blocks();
+    constexpr void find_adject_blocks();
 
-    void delete_branch();
+    constexpr void delete_branch();
 
-    void colour_pick();
+    constexpr void colour_pick();
 
-    void select_next_colour();
-    void select_prev_colour();
+    constexpr void select_next_colour();
+    constexpr void select_prev_colour();
 
     std::function<void(std::ofstream&)> get_saver();
     std::function<void(std::ifstream&)> get_loader();
