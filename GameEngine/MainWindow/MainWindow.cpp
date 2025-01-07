@@ -113,7 +113,7 @@ namespace GameEngine
         window_pos.top    = init_left_top_y_pos;
         window_pos.bottom = init_height + window_pos.top;
         DWORD const style{ static_cast<DWORD>((resizable ? WS_OVERLAPPEDWINDOW : (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX))) };
-        DWORD const ex_style{ static_cast<DWORD>(WS_EX_OVERLAPPEDWINDOW) };
+        constexpr DWORD ex_style{ static_cast<DWORD>(WS_EX_OVERLAPPEDWINDOW) };
         AdjustWindowRectEx(&window_pos, style, FALSE, ex_style);
         HWND const hWnd
         {
@@ -135,7 +135,7 @@ namespace GameEngine
         {
             WinApiException e{ "Failed to create window" };
 
-            (void) UnregisterClassW(MainWindow::WND_CLASS_NAME.data(), hInstance);
+            std::ignore = UnregisterClassW(MainWindow::WND_CLASS_NAME.data(), hInstance);
 
             throw std::move(e);
         }

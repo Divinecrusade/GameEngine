@@ -20,6 +20,7 @@
 #include <unordered_map>
 #include <ranges>
 #include <functional>
+#include <array>
 
 
 #ifndef HINST_THISCOMPONENT
@@ -69,21 +70,28 @@ namespace GameEngine
     private:
 
         template<Releasable Interface>
-        static void safe_release(Interface*& releasing_resource)
+        static void safe_release(Interface*& releasing_resource) noexcept
         {
             if (releasing_resource != nullptr)
             {
-                releasing_resource->Release();
-                releasing_resource = nullptr;
+                try
+                {
+                    releasing_resource->Release();
+                    releasing_resource = nullptr;
+                }
+                catch (...)
+                {
+                    OutputDebugStringW(L"Something wrong in releasing Direct2D resource");
+                }
             }
         }
 
         template<Releasable... Interfaces>
-        static void safe_release(Interfaces*&... releasing_resources)
+        static void safe_release(Interfaces*&... releasing_resources) noexcept
         {
             constexpr int DUMMY{ 0 };
 
-            (void)std::initializer_list<int>
+            std::ignore = std::initializer_list<int>
             {
                 (
                     safe_release(releasing_resources),
@@ -94,14 +102,14 @@ namespace GameEngine
         }
 
         template<class... Containers>
-        static void containers_safe_release(Containers&... container)
+        static void containers_safe_release(Containers&... container) noexcept
         {
             constexpr int DUMMY{ 0 };
 
-            (void)std::initializer_list<int>
+            std::ignore = std::initializer_list<int>
             { 
                 (
-                    std::ranges::for_each(container, [](auto& val) { safe_release(val.second); }),
+                    std::ranges::for_each(container, [](auto& val) noexcept { safe_release(val.second); }),
                     container.clear(),
                     DUMMY
                 )
@@ -122,7 +130,7 @@ namespace GameEngine
             return PIXEL_FORMAT;
         }
 
-        static constexpr WCHAR const* FONT_NAMES[]{ L"Verdana", L"Gabriola" };
+        static constexpr std::array<WCHAR const*, 2U> FONT_NAMES{ L"Verdana", L"Gabriola" };
 
     public:
 
@@ -134,7 +142,7 @@ namespace GameEngine
         Direct2DFactory& operator=(Direct2DFactory const&) = delete;
         Direct2DFactory&& operator=(Direct2DFactory&&) = delete;
 
-        ~Direct2DFactory();
+        ~Direct2DFactory() noexcept;
 
         RECT get_render_area_size() const;
 

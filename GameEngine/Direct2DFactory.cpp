@@ -11,7 +11,7 @@ namespace GameEngine
             throw Direct2dException{ hr, "Failed to create D2D1 factory" };
     }
 
-    Direct2DFactory::~Direct2DFactory()
+    Direct2DFactory::~Direct2DFactory() noexcept
     {
         containers_safe_release(brushes, bitmapbrushes, bitmaps, text_formats);
         safe_release(render_target, d2d_factory, geom, sink, dwrite_factory);
@@ -175,7 +175,7 @@ namespace GameEngine
 
             auto& new_pair{ text_formats.emplace_back(font, nullptr) };
 
-            if (HRESULT const hr{ dwrite_factory->CreateTextFormat(FONT_NAMES[static_cast<int>(font)], nullptr, static_cast<DWRITE_FONT_WEIGHT>(font_weight), static_cast<DWRITE_FONT_STYLE>(style), static_cast<DWRITE_FONT_STRETCH>(stretch), font_size, L"", &new_pair.second) }; FAILED(hr))
+            if (HRESULT const hr{ dwrite_factory->CreateTextFormat(FONT_NAMES[static_cast<std::size_t>(font)], nullptr, static_cast<DWRITE_FONT_WEIGHT>(font_weight), static_cast<DWRITE_FONT_STYLE>(style), static_cast<DWRITE_FONT_STRETCH>(stretch), font_size, L"", &new_pair.second) }; FAILED(hr))
                 throw Direct2dException{ hr, "Failed to create text format" };
 
             it = text_formats.end() - 1;

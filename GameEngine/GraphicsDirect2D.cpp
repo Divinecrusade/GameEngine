@@ -25,14 +25,14 @@ namespace GameEngine
         d2d_factory.get_render_target().EndDraw();
     }
 
-    int GraphicsDirect2D::get_screen_width() const noexcept
+    int GraphicsDirect2D::get_screen_width() const
     {
         RECT const area_size{ d2d_factory.get_render_area_size() };
         assert(area_size.right > area_size.left);
         return area_size.right - area_size.left;
     }
 
-    int GraphicsDirect2D::get_screen_height() const noexcept
+    int GraphicsDirect2D::get_screen_height() const
     {
         RECT const area_size{ d2d_factory.get_render_area_size() };
         assert(area_size.bottom > area_size.top);

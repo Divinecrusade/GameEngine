@@ -24,8 +24,8 @@ namespace GameEngine
         void begin_frame() override;
         void end_frame()   override;
 
-        int get_screen_width() const noexcept override;
-        int get_screen_height() const noexcept override;
+        int get_screen_width() const override;
+        int get_screen_height() const override;
 
         void draw_line(Geometry::Vector2D<int> const& beg, Geometry::Vector2D<int> const& end, int stroke_width, Colour c) override;
         void draw_line(Geometry::Vector2D<int> beg, Geometry::Vector2D<int> end, int stroke_width, Colour c, Geometry::Rectangle2D<int> const& clipping_area) override;

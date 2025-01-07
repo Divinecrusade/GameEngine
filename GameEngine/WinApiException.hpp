@@ -44,7 +44,7 @@ namespace GameEngine
 
         WinApiException(char const* msg = nullptr) noexcept
         :
-        WinApiException(msg, GetLastError())
+        WinApiException{ msg, GetLastError() }
         { }
         WinApiException(WinApiException const&) noexcept = default;
         WinApiException(WinApiException&&) noexcept = default;
@@ -54,9 +54,16 @@ namespace GameEngine
 
         ~WinApiException() noexcept override = default;
 
-        std::wstring get_full_description() const override
+        std::wstring get_full_description() const noexcept override
         {
-            return (get_description_builder() <<  L"[Error code]: 0x" << std::hex << get_error_code()).str();
+            try
+            {
+                return (get_description_builder() << L"[Error code]: 0x" << std::hex << get_error_code()).str();
+            }
+            catch (...)
+            {
+                return L"Got something unexpected";
+            }
         }
 
         wchar_t const* get_exception_class_name() const noexcept override
@@ -66,9 +73,9 @@ namespace GameEngine
     
     private:
 
-        WinApiException(char const* msg, DWORD error_code)
+        WinApiException(char const* msg, DWORD error_code) noexcept
         :
-        EngineException{ msg, error_code, std::shared_ptr<wchar_t const>{ alloc_error_description(error_code), [](wchar_t const* ptr){ (void) LocalFree((HLOCAL) ptr); } }}
+        EngineException{ msg, error_code, std::shared_ptr<wchar_t const>{ alloc_error_description(error_code), [](wchar_t const* ptr) noexcept { std::ignore = LocalFree((HLOCAL) ptr); } }}
         { }
     };
 }

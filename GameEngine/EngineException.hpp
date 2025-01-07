@@ -37,9 +37,16 @@ namespace GameEngine::Auxiliary
             return error_description.get();
         }
 
-        virtual std::wstring get_full_description() const
+        virtual std::wstring get_full_description() const noexcept
         {
-            return get_description_builder().str();
+            try
+            {
+                return get_description_builder().str();
+            }
+            catch (...)
+            {
+                return L"Got something unexpected";
+            }
         }
 
         virtual wchar_t const* get_exception_class_name() const noexcept

@@ -96,7 +96,7 @@ namespace GameEngine
         if (pixel_size != SUPPORTED_PIXEL_SIZE) throw std::invalid_argument{ "Image pixel size (colour depth) is not supported or bmp-table is corrupted" };
 
         constexpr std::streamoff ALIGNMENT{ 4LL };
-        std::streamoff const padding{ static_cast<std::streamoff>((ALIGNMENT - (static_cast<std::size_t>(bmp_info.biWidth) * pixel_size % ALIGNMENT)) % ALIGNMENT) };
+        std::streamoff const padding{ (ALIGNMENT - (static_cast<std::size_t>(bmp_info.biWidth) * pixel_size % ALIGNMENT)) % ALIGNMENT };
         fin.seekg(bmp_header.bfOffBits, std::ifstream::beg);
 
         return { 

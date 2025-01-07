@@ -8,12 +8,12 @@
 
 namespace GameEngine
 {
-    class Direct2dException : private _com_error, public Auxiliary::EngineException<HRESULT>
+    class Direct2dException : public _com_error, public Auxiliary::EngineException<HRESULT>
     {
     public:
         
         Direct2dException() = delete;
-        Direct2dException(HRESULT error_code, char const* msg = nullptr)
+        Direct2dException(HRESULT error_code, char const* msg = nullptr) noexcept
         :
         _com_error{ error_code },
         EngineException{ msg, error_code, std::shared_ptr<wchar_t const>{ std::shared_ptr<void>{ nullptr }, this->ErrorMessage() } }
@@ -26,9 +26,16 @@ namespace GameEngine
 
         ~Direct2dException() noexcept override = default;
 
-        std::wstring get_full_description() const override
+        std::wstring get_full_description() const noexcept override
         {
-            return (get_description_builder() << L"[Error code]: 0x" << std::hex << get_error_code()).str();
+            try
+            {
+                return (get_description_builder() << L"[Error code]: 0x" << std::hex << get_error_code()).str();
+            }
+            catch (...)
+            {
+                return L"Got something unexpected";
+            }
         }
 
         wchar_t const* get_exception_class_name() const noexcept override

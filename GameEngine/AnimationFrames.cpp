@@ -46,12 +46,9 @@ namespace GameEngine
                     (sprites_sheet.reversed ? ++y : --y),
                     sprites_sheet.fin.seekg
                     (
-                        static_cast<std::streamoff>
-                        (
-                            (sprites_sheet.width - frame_width) *
-                            sprites_sheet.get_pixel_size() +
-                            sprites_sheet.padding
-                        ),
+                        (sprites_sheet.width - frame_width) *
+                        sprites_sheet.get_pixel_size() +
+                        sprites_sheet.padding,
                         std::ifstream::cur
                     )
                 )
