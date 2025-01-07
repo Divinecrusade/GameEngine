@@ -47,7 +47,7 @@ namespace GameEngine
         class RowView final : public std::ranges::view_interface<RowView>
         {
             friend RowView Surface::operator[](std::size_t) const noexcept;
-            RowView(Surface::const_iterator begin, Surface::const_iterator end)
+            RowView(Surface::const_iterator begin, Surface::const_iterator end) noexcept
             :
             begin_{ begin },
             end_{ end }
@@ -114,7 +114,7 @@ namespace GameEngine
 
             std::streamoff const padding;
         };
-        static BMP_HANDLER parse_img(std::filesystem::path const& img_src) noexcept;
+        static BMP_HANDLER parse_img(std::filesystem::path const& img_src);
         
     private:
 

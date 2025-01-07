@@ -5,12 +5,12 @@ namespace GameEngine
 {
     Surface::iterator Surface::begin() noexcept
     {
-        return iterator{ buffer.get() };
+        return buffer.get();
     }
 
     Surface::iterator Surface::end() noexcept
     {
-        return iterator{ buffer.get() + n_cols * n_rows };
+        return buffer.get() + n_cols * n_rows;
     }
 
     Surface::const_iterator Surface::begin() const noexcept
@@ -25,22 +25,22 @@ namespace GameEngine
 
     Surface::const_iterator Surface::cbegin() const noexcept
     {
-        return const_iterator{ buffer.get() };
+        return buffer.get();
     }
 
     Surface::const_iterator Surface::cend() const noexcept
     {
-        return const_iterator{ buffer.get() + n_cols * n_rows };
+        return buffer.get() + n_cols * n_rows;
     }
 
     Surface::reverse_iterator Surface::rbegin() noexcept
     {
-        return reverse_iterator{ buffer.get() + n_cols * n_rows - 1U };
+        return buffer.get() + n_cols * n_rows - 1U;
     }
 
     Surface::reverse_iterator Surface::rend() noexcept
     {
-        return reverse_iterator{ buffer.get() - 1U };
+        return buffer.get() - 1U;
     }
 
     Surface::const_reverse_iterator Surface::rbegin() const noexcept
@@ -55,28 +55,28 @@ namespace GameEngine
 
     Surface::const_reverse_iterator Surface::crbegin() const noexcept
     {
-        return const_reverse_iterator{ buffer.get() + n_cols * n_rows - 1U };
+        return buffer.get() + n_cols * n_rows - 1U;
     }
 
     Surface::const_reverse_iterator Surface::crend() const noexcept
     {
-        return const_reverse_iterator{ buffer.get() - 1U };
+        return buffer.get() - 1U;
     }
 
     Surface::RowView Surface::operator[](std::size_t i_row) const noexcept
     {
         const_iterator const begin{ buffer.get() + n_cols * i_row };
 
-        return RowView{ begin, begin + static_cast<const_iterator::difference_type>(n_cols) };
+        return { begin, begin + n_cols };
     }
 
-    Surface::BMP_HANDLER Surface::parse_img(std::filesystem::path const& img_src) noexcept
+    Surface::BMP_HANDLER Surface::parse_img(std::filesystem::path const& img_src)
     {
         assert(std::filesystem::exists(img_src));
         assert
         (
             std::ranges::find_if(SUPPORTED_EXTENSIONS,
-            [ext = img_src.extension().native()](wchar_t const* const& s)
+            [ext = img_src.extension().native()](wchar_t const* const& s) noexcept
             {
                 return wcscmp(ext.c_str(), s) == 0;
             }) != SUPPORTED_EXTENSIONS.end()
