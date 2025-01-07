@@ -138,7 +138,7 @@ namespace GameEngine
     Surface{ std::make_from_tuple<Surface>(read_img(parse_img(img_src))) }
     { }
 
-    Surface::Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols)
+    Surface::Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols) noexcept
     :
     buffer{ std::move(buffer) },
     n_rows{ n_rows },

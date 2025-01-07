@@ -24,17 +24,16 @@ namespace GameEngine
         frames.reserve(*n);
         sprites_sheet.fin.seekg
         (
-            static_cast<std::streamoff>
             (
-                (
-                    static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).x) +
-                    static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
-                    sprites_sheet.width
-                ) *
-                sprites_sheet.get_pixel_size() +
-                static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
-                sprites_sheet.padding
-            ), std::ifstream::cur);
+                start_point.value_or(DEFAULT_START_POINT).x +
+                start_point.value_or(DEFAULT_START_POINT).y *
+                sprites_sheet.width
+            ) *
+            sprites_sheet.get_pixel_size() +
+            start_point.value_or(DEFAULT_START_POINT).y *
+            sprites_sheet.padding, 
+            std::ifstream::cur
+        );
 
         auto frame_beg{ sprites_sheet.fin.tellg() };
         for (std::size_t i{ 0U }; i != n; ++i)

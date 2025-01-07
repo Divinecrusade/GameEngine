@@ -11,7 +11,7 @@ namespace GameEngine
             throw Direct2dException{ hr, "Failed to create D2D1 factory" };
     }
 
-    Direct2DFactory::~Direct2DFactory() noexcept
+    Direct2DFactory::~Direct2DFactory()
     {
         containers_safe_release(brushes, bitmapbrushes, bitmaps, text_formats);
         safe_release(render_target, d2d_factory, geom, sink, dwrite_factory);
@@ -162,7 +162,7 @@ namespace GameEngine
     {
         auto it{ std::ranges::find_if(text_formats, [&](auto const& text_format) 
         { 
-            return text_format.second->GetFontSize() == font_size && 
+            return Geometry::Auxiliry::is_equal_with_precision(text_format.second->GetFontSize(), font_size) && 
                    text_format.second->GetFontWeight() == font_weight && 
                    static_cast<DWriteFontStyles>(text_format.second->GetFontStyle()) == style && 
                    text_format.first == font;
@@ -201,7 +201,7 @@ namespace GameEngine
         safe_release(sink);
     }
 
-    ID2D1GeometrySink& GameEngine::Direct2DFactory::get_sink()
+    ID2D1GeometrySink& GameEngine::Direct2DFactory::get_sink() noexcept
     {
         assert(sink);
 

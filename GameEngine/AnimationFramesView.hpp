@@ -37,7 +37,7 @@ namespace GameEngine
         SurfaceView operator[](std::size_t i) const noexcept
         {
             assert(static_cast<ptrdiff_t>(i) < std::distance(begin_, end_));
-            return *(begin_ + static_cast<ptrdiff_t>(i));
+            return *(begin_ + i);
         }
 
     private:

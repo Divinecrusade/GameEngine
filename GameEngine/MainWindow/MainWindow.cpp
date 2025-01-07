@@ -15,8 +15,8 @@ namespace GameEngine
         assert(!instance_);
 
         instance_ = this;
-        (void) ShowWindow(H_WND, nCmdShow);
-        (void) UpdateWindow(H_WND);
+        std::ignore = ShowWindow(H_WND, nCmdShow);
+        std::ignore = UpdateWindow(H_WND);
     }
 
     MainWindow::~MainWindow() noexcept
@@ -70,8 +70,8 @@ namespace GameEngine
             case WM_RBUTTONUP:     MainWindow::instance_->key_released(VK_RBUTTON); break;
             case WM_MBUTTONUP:     MainWindow::instance_->key_released(VK_MBUTTON); break;
             case WM_KEYUP:         MainWindow::instance_->key_released(wParam);     break;
-            case WM_DISPLAYCHANGE: (void) InvalidateRect(hWnd, NULL, FALSE);        break;
-            case WM_PAINT:         (void) ValidateRect(hWnd, NULL);                 break;
+            case WM_DISPLAYCHANGE: std::ignore = InvalidateRect(hWnd, NULL, FALSE); break;
+            case WM_PAINT:         std::ignore = ValidateRect(hWnd, NULL);          break;
             case WM_DESTROY:       PostQuitMessage(EXIT_SUCCESS); MainWindow::instance_->terminated = true; break;
             case WM_MOUSEMOVE:     MainWindow::instance_->cur_mouse_pos = Geometry::Vector2D<int>{ LOWORD(lParam), HIWORD(lParam) }; break;
             case WM_MOUSEWHEEL:    MainWindow::instance_->mouse_wheel_distance_rotation = HIWORD(wParam) / WHEEL_DELTA; break;

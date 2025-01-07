@@ -21,18 +21,18 @@ namespace GameEngine
             A = 3U
         };
 
-        [[maybe_unused]] static constexpr uint32_t encode(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
+        [[maybe_unused]] [[nodiscard("Pure function")]] static constexpr uint32_t encode(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
         {
-            uint32_t rgba{ 0U };
-            uint32_t r_{ static_cast<uint32_t>(r) };
-            uint32_t g_{ static_cast<uint32_t>(g) << 8U };
-            uint32_t b_{ static_cast<uint32_t>(b) << 16U };
-            uint32_t a_{ static_cast<uint32_t>(a) << 24U };
+            constexpr uint32_t rgba{ 0U };
+            uint32_t const r_{ static_cast<uint32_t>(r) };
+            uint32_t const g_{ static_cast<uint32_t>(g) << 8U };
+            uint32_t const b_{ static_cast<uint32_t>(b) << 16U };
+            uint32_t const a_{ static_cast<uint32_t>(a) << 24U };
 
             return rgba | r_ | g_ | b_ | a_;
         }
 
-        [[maybe_unused]] static constexpr bool is_equal_except_one_component(KeyColor const& lhs, KeyColor const& rhs, ComponentIndex ignored_component = ComponentIndex::A)
+        [[maybe_unused]] [[nodiscard("Pure function")]] static constexpr bool is_equal_except_one_component(KeyColor const& lhs, KeyColor const& rhs, ComponentIndex ignored_component = ComponentIndex::A)
         {
             KeyColor const xored_colour{ lhs.rgba ^ rhs.rgba };
             KeyColor mask{ };
@@ -86,7 +86,7 @@ namespace GameEngine
             return colors[static_cast<std::size_t>(index)];
         }
 
-        [[maybe_unused]] static constexpr KeyColor blend(KeyColor const& beg, KeyColor const& end, uint8_t a) noexcept
+        [[maybe_unused]] [[nodiscard("Pure function")]] static constexpr KeyColor blend(KeyColor const& beg, KeyColor const& end, uint8_t a) noexcept
         {
             return KeyColor
             { 
@@ -95,6 +95,7 @@ namespace GameEngine
                 static_cast<uint8_t>((end[ComponentIndex::B] - beg[ComponentIndex::B]) * a / 100 + beg[ComponentIndex::B]),
             };
         }
+
 
         uint8_t colors[4U];
         uint32_t rgba{ 0U };

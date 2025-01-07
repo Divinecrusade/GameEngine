@@ -17,7 +17,7 @@ namespace GameEngine
         d2d_factory.get_render_target().Clear();
     }
 
-    void GraphicsDirect2D::end_frame() noexcept
+    void GraphicsDirect2D::end_frame()
     {
         assert(composing_frame);
 

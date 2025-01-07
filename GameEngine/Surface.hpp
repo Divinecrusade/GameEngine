@@ -124,7 +124,7 @@ namespace GameEngine
 
         Surface() = delete;
         Surface(std::filesystem::path const& img_src);
-        Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols);
+        Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols) noexcept;
         Surface(Surface const& other);
         Surface(class SurfaceView other);
         Surface(Surface&&) noexcept = default;

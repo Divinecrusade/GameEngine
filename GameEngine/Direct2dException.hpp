@@ -24,9 +24,9 @@ namespace GameEngine
         Direct2dException& operator=(Direct2dException const&) noexcept = default;
         Direct2dException& operator=(Direct2dException&&) noexcept = default;
 
-        ~Direct2dException() noexcept = default;
+        ~Direct2dException() noexcept override = default;
 
-        std::wstring get_full_description() const noexcept override
+        std::wstring get_full_description() const override
         {
             return (get_description_builder() << L"[Error code]: 0x" << std::hex << get_error_code()).str();
         }

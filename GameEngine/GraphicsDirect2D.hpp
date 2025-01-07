@@ -22,7 +22,7 @@ namespace GameEngine
         virtual ~GraphicsDirect2D() noexcept = default;
 
         void begin_frame() override;
-        void end_frame() noexcept override;
+        void end_frame()   override;
 
         int get_screen_width() const noexcept override;
         int get_screen_height() const noexcept override;

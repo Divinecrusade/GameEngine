@@ -11,6 +11,7 @@
 #include "DWriteFontStretch.hpp"
 #include "Direct2dException.hpp"
 #include "WinApiException.hpp"
+#include "Auxiliry.hpp"
 
 
 #include <d2d1.h>
@@ -31,7 +32,7 @@ namespace std
 {
     template<> struct hash<GameEngine::KeyColor> 
     {
-        std::size_t operator() (GameEngine::KeyColor const& arg) const
+        std::size_t operator() (GameEngine::KeyColor const& arg) const noexcept
         {           
             return hash<uint32_t>{}(arg.get_encoded());
         }
@@ -39,7 +40,7 @@ namespace std
 
     template<> struct hash<GameEngine::KeyColor const*>
     {
-        std::size_t operator() (GameEngine::KeyColor const* arg) const
+        std::size_t operator() (GameEngine::KeyColor const* arg) const noexcept
         {
             return hash<unsigned long long>{}(reinterpret_cast<unsigned long long>(arg));
         }
@@ -47,7 +48,7 @@ namespace std
 
     template<> struct hash<ID2D1Bitmap*>
     {
-        std::size_t operator() (ID2D1Bitmap* arg) const
+        std::size_t operator() (ID2D1Bitmap* arg) const noexcept
         {
             return hash<unsigned long long>{}(reinterpret_cast<unsigned long long>(arg));
         }
@@ -108,7 +109,7 @@ namespace GameEngine
             };
         }
 
-        static D2D1::ColorF get_color(Colour c)
+        static D2D1::ColorF get_color(Colour c) noexcept
         {
             static constexpr float MAX_COLOR_DEPTH{ 255.f };
             return D2D1::ColorF{ c[Colour::ComponentIndex::R] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::G] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::B] / MAX_COLOR_DEPTH, c[Colour::ComponentIndex::A] / MAX_COLOR_DEPTH };
@@ -133,7 +134,7 @@ namespace GameEngine
         Direct2DFactory& operator=(Direct2DFactory const&) = delete;
         Direct2DFactory&& operator=(Direct2DFactory&&) = delete;
 
-        ~Direct2DFactory() noexcept;
+        ~Direct2DFactory();
 
         RECT get_render_area_size() const;
 
@@ -146,7 +147,7 @@ namespace GameEngine
 
         void               open_sink();
         void               close_sink();
-        ID2D1GeometrySink& get_sink();
+        ID2D1GeometrySink& get_sink() noexcept;
         
         D2D1_PIXEL_FORMAT const& PIXEL_FORMAT{ get_pixel_format() };
 

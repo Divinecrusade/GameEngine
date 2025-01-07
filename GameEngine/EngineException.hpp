@@ -24,7 +24,7 @@ namespace GameEngine::Auxiliary
         EngineException& operator=(EngineException const&) noexcept(noexcept(std::declval<T&>() = std::declval<T const&>())) = default;
         EngineException& operator=(EngineException&&) noexcept = default;
 
-        virtual ~EngineException() noexcept = default;
+        virtual ~EngineException() noexcept override = default;
 
 
         T const& get_error_code() const noexcept
@@ -37,7 +37,7 @@ namespace GameEngine::Auxiliary
             return error_description.get();
         }
 
-        virtual std::wstring get_full_description() const noexcept
+        virtual std::wstring get_full_description() const
         {
             return get_description_builder().str();
         }
@@ -56,7 +56,7 @@ namespace GameEngine::Auxiliary
         error_description{ error_description }
         { }
 
-        std::wostringstream get_description_builder() const noexcept
+        std::wostringstream get_description_builder() const
         {
             std::wostringstream wsout{ };
 
