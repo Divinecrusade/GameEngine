@@ -91,51 +91,6 @@ namespace GameEngine
         {
         public:
 
-            BMP_HANDLER() = delete;
-            BMP_HANDLER(std::ifstream&& fin, std::size_t width, std::size_t height, bool reversed, std::streamoff padding) noexcept
-            :
-            fin{ std::move(fin) },
-            width{ width },
-            height{ height },
-            reversed{ reversed },
-            padding{ padding }
-            { }
-            BMP_HANDLER(BMP_HANDLER const&) = delete;
-            BMP_HANDLER(BMP_HANDLER&&)      noexcept = default;
-
-            BMP_HANDLER& operator=(BMP_HANDLER const&) = delete;
-            BMP_HANDLER& operator=(BMP_HANDLER&&)      = delete;
-
-            ~BMP_HANDLER() noexcept = default;
-
-            std::ifstream& get_stream() noexcept
-            {
-                return fin;
-            }
-            std::ifstream const& get_stream() const noexcept
-            {
-                return fin;
-            }
-
-            std::size_t get_width() const noexcept
-            {
-                return width;
-            }
-            std::size_t get_height() const noexcept
-            {
-                return height;
-            }
-
-            bool is_reversed() const noexcept
-            {
-                return reversed;
-            }
-
-            std::streamoff get_padding() const noexcept
-            {
-                return padding;
-            }
-
             constexpr std::size_t get_pixel_size() const noexcept
             {
                 return Surface::SUPPORTED_PIXEL_SIZE;
@@ -155,28 +110,26 @@ namespace GameEngine
                 return (reversed ? 1 : -1);
             }
 
-        private:
+            std::ifstream fin;
 
-            std::ifstream fin{ };
+            std::size_t const width;
+            std::size_t const height;
 
-            std::size_t width{ };
-            std::size_t height{ };
+            bool const reversed;
 
-            bool reversed{ };
-
-            std::streamoff padding{ };
+            std::streamoff const padding;
         };
-        static BMP_HANDLER parse_img(std::filesystem::path const& img_src);
+        static BMP_HANDLER parse_img(std::filesystem::path const& img_src) noexcept;
         
     private:
 
-        static std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> read_img(BMP_HANDLER&& img);
+        static std::tuple<std::unique_ptr<Colour[]>, std::size_t, std::size_t> read_img(BMP_HANDLER img);
 
     public:
 
         Surface() = delete;
         Surface(std::filesystem::path const& img_src);
-        Surface(std::unique_ptr<Colour[]>&& buffer, std::size_t n_rows, std::size_t n_cols);
+        Surface(std::unique_ptr<Colour[]> buffer, std::size_t n_rows, std::size_t n_cols);
         Surface(Surface const& other);
         Surface(class SurfaceView other);
         Surface(Surface&&) noexcept = default;

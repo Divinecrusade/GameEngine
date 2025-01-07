@@ -14,29 +14,29 @@ namespace GameEngine
         {
             switch (direction.value_or(DEFAULT_DIRECTION))
             {
-                case FramesAlignment::HORIZONTAL: n = (sprites_sheet.get_width()  - static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).x)) / frame_width;  break;
-                case FramesAlignment::VERTICAL:   n = (sprites_sheet.get_height() - static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y)) / frame_height; break;
+                case FramesAlignment::HORIZONTAL: n = (sprites_sheet.width  - static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).x)) / frame_width;  break;
+                case FramesAlignment::VERTICAL:   n = (sprites_sheet.height - static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y)) / frame_height; break;
             }
         }
 
         assert(n.has_value());
 
         frames.reserve(*n);
-        sprites_sheet.get_stream().seekg
+        sprites_sheet.fin.seekg
         (
             static_cast<std::streamoff>
             (
                 (
                     static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).x) +
                     static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
-                    sprites_sheet.get_width()
+                    sprites_sheet.width
                 ) *
                 sprites_sheet.get_pixel_size() +
                 static_cast<std::size_t>(start_point.value_or(DEFAULT_START_POINT).y) *
-                sprites_sheet.get_padding()
+                sprites_sheet.padding
             ), std::ifstream::cur);
 
-        auto frame_beg{ sprites_sheet.get_stream().tellg() };
+        auto frame_beg{ sprites_sheet.fin.tellg() };
         for (std::size_t i{ 0U }; i != n; ++i)
         {
             std::unique_ptr<Colour[]> frame{ std::make_unique<Colour[]>(frame_width * frame_height) };
@@ -45,13 +45,13 @@ namespace GameEngine
                     std::size_t y{ sprites_sheet.get_pixels_table_y_start() }; 
                     y != sprites_sheet.get_pixels_table_y_end(); 
                     y += sprites_sheet.get_pixels_table_dy(),
-                    sprites_sheet.get_stream().seekg
+                    sprites_sheet.fin.seekg
                     (
                         static_cast<std::streamoff>
                         (
-                            (sprites_sheet.get_width() - frame_width) *
+                            (sprites_sheet.width - frame_width) *
                             sprites_sheet.get_pixel_size() +
-                            sprites_sheet.get_padding()
+                            sprites_sheet.padding
                         ),
                         std::ifstream::cur
                     )
@@ -63,9 +63,9 @@ namespace GameEngine
                     {
                         Colour::encode
                         (
-                            static_cast<uint8_t>(sprites_sheet.get_stream().get()),
-                            static_cast<uint8_t>(sprites_sheet.get_stream().get()),
-                            static_cast<uint8_t>(sprites_sheet.get_stream().get()),
+                            static_cast<uint8_t>(sprites_sheet.fin.get()),
+                            static_cast<uint8_t>(sprites_sheet.fin.get()),
+                            static_cast<uint8_t>(sprites_sheet.fin.get()),
                             Colour::MAX_COLOUR_DEPTH
                         )
                     };
@@ -76,9 +76,9 @@ namespace GameEngine
             switch (direction.value_or(FramesAlignment::HORIZONTAL))
             {
                 case FramesAlignment::HORIZONTAL: frame_beg += static_cast<std::streamoff>(frame_width * sprites_sheet.get_pixel_size()); break;
-                case FramesAlignment::VERTICAL:   frame_beg += static_cast<std::streamoff>(frame_width * frame_height * sprites_sheet.get_pixel_size()) + sprites_sheet.get_padding() * static_cast<std::streamoff>(frame_height); break;
+                case FramesAlignment::VERTICAL:   frame_beg += static_cast<std::streamoff>(frame_width * frame_height * sprites_sheet.get_pixel_size()) + sprites_sheet.padding * static_cast<std::streamoff>(frame_height); break;
             }
-            sprites_sheet.get_stream().seekg(frame_beg, std::ifstream::beg);
+            sprites_sheet.fin.seekg(frame_beg, std::ifstream::beg);
         }
     }
 }
