@@ -105,11 +105,6 @@ namespace GameEngine
                 return (reversed ? height : 0U);
             }
 
-            int get_pixels_table_dy() const noexcept
-            {
-                return (reversed ? 1 : -1);
-            }
-
             std::ifstream fin;
 
             std::size_t const width;

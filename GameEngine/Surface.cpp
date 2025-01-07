@@ -112,7 +112,7 @@ namespace GameEngine
     {
         std::unique_ptr<Colour[]> tmp_buffer{ std::make_unique<Colour[]>(img.width * img.height) };
 
-        for (std::size_t y{ img.get_pixels_table_y_start() }; y != img.get_pixels_table_y_end(); y += img.get_pixels_table_dy())
+        for (std::size_t y{ img.get_pixels_table_y_start() }; y != img.get_pixels_table_y_end(); (img.reversed ? ++y : --y))
         {
             for (std::size_t x{ 0U }; x != img.width; ++x)
             {

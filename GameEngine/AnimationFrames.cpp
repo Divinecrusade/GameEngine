@@ -44,7 +44,7 @@ namespace GameEngine
             for (
                     std::size_t y{ sprites_sheet.get_pixels_table_y_start() }; 
                     y != sprites_sheet.get_pixels_table_y_end(); 
-                    y += sprites_sheet.get_pixels_table_dy(),
+                    (sprites_sheet.reversed ? ++y : --y),
                     sprites_sheet.fin.seekg
                     (
                         static_cast<std::streamoff>
