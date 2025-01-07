@@ -87,7 +87,7 @@ namespace GameEngine
         static constexpr std::size_t SUPPORTED_COLOUR_CHANNEL {  8U };
         static constexpr std::size_t SUPPORTED_PIXEL_SIZE     { SUPPORTED_COLOUR_DEPTH / SUPPORTED_COLOUR_CHANNEL };
 
-        class BMP_HANDLER final
+        struct BMP_HANDLER final
         {
         public:
 
