@@ -124,7 +124,7 @@ namespace UnitTests
         }
 
         template <typename T, bool is_noexcept = noexcept(std::declval<Matrix<3U, 3U, T>&>() = std::declval<Matrix<3U, 3U, T> const&>())>
-        static void check_assign_operator(std::ostream& log, std::ostream& err, bool& passed)
+        static void check_copy_operator(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
             {
@@ -154,15 +154,15 @@ namespace UnitTests
         }
     }
     
-    static bool is_pass_construction_test(std::ostream& log, std::ostream& err) noexcept
+    static bool is_pass_type_constraints_test(std::ostream& log, std::ostream& err)
     {
         bool passed{ true };
 
-        print_test_name(log, "Matrix construction");
+        print_test_name(log, "Matrix type constraints");
 
         check_invalid_type<void, 3U, 3U>(log, err, passed);
-        check_invalid_type<std::nullptr_t, 3U, 3U>(log, err, passed); 
-        check_invalid_type<int*, 3U, 3U>(log, err, passed);           
+        check_invalid_type<std::nullptr_t, 3U, 3U>(log, err, passed);
+        check_invalid_type<int*, 3U, 3U>(log, err, passed);
         check_invalid_type<std::string, 3U, 3U>(log, err, passed);
         check_invalid_type<int, 0U, 3U>(log, err, passed);
         check_invalid_type<int, 0U, 0U>(log, err, passed);
@@ -174,12 +174,36 @@ namespace UnitTests
         check_valid_type<float, 3U, 3U>(log, err, passed);
         check_valid_type<int, 3U, 3U>(log, err, passed);
 
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix type constraints\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix type constraints\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_default_constructor_test(std::ostream& log, std::ostream& err) noexcept
+    {
+        bool passed{ true };
+
+        print_test_name(log, "Matrix default constructor");
+
         check_default_constructor<int>(log, err, passed);
         check_default_constructor<double>(log, err, passed);
         check_default_constructor<float>(log, err, passed);
         check_default_constructor<char>(log, err, passed);
         check_default_constructor<unsigned>(log, err, passed);
         check_default_constructor<long double>(log, err, passed);
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix constructor\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix constructor\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_copy_constructor_test(std::ostream& log, std::ostream& err) noexcept
+    {
+        bool passed{ true };
+
+        print_test_name(log, "Matrix copy constructor");
 
         check_copy_constructor<int>(log, err, passed);
         check_copy_constructor<double>(log, err, passed);
@@ -188,22 +212,24 @@ namespace UnitTests
         check_copy_constructor<unsigned>(log, err, passed);
         check_copy_constructor<long double>(log, err, passed);
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix constructor\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix constructor\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
-    static bool is_pass_assignation_test(std::ostream& log, std::ostream& err)
+    static bool is_pass_copy_operator_test(std::ostream& log, std::ostream& err)
     {
         bool passed{ true };
 
-        check_assign_operator<int>(log, err, passed);
-        check_assign_operator<double>(log, err, passed);
-        check_assign_operator<float>(log, err, passed);
-        check_assign_operator<char>(log, err, passed);
-        check_assign_operator<unsigned>(log, err, passed);
-        check_assign_operator<long double>(log, err, passed);
+        print_test_name(log, "Matrix copy operator");
+
+        check_copy_operator<int>(log, err, passed);
+        check_copy_operator<double>(log, err, passed);
+        check_copy_operator<float>(log, err, passed);
+        check_copy_operator<char>(log, err, passed);
+        check_copy_operator<unsigned>(log, err, passed);
+        check_copy_operator<long double>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy operator\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy operator\n" << UnitTests::StreamColors::RESET;
