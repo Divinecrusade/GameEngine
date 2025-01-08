@@ -180,6 +180,7 @@
     <ClInclude Include="IGraphics2D.hpp" />
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />
+    <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="Mouse.hpp" />
     <ClInclude Include="Rectangle2D.hpp" />
     <ClInclude Include="Surface.hpp" />

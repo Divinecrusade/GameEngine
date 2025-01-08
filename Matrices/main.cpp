@@ -1,7 +1,11 @@
 #include <iostream>
 
+#include "UnitTests.hpp"
+
 
 int main()
 {
-    return []() noexcept { std::puts("Matrices project test\n"); return EXIT_SUCCESS; }();
+    std::ignore = UnitTests::is_pass_construction_test(std::clog, std::cerr);
+
+    return EXIT_SUCCESS;
 }

@@ -123,6 +123,9 @@
     <ClInclude Include="EngineException.hpp">
       <Filter>Файлы заголовков\Auxiliary</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix.hpp">
+      <Filter>Файлы заголовков\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">
