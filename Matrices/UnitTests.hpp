@@ -23,38 +23,8 @@ namespace UnitTests
         static void print_test_name(std::ostream& log, std::string_view name)
         {
             log << SEPRATOR << "\n";
-            log << "|" << std::setw(SEPRATOR.length() - 2) << name << "|\n";
+            log << "|" << std::setfill('-') << std::left << std::setw(SEPRATOR.length() - 2) << name << "|\n";
             log << SEPRATOR << "\n";
-        }
-
-        template <typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{}) >
-        static void check_default_constructor(std::ostream& log, std::ostream& err, bool& passed)
-        {
-            if constexpr (!std::is_nothrow_default_constructible_v<T>)
-            {
-                if (is_noexcept)
-                {
-                    passed = false;
-                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow default constructible:\n" << StreamColors::RESET;
-                }
-                else
-                {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
-                }
-            }
-            else
-            {
-                if (!is_noexcept)
-                {
-                    passed = false;
-                    err << StreamColors::RED << "[ERROR] Constructor not marked noexcept despite type being nothrow default constructible:\n" << StreamColors::RESET;
-                }
-                else
-                {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
-                }
-            }
-            log << "Type: " << typeid(T).name() << " Default constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
 
         template <typename T, std::size_t M, std::size_t N>
@@ -92,6 +62,66 @@ namespace UnitTests
             }
             log << "Type: " << typeid(T).name() << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
         }
+
+        template <typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{}) >
+        static void check_default_constructor(std::ostream& log, std::ostream& err, bool& passed)
+        {
+            if constexpr (!std::is_nothrow_default_constructible_v<T>)
+            {
+                if (is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow default constructible:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            else
+            {
+                if (!is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Constructor not marked noexcept despite type being nothrow default constructible:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            log << "Type: " << typeid(T).name() << " Default constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
+        }
+
+        template <typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{ std::declval<Matrix<3U, 3U, T>>() })>
+        static void check_copy_constructor(std::ostream& log, std::ostream& err, bool& passed)
+        {
+            if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
+            {
+                if (is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow copy assignable:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            else
+            {
+                if (!is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Constructor not marked noexcept despite type being nothrow default assignable:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            log << "Type: " << typeid(T).name() << " Copy constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
+        }
     }
     
     static bool is_pass_construction_test(std::ostream& log, std::ostream& err) noexcept
@@ -100,17 +130,19 @@ namespace UnitTests
 
         print_test_name(log, "Matrix construction");
 
-        check_invalid_type<void, 3, 3>(log, err, passed);
-        check_invalid_type<std::nullptr_t, 3, 3>(log, err, passed); 
-        check_invalid_type<int*, 3, 3>(log, err, passed);           
-        check_invalid_type<std::string, 3, 3>(log, err, passed);
-        check_invalid_type<int, 0, 3>(log, err, passed);
-        check_invalid_type<int, 0, 0>(log, err, passed);
-        check_invalid_type<int, 3, 0>(log, err, passed);
-        check_valid_type<double, 3, 1>(log, err, passed);
-        check_valid_type<double, 1, 3>(log, err, passed);
-        check_valid_type<double, 1, 1>(log, err, passed);
-        check_valid_type<float, 3, 3>(log, err, passed);
+        check_invalid_type<void, 3U, 3U>(log, err, passed);
+        check_invalid_type<std::nullptr_t, 3U, 3U>(log, err, passed); 
+        check_invalid_type<int*, 3U, 3U>(log, err, passed);           
+        check_invalid_type<std::string, 3U, 3U>(log, err, passed);
+        check_invalid_type<int, 0U, 3U>(log, err, passed);
+        check_invalid_type<int, 0U, 0U>(log, err, passed);
+        check_invalid_type<int, 3U, 0U>(log, err, passed);
+
+        check_valid_type<double, 3U, 1U>(log, err, passed);
+        check_valid_type<double, 1U, 3U>(log, err, passed);
+        check_valid_type<double, 1U, 1U>(log, err, passed);
+        check_valid_type<float, 3U, 3U>(log, err, passed);
+        check_valid_type<int, 3U, 3U>(log, err, passed);
 
         check_default_constructor<int>(log, err, passed);
         check_default_constructor<double>(log, err, passed);
@@ -118,6 +150,13 @@ namespace UnitTests
         check_default_constructor<char>(log, err, passed);
         check_default_constructor<unsigned>(log, err, passed);
         check_default_constructor<long double>(log, err, passed);
+
+        check_copy_constructor<int>(log, err, passed);
+        check_copy_constructor<double>(log, err, passed);
+        check_copy_constructor<float>(log, err, passed);
+        check_copy_constructor<char>(log, err, passed);
+        check_copy_constructor<unsigned>(log, err, passed);
+        check_copy_constructor<long double>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix default constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix default constructor\n" << UnitTests::StreamColors::RESET;

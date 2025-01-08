@@ -14,6 +14,5 @@ class Matrix
 public:
 
     Matrix() noexcept(std::is_nothrow_default_constructible_v<T>) = default;
-
-private:
+    Matrix(Matrix const&) noexcept(noexcept(std::declval<T&>() = std::declval<T const&>())) = default;
 };
