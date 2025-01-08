@@ -101,7 +101,7 @@ namespace UnitTests
                 if (is_noexcept)
                 {
                     passed = false;
-                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow copy assignable:\n" << StreamColors::RESET;
+                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow assignable:\n" << StreamColors::RESET;
                 }
                 else
                 {
@@ -113,7 +113,7 @@ namespace UnitTests
                 if (!is_noexcept)
                 {
                     passed = false;
-                    err << StreamColors::RED << "[ERROR] Constructor not marked noexcept despite type being nothrow default assignable:\n" << StreamColors::RESET;
+                    err << StreamColors::RED << "[ERROR] Constructor not marked noexcept despite type being nothrow assignable:\n" << StreamColors::RESET;
                 }
                 else
                 {
@@ -121,6 +121,36 @@ namespace UnitTests
                 }
             }
             log << "Type: " << typeid(T).name() << " Copy constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
+        }
+
+        template <typename T, bool is_noexcept = noexcept(std::declval<Matrix<3U, 3U, T>&>() = std::declval<Matrix<3U, 3U, T> const&>())>
+        static void check_assign_operator(std::ostream& log, std::ostream& err, bool& passed)
+        {
+            if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
+            {
+                if (is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Copy operator marked noexcept but type is not nothrow assignable:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            else
+            {
+                if (!is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Copy operator not marked noexcept despite type being nothrow assignable:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            log << "Type: " << typeid(T).name() << " Copy operator noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
     }
     
@@ -158,8 +188,25 @@ namespace UnitTests
         check_copy_constructor<unsigned>(log, err, passed);
         check_copy_constructor<long double>(log, err, passed);
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix default constructor\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix default constructor\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix constructor\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix constructor\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_assignation_test(std::ostream& log, std::ostream& err)
+    {
+        bool passed{ true };
+
+        check_assign_operator<int>(log, err, passed);
+        check_assign_operator<double>(log, err, passed);
+        check_assign_operator<float>(log, err, passed);
+        check_assign_operator<char>(log, err, passed);
+        check_assign_operator<unsigned>(log, err, passed);
+        check_assign_operator<long double>(log, err, passed);
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy operator\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy operator\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
