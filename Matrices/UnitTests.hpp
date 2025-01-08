@@ -45,7 +45,7 @@ namespace UnitTests
             {
                 log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
             }
-            log << "Type: " << typeid(T).name() << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
+            log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
         }
 
         template <typename T, std::size_t M, std::size_t N, bool is_constructible = is_matrix_constructible<T, M, N>()>
@@ -60,7 +60,7 @@ namespace UnitTests
             {
                 log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
             }
-            log << "Type: " << typeid(T).name() << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
+            log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
         }
 
         template <typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{}) >
