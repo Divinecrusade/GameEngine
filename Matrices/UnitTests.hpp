@@ -41,6 +41,12 @@ namespace UnitTests
         };
         static_assert(arithmetic_like<DummyExceptArithmetic>);
 
+        std::ostream& operator<<(std::ostream& out, DummyExceptArithmetic const& data)
+        {
+            out << "Dummy";
+            return out;
+        }
+
 
         static void print_test_name(std::ostream& log, std::string_view name)
         {
@@ -184,7 +190,7 @@ namespace UnitTests
         template<std::size_t M, std::size_t N, typename T, typename... Args>
         static void check_parameter_constructor_with_pack(std::ostream& log, std::ostream& err, bool& passed, Args&&... args)
         {
-            bool is_constructable{ is_matrix_constructable<M, N, T>(std::forward<Args>(args)...) };
+            bool const is_constructable{ is_matrix_constructable<M, N, T>(std::forward<Args>(args)...) };
 
             if (is_constructable && sizeof...(Args) != M * N)
             {
@@ -198,6 +204,37 @@ namespace UnitTests
             log << "Matrix <" << M << ", " << N << "> {";
             ((log << " " << args), ...);
             log << " } Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
+        }
+
+        template<std::size_t M, std::size_t N, typename T, typename... Args>
+        static void check_parameter_constructor_with_pack_noexcept(std::ostream& log, std::ostream& err, bool& passed, Args&&... args)
+        {
+            constexpr bool is_noexcept{ std::is_nothrow_constructible_v<Matrix<M, N, T>, Args...> };
+            if constexpr (!(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>))
+            {
+                if (is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow copy constructible:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            else
+            {
+                if (!is_noexcept)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Constructor not marked noexcept despite type being nothrow copy constructible:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                }
+            }
+            log << "Type: " << typeid(T).name() << " Copy constructor (pack) noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
     }
     
@@ -302,6 +339,11 @@ namespace UnitTests
         check_parameter_constructor_with_pack<2U, 1U, double>(log, err, passed, 2., 3.);
         check_parameter_constructor_with_pack<2U, 2U, double>(log, err, passed, 2., 3.);
         check_parameter_constructor_with_pack<2U, 2U, double>(log, err, passed, 2., 3., 4., 5.);
+        check_parameter_constructor_with_pack<1U, 1U, DummyExceptArithmetic>(log, err, passed, DummyExceptArithmetic{});
+
+        check_parameter_constructor_with_pack_noexcept<2U, 2U, double>(log, err, passed, 2., 3., 4., 5.);
+        check_parameter_constructor_with_pack_noexcept<1U, 1U, int>(log, err, passed, 2);
+        check_parameter_constructor_with_pack_noexcept<1U, 1U, DummyExceptArithmetic>(log, err, passed, DummyExceptArithmetic{});
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;

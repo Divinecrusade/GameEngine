@@ -2,6 +2,8 @@
 
 #include <array>
 #include <concepts>
+#include <ranges>
+#include <algorithm>
 
 
 namespace GameEngine::Geometry
