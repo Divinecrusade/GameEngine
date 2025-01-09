@@ -37,10 +37,17 @@ namespace GameEngine::Geometry
         Matrix() = default;
 
         template<typename... Args>
-        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...))
+        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && std::is_move_constructible_v<T>
         explicit Matrix(Args&&... args) noexcept
         : 
         data{ { std::forward<Args>(args)... } } 
+        { }
+
+        template<typename... Args>
+        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && !std::is_move_constructible_v<T>
+        explicit Matrix(Args&&... args) noexcept(std::is_nothrow_copy_constructible<T>)
+        :
+        data{ { std::forward<Args>(args)... } }
         { }
 
         Matrix(Matrix const&) = default;
