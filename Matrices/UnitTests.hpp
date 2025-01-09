@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string_view>
+#include <type_traits>
 
 
 namespace UnitTests
@@ -27,43 +28,49 @@ namespace UnitTests
             log << SEPRATOR << "\n";
         }
 
-        template <typename T, std::size_t M, std::size_t N>
-        constexpr bool is_matrix_constructible()
+        template<std::size_t M, std::size_t N, typename T>
+        constexpr bool is_matrix_constructable()
         {
             return requires { typename Matrix<M, N, T>; };
         }
 
-        template <typename T, std::size_t M, std::size_t N, bool is_constructible = is_matrix_constructible<T, M, N>()>
+        template<std::size_t M, std::size_t N, typename T, typename... Args>
+        constexpr bool is_matrix_constructable(Args&&... args)
+        {
+            return requires { Matrix<M, N, T>{ std::forward<Args>(args)... }; };
+        }
+
+        template<std::size_t M, std::size_t N, typename T, bool is_constructable = is_matrix_constructable<M, N, T>()>
         static void check_invalid_type(std::ostream& log, std::ostream& err, bool& passed)
         {
-            if constexpr (is_constructible)
+            if constexpr (is_constructable)
             {
                 passed = false;
-                err << StreamColors::RED << "[ERROR] Matrix should not be constructible with this type:\n" << StreamColors::RESET;
+                err << StreamColors::RED << "[ERROR] Matrix should not be constructable with this type:\n" << StreamColors::RESET;
             }
             else
             {
                 log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
             }
-            log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
+            log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
         }
 
-        template <typename T, std::size_t M, std::size_t N, bool is_constructible = is_matrix_constructible<T, M, N>()>
+        template<std::size_t M, std::size_t N, typename T, bool is_constructable = is_matrix_constructable<M, N, T>()>
         static void check_valid_type(std::ostream& log, std::ostream& err, bool& passed)
         {
-            if constexpr (!is_constructible)
+            if constexpr (!is_constructable)
             {
                 passed = false;
-                err << StreamColors::RED << "[ERROR] Matrix should not be constructible with this type:\n" << StreamColors::RESET;
+                err << StreamColors::RED << "[ERROR] Matrix should not be constructable with this type:\n" << StreamColors::RESET;
             }
             else
             {
                 log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
             }
-            log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructible: " << (is_constructible ? "Yes" : "No") << '\n';
+            log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
         }
 
-        template <typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{}) >
+        template<std::size_t M, std::size_t N, typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{}) >
         static void check_default_constructor(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!std::is_nothrow_default_constructible_v<T>)
@@ -93,7 +100,7 @@ namespace UnitTests
             log << "Type: " << typeid(T).name() << " Default constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
 
-        template <typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{ std::declval<Matrix<3U, 3U, T>>() })>
+        template<typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{ std::declval<Matrix<3U, 3U, T>>() })>
         static void check_copy_constructor(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
@@ -123,7 +130,7 @@ namespace UnitTests
             log << "Type: " << typeid(T).name() << " Copy constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
 
-        template <typename T, bool is_noexcept = noexcept(std::declval<Matrix<3U, 3U, T>&>() = std::declval<Matrix<3U, 3U, T> const&>())>
+        template<typename T, bool is_noexcept = noexcept(std::declval<Matrix<3U, 3U, T>&>() = std::declval<Matrix<3U, 3U, T> const&>())>
         static void check_copy_operator(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
@@ -152,6 +159,25 @@ namespace UnitTests
             }
             log << "Type: " << typeid(T).name() << " Copy operator noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
+    
+        template<std::size_t M, std::size_t N, typename T, typename... Args>
+        static void check_parameter_constructor_with_pack(std::ostream& log, std::ostream& err, bool& passed, Args&&... args)
+        {
+            bool is_constructable{ is_matrix_constructable<M, N, T>(std::forward<Args>(args)...) };
+
+            if (is_constructable && sizeof...(Args) != M * N)
+            {
+                passed = false;
+                err << StreamColors::RED << "[ERROR] Matrix should not be constructable with this type:\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+            }
+            log << "Matrix <" << M << ", " << N << "> {";
+            ((log << " " << args), ...);
+            log << " } Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
+        }
     }
     
     static bool is_pass_type_constraints_test(std::ostream& log, std::ostream& err)
@@ -160,19 +186,19 @@ namespace UnitTests
 
         print_test_name(log, "Matrix type constraints");
 
-        check_invalid_type<void, 3U, 3U>(log, err, passed);
-        check_invalid_type<std::nullptr_t, 3U, 3U>(log, err, passed);
-        check_invalid_type<int*, 3U, 3U>(log, err, passed);
-        check_invalid_type<std::string, 3U, 3U>(log, err, passed);
-        check_invalid_type<int, 0U, 3U>(log, err, passed);
-        check_invalid_type<int, 0U, 0U>(log, err, passed);
-        check_invalid_type<int, 3U, 0U>(log, err, passed);
+        check_invalid_type<3U, 3U, void>(log, err, passed);
+        check_invalid_type<3U, 3U, std::nullptr_t>(log, err, passed);
+        check_invalid_type<3U, 3U, int*>(log, err, passed);
+        check_invalid_type<3U, 3U, std::string>(log, err, passed);
+        check_invalid_type<0U, 3U, int>(log, err, passed);
+        check_invalid_type<0U, 0U, int>(log, err, passed);
+        check_invalid_type<3U, 0U, int>(log, err, passed);
 
-        check_valid_type<double, 3U, 1U>(log, err, passed);
-        check_valid_type<double, 1U, 3U>(log, err, passed);
-        check_valid_type<double, 1U, 1U>(log, err, passed);
-        check_valid_type<float, 3U, 3U>(log, err, passed);
-        check_valid_type<int, 3U, 3U>(log, err, passed);
+        check_valid_type<3U, 1U, double>(log, err, passed);
+        check_valid_type<1U, 3U, double>(log, err, passed);
+        check_valid_type<1U, 1U, double>(log, err, passed);
+        check_valid_type<3U, 3U, float>(log, err, passed);
+        check_valid_type<3U, 3U, int>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix type constraints\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix type constraints\n" << UnitTests::StreamColors::RESET;
@@ -186,12 +212,12 @@ namespace UnitTests
 
         print_test_name(log, "Matrix default constructor");
 
-        check_default_constructor<int>(log, err, passed);
-        check_default_constructor<double>(log, err, passed);
-        check_default_constructor<float>(log, err, passed);
-        check_default_constructor<char>(log, err, passed);
-        check_default_constructor<unsigned>(log, err, passed);
-        check_default_constructor<long double>(log, err, passed);
+        check_default_constructor<3U, 3U, int>(log, err, passed);
+        check_default_constructor<3U, 3U, double>(log, err, passed);
+        check_default_constructor<3U, 3U, float>(log, err, passed);
+        check_default_constructor<3U, 3U, char>(log, err, passed);
+        check_default_constructor<3U, 3U, unsigned>(log, err, passed);
+        check_default_constructor<3U, 3U, long double>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix constructor\n" << UnitTests::StreamColors::RESET;
@@ -233,6 +259,27 @@ namespace UnitTests
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy operator\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy operator\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_parameter_constructor_test(std::ostream& log, std::ostream& err)
+    {
+        bool passed{ true };
+
+        print_test_name(log, "Matrix parameter constructor");
+
+        check_parameter_constructor_with_pack<1U, 1U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<1U, 0U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<0U, 0U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<2U, 2U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<1U, 2U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<2U, 1U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<2U, 2U, double>(log, err, passed, 2., 3.);
+        check_parameter_constructor_with_pack<2U, 2U, double>(log, err, passed, 2., 3., 4., 5.);
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
