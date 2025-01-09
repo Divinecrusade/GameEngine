@@ -10,6 +10,8 @@
 
 namespace UnitTests
 {
+    using namespace GameEngine::Geometry;
+
     namespace
     {
         static constexpr std::string_view SEPRATOR{ "|--------------------------------------------------------------------------|" };
@@ -37,6 +39,8 @@ namespace UnitTests
             DummyExceptArithmetic operator*(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
             DummyExceptArithmetic operator/(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
         };
+        static_assert(arithmetic_like<DummyExceptArithmetic>);
+
 
         static void print_test_name(std::ostream& log, std::string_view name)
         {
