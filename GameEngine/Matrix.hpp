@@ -52,6 +52,11 @@ namespace GameEngine::Geometry
         data{ { std::forward<Args>(args)... } }
         { }
 
+        explicit Matrix(std::array<T, M * N> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
+        :
+        data{ std::move(arr_data) }
+        { }
+
         Matrix(Matrix const&) = default;
         Matrix(Matrix&&)      = default;
 
