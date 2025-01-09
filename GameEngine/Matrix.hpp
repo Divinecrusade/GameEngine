@@ -4,7 +4,7 @@
 #include <concepts>
 #include <ranges>
 #include <algorithm>
-#include <initializer_list>
+#include <stdexcept>
 #include <cassert>
 
 
@@ -77,9 +77,10 @@ namespace GameEngine::Geometry
 
         template<std::ranges::input_range R>
         requires std::same_as<std::ranges::range_value_t<R>, T>
-        Matrix (R&& init_data) noexcept(std::is_move_assignable_v<T> || std::is_nothrow_assignable_v<T, T>)
+        Matrix (R&& init_data)
         {
-            assert(init_data.size() == M * N);
+            if (init_data.size() != M * N) 
+                throw std::out_of_range{ "Attempt to initialize Matrix with range which size differs from matrix's number of elements"};
             std::ranges::copy(init_data, data.begin());
         }
 

@@ -328,7 +328,7 @@ namespace UnitTests
         return passed;
     }
 
-    static bool is_pass_default_constructor_test(std::ostream& log, std::ostream& err) noexcept
+    static bool is_pass_default_constructor_test(std::ostream& log, std::ostream& err)
     {
         bool passed{ true };
 
@@ -348,7 +348,7 @@ namespace UnitTests
         return passed;
     }
 
-    static bool is_pass_copy_constructor_test(std::ostream& log, std::ostream& err) noexcept
+    static bool is_pass_copy_constructor_test(std::ostream& log, std::ostream& err)
     {
         bool passed{ true };
 
