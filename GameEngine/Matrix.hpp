@@ -57,6 +57,11 @@ namespace GameEngine::Geometry
         data{ std::move(arr_data) }
         { }
 
+        explicit Matrix(std::array<std::array<T, N>, M> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
+        :
+        data{ std::ranges::join_view(arr_data) }
+        { }
+
         Matrix(Matrix const&) = default;
         Matrix(Matrix&&)      = default;
 
