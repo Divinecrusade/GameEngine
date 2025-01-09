@@ -70,7 +70,7 @@ namespace UnitTests
             log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
         }
 
-        template<std::size_t M, std::size_t N, typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{}) >
+        template<std::size_t M, std::size_t N, typename T, bool is_noexcept = noexcept(Matrix<M, N, T>{}) >
         static void check_default_constructor(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!std::is_nothrow_default_constructible_v<T>)
@@ -100,7 +100,7 @@ namespace UnitTests
             log << "Type: " << typeid(T).name() << " Default constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
 
-        template<typename T, bool is_noexcept = noexcept(Matrix<3U, 3U, T>{ std::declval<Matrix<3U, 3U, T>>() })>
+        template<std::size_t M, std::size_t N, typename T, bool is_noexcept = noexcept(Matrix<M, N, T>{ std::declval<Matrix<M, N, T>>() })>
         static void check_copy_constructor(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
@@ -130,7 +130,7 @@ namespace UnitTests
             log << "Type: " << typeid(T).name() << " Copy constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
 
-        template<typename T, bool is_noexcept = noexcept(std::declval<Matrix<3U, 3U, T>&>() = std::declval<Matrix<3U, 3U, T> const&>())>
+        template<std::size_t M, std::size_t N, typename T, bool is_noexcept = noexcept(std::declval<Matrix<M, N, T>&>() = std::declval<Matrix<M, N, T> const&>())>
         static void check_copy_operator(std::ostream& log, std::ostream& err, bool& passed)
         {
             if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
@@ -231,12 +231,13 @@ namespace UnitTests
 
         print_test_name(log, "Matrix copy constructor");
 
-        check_copy_constructor<int>(log, err, passed);
-        check_copy_constructor<double>(log, err, passed);
-        check_copy_constructor<float>(log, err, passed);
-        check_copy_constructor<char>(log, err, passed);
-        check_copy_constructor<unsigned>(log, err, passed);
-        check_copy_constructor<long double>(log, err, passed);
+        check_copy_constructor<3U, 3U, int>(log, err, passed);
+        check_copy_constructor<3U, 3U, double>(log, err, passed);
+        check_copy_constructor<3U, 3U, float>(log, err, passed);
+        check_copy_constructor<3U, 3U, char>(log, err, passed);
+        check_copy_constructor<3U, 3U, unsigned>(log, err, passed);
+        check_copy_constructor<3U, 3U, long double>(log, err, passed);
+        check_copy_constructor<3U, 3U, long double>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
@@ -250,12 +251,12 @@ namespace UnitTests
 
         print_test_name(log, "Matrix copy operator");
 
-        check_copy_operator<int>(log, err, passed);
-        check_copy_operator<double>(log, err, passed);
-        check_copy_operator<float>(log, err, passed);
-        check_copy_operator<char>(log, err, passed);
-        check_copy_operator<unsigned>(log, err, passed);
-        check_copy_operator<long double>(log, err, passed);
+        check_copy_operator<3U, 3U, int>(log, err, passed);
+        check_copy_operator<3U, 3U, double>(log, err, passed);
+        check_copy_operator<3U, 3U, float>(log, err, passed);
+        check_copy_operator<3U, 3U, char>(log, err, passed);
+        check_copy_operator<3U, 3U, unsigned>(log, err, passed);
+        check_copy_operator<3U, 3U, long double>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy operator\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy operator\n" << UnitTests::StreamColors::RESET;
