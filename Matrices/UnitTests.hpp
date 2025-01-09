@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <string_view>
 #include <type_traits>
+#include <vector>
 
 
 namespace UnitTests
@@ -41,7 +42,7 @@ namespace UnitTests
         };
         static_assert(arithmetic_like<DummyExceptArithmetic>);
 
-        std::ostream& operator<<(std::ostream& out, DummyExceptArithmetic const& data)
+        std::ostream& operator<<(std::ostream& out, DummyExceptArithmetic const&)
         {
             out << "Dummy";
             return out;
@@ -207,7 +208,7 @@ namespace UnitTests
         }
 
         template<std::size_t M, std::size_t N, typename T, typename... Args>
-        static void check_parameter_constructor_with_pack_noexcept(std::ostream& log, std::ostream& err, bool& passed, Args&&... args)
+        static void check_parameter_constructor_with_pack_noexcept(std::ostream& log, std::ostream& err, bool& passed, Args&&...)
         {
             constexpr bool is_noexcept{ std::is_nothrow_constructible_v<Matrix<M, N, T>, Args...> };
             if constexpr (!(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>))
@@ -238,7 +239,7 @@ namespace UnitTests
         }
     
         template<std::size_t M, std::size_t N, typename T>
-        static void check_parameter_constructor_with_1d_array_noexcept(std::ostream& log, std::ostream& err, bool& passed, std::array<T, M * N> arr_data)
+        static void check_parameter_constructor_with_1d_array_noexcept(std::ostream& log, std::ostream& err, bool& passed, std::array<T, M * N>)
         {
             constexpr bool is_noexcept{ std::is_nothrow_constructible_v<Matrix<M, N, T>, std::array<T, M * N>> };
             if constexpr (!(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>))
@@ -269,7 +270,7 @@ namespace UnitTests
         }
     
         template<std::size_t M, std::size_t N, typename T>
-        static void check_parameter_constructor_with_2d_array_noexcept(std::ostream& log, std::ostream& err, bool& passed, std::array<std::array<T, N>, M> arr_data)
+        static void check_parameter_constructor_with_2d_array_noexcept(std::ostream& log, std::ostream& err, bool& passed, std::array<std::array<T, N>, M>)
         {
             constexpr bool is_noexcept{ std::is_nothrow_constructible_v<Matrix<M, N, T>, std::array<std::array<T, N>, M>> };
             if constexpr (!(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>))
@@ -407,13 +408,49 @@ namespace UnitTests
         check_parameter_constructor_with_pack_noexcept<1U, 1U, int>(log, err, passed, 2);
         check_parameter_constructor_with_pack_noexcept<1U, 1U, DummyExceptArithmetic>(log, err, passed, DummyExceptArithmetic{});
 
-        check_parameter_constructor_with_1d_array_noexcept<2U, 1U, double>(log, err, passed, {2., 1.});
-        check_parameter_constructor_with_1d_array_noexcept<2U, 1U, int>(log, err, passed, {2, 1});
+        check_parameter_constructor_with_1d_array_noexcept<2U, 1U, double>(log, err, passed, {{2., 1.}});
+        check_parameter_constructor_with_1d_array_noexcept<2U, 1U, int>(log, err, passed, {{2, 1}});
         check_parameter_constructor_with_1d_array_noexcept<1U, 1U, DummyExceptArithmetic>(log, err, passed, { DummyExceptArithmetic{} });
 
-        check_parameter_constructor_with_2d_array_noexcept<2U, 1U, double>(log, err, passed, { 2., 1. });
-        check_parameter_constructor_with_2d_array_noexcept<2U, 2U, int>(log, err, passed, { 2, 1 });
-        check_parameter_constructor_with_2d_array_noexcept<1U, 1U, DummyExceptArithmetic>(log, err, passed, { DummyExceptArithmetic{} });
+        check_parameter_constructor_with_2d_array_noexcept<2U, 1U, double>(log, err, passed, {{ {2.}, {1.} }});
+        check_parameter_constructor_with_2d_array_noexcept<2U, 2U, int>(log, err, passed, {{ {2, 1} }});
+        check_parameter_constructor_with_2d_array_noexcept<1U, 2U, DummyExceptArithmetic>(log, err, passed, { {DummyExceptArithmetic{}} });
+
+        // Test constructor from range
+        {
+            std::vector<int> v{ 0, 1, 2 };
+            static_assert(std::constructible_from<Matrix<3U, 1U, int>, decltype(v)> == true);
+            Matrix<3U, 1U, int> m1{ std::views::all(v) };
+            Matrix<1U, 3U, int> m2{ v };
+
+            log << UnitTests::StreamColors::GREEN << "[OK]" << UnitTests::StreamColors::RESET;
+            log << "Matrix constructed from vector {";
+            for (auto const& val : v)
+            {
+                log << " " << val;
+            }
+            log << " }\n";
+        }
+        {
+            std::vector<float> v{ -2.f, 3.f, 2.f, 2.f, 4.f, 5.f };
+            static_assert(std::constructible_from<Matrix<3U, 1U, int>, decltype(v)> == false);
+            Matrix<3U, 1U, float> m1{ std::views::reverse(v) | std::views::take(3) };
+            log << UnitTests::StreamColors::GREEN << "[OK]" << UnitTests::StreamColors::RESET;
+            log << "Matrix constructed from part of vector {";
+            for (auto const& val : std::views::reverse(v) | std::views::take(3))
+            {
+                log << " " << val;
+            }
+            log << " }\n";
+            Matrix<1U, 3U, float> m2{ v | std::views::take(3) };
+            log << UnitTests::StreamColors::GREEN << "[OK]" << UnitTests::StreamColors::RESET;
+            log << "Matrix constructed from part of vector {";
+            for (auto const& val : v | std::views::take(3))
+            {
+                log << " " << val;
+            }
+            log << " }\n";
+        }
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;

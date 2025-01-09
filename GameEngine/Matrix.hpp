@@ -4,6 +4,8 @@
 #include <concepts>
 #include <ranges>
 #include <algorithm>
+#include <initializer_list>
+#include <cassert>
 
 
 namespace GameEngine::Geometry
@@ -36,30 +38,33 @@ namespace GameEngine::Geometry
     {
     public:
 
+        static_assert(std::is_move_assignable_v<T>    == std::is_nothrow_move_assignable_v<T>);
+        static_assert(std::is_move_constructible_v<T> == std::is_nothrow_move_constructible_v<T>);
+
         constexpr Matrix() = default;
 
         template<typename... Args>
         requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && std::is_move_constructible_v<T>
-        constexpr explicit Matrix(Args&&... args) noexcept
+        constexpr explicit Matrix(Args&&... init_data) noexcept
         : 
-        data{ { std::forward<Args>(args)... } } 
+        data{ { std::forward<Args>(init_data)... } } 
         { }
 
         template<typename... Args>
         requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && !std::is_move_constructible_v<T>
-        constexpr explicit Matrix(Args&&... args) noexcept(std::is_nothrow_copy_constructible<T>)
+        constexpr explicit Matrix(Args&&... init_data) noexcept(std::is_nothrow_copy_constructible<T>)
         :
-        data{ { std::forward<Args>(args)... } }
+        data{ { std::forward<Args>(init_data)... } }
         { }
 
-        constexpr explicit Matrix(std::array<T, M * N> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
+        constexpr explicit Matrix(std::array<T, M * N> init_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
         :
-        data{ std::move(arr_data) }
+        data{ std::move(init_data) }
         { }
 
-        constexpr explicit Matrix(std::array<std::array<T, N>, M> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
+        constexpr explicit Matrix(std::array<std::array<T, N>, M> init_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
         :
-        data{ std::ranges::join_view(arr_data) }
+        data{ std::ranges::join_view(init_data) }
         { }
 
         constexpr Matrix(Matrix const&) = default;
@@ -69,6 +74,14 @@ namespace GameEngine::Geometry
         constexpr Matrix& operator=(Matrix&&)      = default;
 
         constexpr ~Matrix() = default;
+
+        template<std::ranges::input_range R>
+        requires std::same_as<std::ranges::range_value_t<R>, T>
+        Matrix (R&& init_data) noexcept(std::is_move_assignable_v<T> || std::is_nothrow_assignable_v<T, T>)
+        {
+            assert(init_data.size() == M * N);
+            std::ranges::copy(init_data, data.begin());
+        }
 
     private:
 
