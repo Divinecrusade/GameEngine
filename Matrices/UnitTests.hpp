@@ -21,6 +21,23 @@ namespace UnitTests
             static constexpr char const* RESET{ "\033[0m" };
         }
 
+        class DummyExceptArithmetic
+        {
+        public:
+
+            DummyExceptArithmetic() {};
+            DummyExceptArithmetic(DummyExceptArithmetic const&) {};
+            DummyExceptArithmetic(DummyExceptArithmetic&&) = delete;
+
+            DummyExceptArithmetic& operator=(DummyExceptArithmetic const&) { return *this; }
+            DummyExceptArithmetic& operator=(DummyExceptArithmetic&&) = delete;
+
+            DummyExceptArithmetic operator+(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
+            DummyExceptArithmetic operator-(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
+            DummyExceptArithmetic operator*(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
+            DummyExceptArithmetic operator/(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
+        };
+
         static void print_test_name(std::ostream& log, std::string_view name)
         {
             log << SEPRATOR << "\n";
@@ -103,12 +120,12 @@ namespace UnitTests
         template<std::size_t M, std::size_t N, typename T, bool is_noexcept = noexcept(Matrix<M, N, T>{ std::declval<Matrix<M, N, T>>() })>
         static void check_copy_constructor(std::ostream& log, std::ostream& err, bool& passed)
         {
-            if constexpr (!noexcept(std::declval<T&>() = std::declval<T const&>()))
+            if constexpr (!std::is_nothrow_copy_constructible_v<T>)
             {
                 if (is_noexcept)
                 {
                     passed = false;
-                    err << StreamColors::RED << "[ERROR] Constructor marked noexcept but type is not nothrow assignable:\n" << StreamColors::RESET;
+                    err << StreamColors::RED << "[ERROR] Copy constructor marked noexcept but type is not nothrow constructable:\n" << StreamColors::RESET;
                 }
                 else
                 {
@@ -199,6 +216,7 @@ namespace UnitTests
         check_valid_type<1U, 1U, double>(log, err, passed);
         check_valid_type<3U, 3U, float>(log, err, passed);
         check_valid_type<3U, 3U, int>(log, err, passed);
+        check_valid_type<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix type constraints\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix type constraints\n" << UnitTests::StreamColors::RESET;
@@ -218,6 +236,7 @@ namespace UnitTests
         check_default_constructor<3U, 3U, char>(log, err, passed);
         check_default_constructor<3U, 3U, unsigned>(log, err, passed);
         check_default_constructor<3U, 3U, long double>(log, err, passed);
+        check_default_constructor<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix constructor\n" << UnitTests::StreamColors::RESET;
@@ -230,7 +249,6 @@ namespace UnitTests
         bool passed{ true };
 
         print_test_name(log, "Matrix copy constructor");
-
         check_copy_constructor<3U, 3U, int>(log, err, passed);
         check_copy_constructor<3U, 3U, double>(log, err, passed);
         check_copy_constructor<3U, 3U, float>(log, err, passed);
@@ -238,6 +256,7 @@ namespace UnitTests
         check_copy_constructor<3U, 3U, unsigned>(log, err, passed);
         check_copy_constructor<3U, 3U, long double>(log, err, passed);
         check_copy_constructor<3U, 3U, long double>(log, err, passed);
+        check_copy_constructor<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
@@ -257,6 +276,7 @@ namespace UnitTests
         check_copy_operator<3U, 3U, char>(log, err, passed);
         check_copy_operator<3U, 3U, unsigned>(log, err, passed);
         check_copy_operator<3U, 3U, long double>(log, err, passed);
+        check_copy_operator<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy operator\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy operator\n" << UnitTests::StreamColors::RESET;
