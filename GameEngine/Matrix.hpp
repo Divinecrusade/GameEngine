@@ -36,39 +36,39 @@ namespace GameEngine::Geometry
     {
     public:
 
-        Matrix() = default;
+        constexpr Matrix() = default;
 
         template<typename... Args>
         requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && std::is_move_constructible_v<T>
-        explicit Matrix(Args&&... args) noexcept
+        constexpr explicit Matrix(Args&&... args) noexcept
         : 
         data{ { std::forward<Args>(args)... } } 
         { }
 
         template<typename... Args>
         requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && !std::is_move_constructible_v<T>
-        explicit Matrix(Args&&... args) noexcept(std::is_nothrow_copy_constructible<T>)
+        constexpr explicit Matrix(Args&&... args) noexcept(std::is_nothrow_copy_constructible<T>)
         :
         data{ { std::forward<Args>(args)... } }
         { }
 
-        explicit Matrix(std::array<T, M * N> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
+        constexpr explicit Matrix(std::array<T, M * N> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
         :
         data{ std::move(arr_data) }
         { }
 
-        explicit Matrix(std::array<std::array<T, N>, M> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
+        constexpr explicit Matrix(std::array<std::array<T, N>, M> arr_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
         :
         data{ std::ranges::join_view(arr_data) }
         { }
 
-        Matrix(Matrix const&) = default;
-        Matrix(Matrix&&)      = default;
+        constexpr Matrix(Matrix const&) = default;
+        constexpr Matrix(Matrix&&)      = default;
 
-        Matrix& operator=(Matrix const&) = default;
-        Matrix& operator=(Matrix&&)      = default;
+        constexpr Matrix& operator=(Matrix const&) = default;
+        constexpr Matrix& operator=(Matrix&&)      = default;
 
-        ~Matrix() = default;
+        constexpr ~Matrix() = default;
 
     private:
 
