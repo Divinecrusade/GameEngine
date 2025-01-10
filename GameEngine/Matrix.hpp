@@ -5,6 +5,7 @@
 #include <ranges>
 #include <algorithm>
 #include <stdexcept>
+#include <span>
 #include <cassert>
 
 
@@ -40,6 +41,9 @@ namespace GameEngine::Geometry
 
         static_assert(std::is_move_assignable_v<T>    == std::is_nothrow_move_assignable_v<T>);
         static_assert(std::is_move_constructible_v<T> == std::is_nothrow_move_constructible_v<T>);
+
+        static constexpr std::size_t NUMBER_OF_ROWS{ M };
+        static constexpr std::size_t NUMBER_OF_COLS{ N };
 
         constexpr Matrix() = default;
 
@@ -80,8 +84,21 @@ namespace GameEngine::Geometry
         Matrix (R&& init_data)
         {
             if (init_data.size() != M * N) 
-                throw std::out_of_range{ "Attempt to initialize Matrix with range which size differs from matrix's number of elements"};
+                throw std::out_of_range{ "Attempt to initialize matrix with range which size differs from matrix's number of elements" };
             std::ranges::copy(init_data, data.begin());
+        }
+
+        std::span<T const, N> operator[](std::size_t row) const
+        {
+            assert(("Attempt to get row that exceeds matrix's size", row < M));
+
+            auto const beg{ data.begin() + row * N };
+            return std::span<T const, N>{ beg, beg + N };
+        }
+
+        std::span<T const, M* N> flattern() const noexcept
+        {
+            return data;
         }
 
     private:

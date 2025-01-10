@@ -78,7 +78,7 @@ namespace UnitTests
             }
             else
             {
-                log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
             }
             log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
         }
@@ -93,7 +93,7 @@ namespace UnitTests
             }
             else
             {
-                log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
             }
             log << "Type: " << typeid(T).name() << " " << M << " " << N << " Is constructable: " << (is_constructable ? "Yes" : "No") << '\n';
         }
@@ -110,7 +110,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             else
@@ -122,7 +122,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             log << "Type: " << typeid(T).name() << " Default constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
@@ -140,7 +140,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             else
@@ -152,7 +152,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             log << "Type: " << typeid(T).name() << " Copy constructor noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
@@ -170,7 +170,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             else
@@ -182,7 +182,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             log << "Type: " << typeid(T).name() << " Copy operator noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
@@ -200,7 +200,7 @@ namespace UnitTests
             }
             else
             {
-                log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
             }
             log << "Matrix <" << M << ", " << N << "> {";
             ((log << " " << args), ...);
@@ -220,7 +220,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             else
@@ -232,10 +232,10 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
-            log << "Type: " << typeid(T).name() << " Copy constructor (pack) noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
+            log << "Type: " << typeid(T).name() << " Parameter constructor (pack) noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
     
         template<std::size_t M, std::size_t N, typename T>
@@ -251,7 +251,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             else
@@ -263,10 +263,10 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
-            log << "Type: " << typeid(T).name() << " Copy constructor (1d array) noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
+            log << "Type: " << typeid(T).name() << " Parameter constructor (1d array) noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
         }
     
         template<std::size_t M, std::size_t N, typename T>
@@ -282,7 +282,7 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             else
@@ -294,10 +294,49 @@ namespace UnitTests
                 }
                 else
                 {
-                    log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
                 }
             }
             log << "Type: " << typeid(T).name() << " Copy constructor (2d array) noexcept: " << (is_noexcept ? "Yes" : "No") << '\n';
+        }
+    
+        static constexpr auto print_range
+        {
+            [](auto const& r, std::ostream& out) noexcept
+            {
+                for (auto const& el : r)
+                {
+                    out << " " << el;
+                }
+            }
+        };
+
+        template<std::size_t M, std::size_t N, typename T, typename R>
+        static void check_matrix_and_range(std::ostream& log, std::ostream& err, bool& passed, Matrix<M, N, T> const& m, R const& r)
+        {
+            bool equal{ true };
+
+            for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS && equal; ++i)
+            for (std::size_t j{ 0U }; j != m.NUMBER_OF_COLS && equal; ++j)
+            {
+                if (r[i * m.NUMBER_OF_COLS + j] != m[i][j]) equal = false;
+            }
+
+            if (equal)
+            {
+                log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
+            }
+            else
+            {
+                passed = false;
+                err << StreamColors::RED << "[ERROR] Matrix and range not equal:\n" << StreamColors::RESET;
+            }
+            log << "Matrix {";
+            for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS && equal; ++i)
+                print_range(m[i], log);
+            log << " } and range {";
+            print_range(r, log);
+            log << " }\n";
         }
     }
     
@@ -416,40 +455,49 @@ namespace UnitTests
         check_parameter_constructor_with_2d_array_noexcept<2U, 2U, int>(log, err, passed, {{ {2, 1} }});
         check_parameter_constructor_with_2d_array_noexcept<1U, 2U, DummyExceptArithmetic>(log, err, passed, { {DummyExceptArithmetic{}} });
 
-        // Test constructor from range
         {
-            std::vector<int> v{ 0, 1, 2 };
+            std::vector<int> const v{ 0, 1, 2 };
             static_assert(std::constructible_from<Matrix<3U, 1U, int>, decltype(v)> == true);
-            Matrix<3U, 1U, int> m1{ std::views::all(v) };
-            Matrix<1U, 3U, int> m2{ v };
+            Matrix<3U, 1U, int> const m1{ std::views::all(v) };
+            Matrix<1U, 3U, int> const m2{ v };
 
-            log << UnitTests::StreamColors::GREEN << "[OK]" << UnitTests::StreamColors::RESET;
+            log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
             log << "Matrix constructed from vector {";
-            for (auto const& val : v)
-            {
-                log << " " << val;
-            }
+            print_range(v, log);
             log << " }\n";
+
+            check_matrix_and_range(log, err, passed, m1, v);
         }
         {
-            std::vector<float> v{ -2.f, 3.f, 2.f, 2.f, 4.f, 5.f };
+            std::vector<float> const v{ -2.f, 3.f, 2.f, 2.f, 4.f, 5.f };
             static_assert(std::constructible_from<Matrix<3U, 1U, int>, decltype(v)> == false);
-            Matrix<3U, 1U, float> m1{ std::views::reverse(v) | std::views::take(3) };
-            log << UnitTests::StreamColors::GREEN << "[OK]" << UnitTests::StreamColors::RESET;
+            Matrix<3U, 1U, float> const m1{ std::views::reverse(v) | std::views::take(3) };
+            log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
             log << "Matrix constructed from part of vector {";
-            for (auto const& val : std::views::reverse(v) | std::views::take(3))
-            {
-                log << " " << val;
-            }
+            print_range(std::views::reverse(v) | std::views::take(3), log);
             log << " }\n";
-            Matrix<1U, 3U, float> m2{ v | std::views::take(3) };
-            log << UnitTests::StreamColors::GREEN << "[OK]" << UnitTests::StreamColors::RESET;
+            check_matrix_and_range(log, err, passed, m1, std::views::reverse(v) | std::views::take(3));
+
+            Matrix<1U, 3U, float> const m2{ v | std::views::take(3) };
+            log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
             log << "Matrix constructed from part of vector {";
-            for (auto const& val : v | std::views::take(3))
-            {
-                log << " " << val;
-            }
+            print_range(std::views::take(v, 3), log);
             log << " }\n";
+            check_matrix_and_range(log, err, passed, m2, std::views::take(v, 3));
+
+            constexpr std::array<int, 9U> a{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            constexpr Matrix<3U, 3U, int> m3{ a };
+            log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
+            log << "Matrix constexpr constructed from constexpr array {";
+            print_range(a, log);
+            log << " }\n";
+            check_matrix_and_range(log, err, passed, m3, a);
+
+            log << "Flattern checks beg (row access is comparing with flattern access):\n";
+            check_matrix_and_range(log, err, passed, m1, m1.flattern());
+            check_matrix_and_range(log, err, passed, m2, m2.flattern());
+            check_matrix_and_range(log, err, passed, m3, m3.flattern());
+            log << "Flattern checks end\n";
         }
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
