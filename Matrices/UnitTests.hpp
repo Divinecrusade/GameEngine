@@ -11,7 +11,7 @@
 
 namespace UnitTests
 {
-    using namespace GameEngine::Geometry;
+    using namespace GameEngine::Geometry::Matrices;
 
     namespace
     {
@@ -633,6 +633,49 @@ namespace UnitTests
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix columns and rows swapping\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix columns and rows swapping\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_iterator_test(std::ostream& log, std::ostream& err)
+    {
+        bool passed{ true };
+
+        Matrix<3U, 3U, int> m{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        log << "Iterator based loop beg:\n";
+        for (auto it{ m.begin() }; it != m.end(); ++it)
+        {
+            if (m[it->get_row_index()][it->get_col_index()] != it->get_data())
+            {
+                err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+            }
+            log << " [" << it->get_row_index() << "][" << it->get_col_index() << "]: " << it->get_data() << " && " << m[it->get_row_index()][it->get_col_index()] << "\n";
+        }
+        log << "Iterator based loop end\n";
+
+        log << "Range based loop beg:\n";
+        for (auto const& el : m)
+        {
+            if (m[el.get_row_index()][el.get_col_index()] != el.get_data())
+            {
+                err << StreamColors::RED << "[ERROR] Range-iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+            }
+            log << " [" << el.get_row_index() << "][" << el.get_col_index() << "]:" << el.get_data() << " && " << m[el.get_row_index()][el.get_col_index()] << "\n";
+        }
+        log << "Range based loop end\n";
+
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix iterating\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix iterating\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }

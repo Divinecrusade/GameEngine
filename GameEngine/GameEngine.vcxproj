@@ -161,6 +161,7 @@
     <ClInclude Include="AnimationFrames.hpp" />
     <ClInclude Include="AnimationFramesView.hpp" />
     <ClInclude Include="Auxiliry.hpp" />
+    <ClInclude Include="CellOfMatrix.hpp" />
     <ClInclude Include="ContiguousIterator.hpp" />
     <ClInclude Include="Direct2dException.hpp" />
     <ClInclude Include="Direct2DFactory.hpp">

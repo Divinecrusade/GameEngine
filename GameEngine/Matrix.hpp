@@ -1,5 +1,8 @@
 #pragma once
 
+
+#include "CellOfMatrix.hpp"
+
 #include <array>
 #include <concepts>
 #include <ranges>
@@ -7,9 +10,10 @@
 #include <stdexcept>
 #include <span>
 #include <cassert>
+#include <iterator>
 
 
-namespace GameEngine::Geometry
+namespace GameEngine::Geometry::Matrices
 {
     template<typename T>
     concept arithmetic_like = requires (T)
@@ -45,6 +49,164 @@ namespace GameEngine::Geometry
         static constexpr std::size_t NUMBER_OF_ROWS{ M };
         static constexpr std::size_t NUMBER_OF_COLS{ N };
 
+    public:
+
+        class const_iterator;
+        constexpr const_iterator begin() const noexcept
+        {
+            return const_iterator{ std::to_address(data.begin()), std::to_address(data.begin()) };
+        }
+        constexpr const_iterator end()   const noexcept
+        {
+            return const_iterator{ std::to_address(data.end()), std::to_address(data.begin()) };
+        }
+
+        class const_iterator final
+        {
+        public:
+
+            using value_type   = CellOfMatrix<T>;
+            using element_type = CellOfMatrix<T>;
+            using iterator_category = std::random_access_iterator_tag;
+            using difference_type   = std::ptrdiff_t;
+
+            using pointer   = value_type const*;
+            using reference = value_type const&;
+
+        private:
+
+            friend constexpr const_iterator Matrix::begin() const noexcept;
+            friend constexpr const_iterator Matrix::end()   const noexcept;
+            const_iterator(T const* data, T const* base) noexcept
+            :
+            data{ data, (data - base) / N, (data - base) % N }
+            { }
+
+        public:
+
+            constexpr const_iterator() noexcept = default;
+            constexpr const_iterator(const_iterator const&) noexcept = default;
+            constexpr const_iterator(const_iterator&&)      noexcept = default;
+
+            constexpr const_iterator& operator=(const_iterator const&) noexcept = default;
+            constexpr const_iterator& operator=(const_iterator&&)      noexcept = default;
+
+            constexpr ~const_iterator() noexcept = default;
+
+
+            constexpr pointer   operator->() const noexcept
+            {
+                return &data;
+            }
+            constexpr reference operator*()  const noexcept
+            {
+                return data;
+            }
+
+            constexpr reference operator[](difference_type delta) const noexcept
+            {
+                return *(*this + delta);
+            }
+
+
+            constexpr const_iterator& operator+=(difference_type delta) noexcept
+            {
+                std::size_t const d_row{ std::abs(delta) / N };
+                std::size_t const d_col{ delta % N };
+
+                if (delta > 0)
+                {
+                    data.set_row_index(data.get_row_index() + d_row + (data.get_col_index() + d_col >= N));
+                    data.set_col_index((data.get_col_index() + d_col) % N);
+                }
+                else
+                {
+                    assert(("Iterator exceeds matrix's rows during decreasing", d_row + (data.get_col_index() < d_col) > data.get_row_index()));
+                    data.set_row_index(data.get_row_index() - d_row - (data.get_col_index() < d_col));
+                }
+                data.move_pointer(delta);
+
+                return *this;
+            }
+            constexpr const_iterator& operator-=(difference_type delta) noexcept
+            {
+                return (*this += -delta);
+            }
+
+            constexpr const_iterator& operator++()    noexcept
+            {
+                return (*this += static_cast<difference_type>(1));
+            }
+            constexpr const_iterator  operator++(int) noexcept
+            {
+                return std::exchange(*this, *this + static_cast<difference_type>(1));
+            }
+
+            constexpr const_iterator& operator--()    noexcept
+            {
+                return (*this -= static_cast<difference_type>(1));
+            }
+            constexpr const_iterator  operator--(int) noexcept
+            {
+                return std::exchange(*this, *this - static_cast<difference_type>(1));
+            }
+
+            friend constexpr const_iterator operator+(const_iterator const& lhs, difference_type rhs) noexcept
+            {
+                return const_iterator{ lhs } += rhs;
+            }
+            friend constexpr const_iterator operator+(difference_type lhs, const_iterator const& rhs) noexcept
+            {
+                return const_iterator{ rhs } += lhs;
+            }
+
+            friend constexpr const_iterator operator-(const_iterator const& lhs, difference_type rhs) noexcept
+            {
+                return const_iterator{ lhs } -= rhs;
+            }
+            friend constexpr const_iterator operator-(difference_type lhs, const_iterator const& rhs) noexcept
+            {
+                return const_iterator{ rhs } -= lhs;
+            }
+            friend constexpr difference_type operator-(const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return lhs.data - rhs.data;
+            }
+
+            friend constexpr bool operator==(const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return &lhs.data.get_data() == &rhs.data.get_data();
+            }
+            friend constexpr bool operator!=(const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return !(lhs == rhs);
+            }
+
+            friend constexpr bool operator< (const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return &lhs.data.get_data() < &rhs.data.get_data();
+            }
+            friend constexpr bool operator> (const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return (lhs < rhs) && lhs != rhs;
+            }
+            friend constexpr bool operator<=(const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return lhs < rhs || lhs == rhs;
+            }
+            friend constexpr bool operator>=(const_iterator const& lhs, const_iterator const& rhs) noexcept
+            {
+                return lhs > rhs || lhs == rhs;
+            }
+
+        private:
+            
+            value_type data{ };
+        };
+        static_assert(std::random_access_iterator<const_iterator>);
+
+    public:
+
         constexpr Matrix() = default;
 
         template<typename... Args>
@@ -79,6 +241,7 @@ namespace GameEngine::Geometry
         constexpr Matrix& operator=(Matrix&&)      = default;
 
         constexpr ~Matrix() = default;
+
 
         template<std::ranges::input_range R>
         requires std::same_as<std::ranges::range_value_t<R>, T>
