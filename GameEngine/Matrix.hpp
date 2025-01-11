@@ -65,11 +65,12 @@ namespace GameEngine::Geometry
         :
         data{ std::move(init_data) }
         { }
-
         constexpr explicit Matrix(std::array<std::array<T, N>, M> init_data) noexcept(std::is_move_constructible_v<T> || std::is_nothrow_constructible_v<T>)
-        :
-        data{ std::ranges::join_view(init_data) }
-        { }
+        {
+            for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS; ++i)
+            for (std::size_t j{ 0U }; j != NUMBER_OF_COLS; ++j)
+                data[i * NUMBER_OF_COLS + j] = init_data[i][j];
+        }
 
         constexpr Matrix(Matrix const&) = default;
         constexpr Matrix(Matrix&&)      = default;
@@ -83,17 +84,17 @@ namespace GameEngine::Geometry
         requires std::same_as<std::ranges::range_value_t<R>, T>
         Matrix (R&& init_data)
         {
-            if (init_data.size() != M * N) 
-                throw std::out_of_range{ "Attempt to initialize matrix with range which size differs from matrix's number of elements" };
+            assert(("Input range must have size equal to number of elements in matrix", std::distance(init_data.begin(), init_data.end()) == NUMBER_OF_ROWS * NUMBER_OF_COLS));
+            
             std::ranges::copy(init_data, data.begin());
         }
 
         std::span<T const, N> operator[](std::size_t row) const
         {
-            assert(("Attempt to get row that exceeds matrix's size", row < M));
+            assert(("Requested row's index must be lesser than number of matrix rows", row < NUMBER_OF_ROWS));
 
-            auto const beg{ data.begin() + row * N };
-            return std::span<T const, N>{ beg, beg + N };
+            auto const beg{ data.begin() + row * NUMBER_OF_COLS };
+            return std::span<T const, N>{ beg, beg + NUMBER_OF_COLS };
         }
 
         std::span<T const, M* N> flattern() const noexcept
@@ -101,8 +102,32 @@ namespace GameEngine::Geometry
             return data;
         }
 
+        void swap_cols(std::size_t lhs, std::size_t rhs)
+        {
+            assert(("Requested column's index must be lesser than number of matrix columns", lhs < NUMBER_OF_COLS));
+            assert(("Requested column's index must be lesser than number of matrix columns", rhs < NUMBER_OF_COLS));
+
+            for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS * NUMBER_OF_COLS; i += NUMBER_OF_COLS)
+            {
+                std::swap(data[lhs + i], data[rhs + i]);
+            }
+        }
+        void swap_rows(std::size_t lhs, std::size_t rhs)
+        {
+            assert(("Requested row's index must be lesser than number of matrix rows", lhs < NUMBER_OF_ROWS));
+            assert(("Requested row's index must be lesser than number of matrix rows", rhs < NUMBER_OF_ROWS));
+
+            lhs = lhs * NUMBER_OF_COLS;
+            rhs = rhs * NUMBER_OF_COLS;
+
+            for (std::size_t i{ 0U }; i != NUMBER_OF_COLS; ++i)
+            {
+                std::swap(data[lhs + i], data[rhs + i]);
+            }
+        }
+
     private:
 
-        std::array<T, M * N> data{ };
+        std::array<T, NUMBER_OF_ROWS * NUMBER_OF_COLS> data{ };
     };
 }

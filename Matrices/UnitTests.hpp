@@ -52,7 +52,7 @@ namespace UnitTests
         static void print_test_name(std::ostream& log, std::string_view name)
         {
             log << SEPRATOR << "\n";
-            log << "|" << std::setfill('-') << std::left << std::setw(SEPRATOR.length() - 2) << name << "|\n";
+            log << "|" << std::setfill('-') << std::left << std::setw(SEPRATOR.length() - 2) << name << std::setfill(' ') << "|\n";
             log << SEPRATOR << "\n";
         }
 
@@ -311,6 +311,19 @@ namespace UnitTests
             }
         };
 
+        template<std::size_t M, std::size_t N, typename T>
+        static void print_matrix(Matrix<M, N, T> const& m, std::ostream& out)
+        {
+            for (std::size_t i{ 0U }; i != M; ++i)
+            {
+                for (std::size_t j{ 0U }; j != N; ++j)
+                {
+                    out << std::setw(8) << m[i][j];
+                }
+                out << '\n';
+            }
+        }
+
         template<std::size_t M, std::size_t N, typename T, typename R>
         static void check_matrix_and_range(std::ostream& log, std::ostream& err, bool& passed, Matrix<M, N, T> const& m, R const& r)
         {
@@ -319,7 +332,9 @@ namespace UnitTests
             for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS && equal; ++i)
             for (std::size_t j{ 0U }; j != m.NUMBER_OF_COLS && equal; ++j)
             {
-                if (r[i * m.NUMBER_OF_COLS + j] != m[i][j]) equal = false;
+                auto it{ r.begin() };
+                std::advance(it, i * m.NUMBER_OF_COLS + j);
+                if (*it != m[i][j]) equal = false;
             }
 
             if (equal)
@@ -334,6 +349,65 @@ namespace UnitTests
             log << "Matrix {";
             for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS && equal; ++i)
                 print_range(m[i], log);
+            log << " } and range {";
+            print_range(r, log);
+            log << " }\n";
+        }
+    
+        template<std::size_t M, std::size_t N, typename T, typename R>
+        static void check_row_and_range(std::ostream& log, std::ostream& err, bool& passed, Matrix<M, N, T> const& m, std::size_t i, R const& r)
+        {
+            bool equal{ true };
+
+            for (std::size_t j{ 0U }; j != m.NUMBER_OF_COLS && equal; ++j)
+            {
+                auto it{ r.begin() };
+                std::advance(it, j);
+                if (*it != m[i][j]) equal = false;
+            }
+
+            if (equal)
+            {
+                log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
+            }
+            else
+            {
+                passed = false;
+                err << StreamColors::RED << "[ERROR] Matrix row and range not equal:\n" << StreamColors::RESET;
+            }
+            log << "Matrix row {";
+            print_range(m[i], log);
+            log << " } and range {";
+            print_range(r, log);
+            log << " }\n";
+        }
+    
+        template<std::size_t M, std::size_t N, typename T, typename R>
+        static void check_col_and_range(std::ostream& log, std::ostream& err, bool& passed, Matrix<M, N, T> const& m, std::size_t j, R const& r)
+        {
+            bool equal{ true };
+
+            for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS && equal; ++i)
+            {
+                auto it{ r.begin() };
+                std::advance(it, i);
+                if (*it != m[i][j]) equal = false;
+            }
+
+            if (equal)
+            {
+                log << UnitTests::StreamColors::GREEN << "[OK] " << UnitTests::StreamColors::RESET;
+            }
+            else
+            {
+                passed = false;
+                err << StreamColors::RED << "[ERROR] Matrix col and range not equal:\n" << StreamColors::RESET;
+            }
+            log << "Matrix col {";
+            for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+            {
+                log << " " << m[i][j];
+            }
             log << " } and range {";
             print_range(r, log);
             log << " }\n";
@@ -502,6 +576,63 @@ namespace UnitTests
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_swapping_test(std::ostream& log, std::ostream& err)
+    {
+        bool passed{ true };
+
+        {
+            constexpr std::array row0{ 1, 2, 3 };
+            constexpr std::array row1{ 4, 5, 6 };
+            constexpr std::array row2{ 7, 8, 9 };
+
+            constexpr std::array matrix{ row0, row1, row2 };
+            Matrix<3U, 3U, int> m{ matrix };
+            check_matrix_and_range(log, err, passed, m, std::views::join(matrix));
+
+            log << "Init matrix:\n";
+            print_matrix(m, log);
+
+            std::size_t lhs{ 0U };
+            std::size_t rhs{ 2U };
+            m.swap_rows(lhs, rhs);
+
+            log << "Make swap rows of " << lhs << " and " << rhs << ":\n";
+            print_matrix(m, log);
+            check_row_and_range(log, err, passed, m, lhs, row2);
+            check_row_and_range(log, err, passed, m, rhs, row0);
+
+            lhs = 1U;
+            rhs = 2U;
+            m.swap_rows(lhs, rhs);
+
+            log << "Make swap rows of " << lhs << " and " << rhs << ":\n";
+            print_matrix(m, log);
+            check_row_and_range(log, err, passed, m, lhs, row0);
+            check_row_and_range(log, err, passed, m, rhs, row1);
+
+            m.swap_cols(lhs, rhs);
+
+            log << "Make swap cols of " << lhs << " and " << rhs << ":\n";
+            print_matrix(m, log);
+            check_col_and_range(log, err, passed, m, lhs, std::vector<int>{9, 3, 6});
+            check_col_and_range(log, err, passed, m, rhs, std::vector<int>{8, 2, 5});
+
+            lhs = 0U;
+            rhs = 1U;
+            m.swap_cols(lhs, rhs);
+
+            log << "Make swap cols of " << lhs << " and " << rhs << ":\n";
+            print_matrix(m, log);
+            check_col_and_range(log, err, passed, m, lhs, std::vector<int>{9, 3, 6});
+            check_col_and_range(log, err, passed, m, rhs, std::vector<int>{7, 1, 4});
+        }
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix columns and rows swapping\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix columns and rows swapping\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
