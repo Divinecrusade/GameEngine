@@ -67,7 +67,7 @@ namespace GameEngine::Geometry::Matrices
 
             using value_type   = CellOfMatrix<T>;
             using element_type = CellOfMatrix<T>;
-            using iterator_category = std::random_access_iterator_tag;
+            using iterator_category = std::bidirectional_iterator_tag;
             using difference_type   = std::ptrdiff_t;
 
             using pointer   = value_type const*;
@@ -101,11 +101,6 @@ namespace GameEngine::Geometry::Matrices
             constexpr reference operator*()  const noexcept
             {
                 return data;
-            }
-
-            constexpr reference operator[](difference_type delta) const noexcept
-            {
-                return *(*this + delta);
             }
 
 
@@ -203,7 +198,7 @@ namespace GameEngine::Geometry::Matrices
             
             value_type data{ };
         };
-        static_assert(std::random_access_iterator<const_iterator>);
+        static_assert(std::bidirectional_iterator<const_iterator>);
 
     public:
 
