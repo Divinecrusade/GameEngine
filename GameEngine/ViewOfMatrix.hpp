@@ -30,7 +30,7 @@ namespace GameEngine::Geometry::Matrices
 
             using value_type   = T;
             using element_type = T;
-            using iterator_category = std::contiguous_iterator_tag;
+            using iterator_category = std::random_access_iterator_tag;
             using difference_type   = std::ptrdiff_t;
 
             using pointer   = T const*;
@@ -54,10 +54,12 @@ namespace GameEngine::Geometry::Matrices
 
             constexpr pointer   operator->() const noexcept
             {
-                return &(**data);
+                assert(data != nullptr);
+                return *data;
             }
             constexpr reference operator*()  const noexcept
             {
+                assert(data != nullptr && *data != nullptr);
                 return **data;
             }
             constexpr reference operator[](difference_type delta) const noexcept
@@ -189,11 +191,11 @@ namespace GameEngine::Geometry::Matrices
 
         const_iterator begin() const noexcept
         {
-            return const_iterator{ std::to_address(data.begin()) };
+            return const_iterator{ data.data() };
         }
         const_iterator end()   const noexcept
         {
-            return const_iterator{ std::to_address(data.end()) };
+            return const_iterator{ data.data() + N };
         }
 
     private:
