@@ -673,6 +673,107 @@ namespace UnitTests
         }
         log << "Range based loop end\n";
 
+        print_matrix(m, log);
+
+        log << "Iterator arithmetic beg:\n";
+
+        if ((m.begin() + 3)->get_data() != m[1U][0U])
+        {
+            err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+        }
+        else if ((m.begin() + 3)->get_row_index() != 1U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
+        }
+        else if ((m.begin() + 3)->get_col_index() != 0U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "[" << (m.begin() + 3)->get_row_index() << "][" << (m.begin() + 3)->get_col_index() << "]:" << (m.begin() + 3)->get_data() << " && " << m[1U][0U] << " (begin() + 3 && [1][0])\n";
+
+        auto it{ m.begin() + 3 };
+        std::advance(it, 4);
+        if (it->get_data() != m[2U][1U])
+        {
+            err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+        }
+        else if (it->get_row_index() != 2U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
+        }
+        else if (it->get_col_index() != 1U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "[" << it->get_row_index() << "][" << it->get_col_index() << "]:" << it->get_data() << " && " << m[2U][1U] << " (advance(begin() + 3, 4) && [2][1])\n";
+
+        ++it;
+        if (it->get_data() != m[2U][2U])
+        {
+            err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+        }
+        else if (it->get_row_index() != 2U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
+        }
+        else if (it->get_col_index() != 2U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "[" << it->get_row_index() << "][" << it->get_col_index() << "]:" << it->get_data() << " && " << m[2U][2U] << " ++(advance(begin() + 3, 4) && [2][2])\n";
+
+        it -= 2;
+        if (it->get_data() != m[2U][0U])
+        {
+            err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+        }
+        else if (it->get_row_index() != 2U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
+        }
+        else if (it->get_col_index() != 0U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "[" << it->get_row_index() << "][" << it->get_col_index() << "]:" << it->get_data() << " && " << m[2U][0U] << " ++(advance(begin() + 3, 4) -= 2 && [2][0])\n";
+
+        --it;
+        if (it->get_data() != m[1U][2U])
+        {
+            err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+        }
+        else if (it->get_row_index() != 1U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
+        }
+        else if (it->get_col_index() != 2U)
+        {
+            err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "[" << it->get_row_index() << "][" << it->get_col_index() << "]:" << it->get_data() << " && " << m[1U][2U] << " --(++(advance(begin() + 3, 4) -= 2) && [1][2])\n";
+
+        log << "Iterator arithmetic end\n";
+
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix iterating\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix iterating\n" << UnitTests::StreamColors::RESET;

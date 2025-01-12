@@ -107,7 +107,7 @@ namespace GameEngine::Geometry::Matrices
             constexpr const_iterator& operator+=(difference_type delta) noexcept
             {
                 std::size_t const d_row{ std::abs(delta) / N };
-                std::size_t const d_col{ delta % N };
+                std::size_t const d_col{ std::abs(delta) % N };
 
                 if (delta > 0)
                 {
@@ -116,8 +116,9 @@ namespace GameEngine::Geometry::Matrices
                 }
                 else
                 {
-                    assert(("Iterator exceeds matrix's rows during decreasing", d_row + (data.get_col_index() < d_col) > data.get_row_index()));
+                    assert(("Iterator exceeds matrix's rows during decreasing", d_row + (data.get_col_index() < d_col) <= data.get_row_index()));
                     data.set_row_index(data.get_row_index() - d_row - (data.get_col_index() < d_col));
+                    data.set_col_index(data.get_col_index() + N * (data.get_col_index() < d_col) - d_col);
                 }
                 data.move_pointer(delta);
 
