@@ -648,6 +648,7 @@ namespace UnitTests
         {
             if (m[it->get_row_index()][it->get_col_index()] != it->get_data())
             {
+                passed = false;
                 err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
             }
             else
@@ -663,6 +664,7 @@ namespace UnitTests
         {
             if (m[el.get_row_index()][el.get_col_index()] != el.get_data())
             {
+                passed = false;
                 err << StreamColors::RED << "[ERROR] Range-iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
             }
             else
@@ -679,14 +681,17 @@ namespace UnitTests
 
         if ((m.begin() + 3)->get_data() != m[1U][0U])
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
         }
         else if ((m.begin() + 3)->get_row_index() != 1U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
         }
         else if ((m.begin() + 3)->get_col_index() != 0U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
         }
         else
@@ -699,14 +704,17 @@ namespace UnitTests
         std::advance(it, 4);
         if (it->get_data() != m[2U][1U])
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
         }
         else if (it->get_row_index() != 2U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
         }
         else if (it->get_col_index() != 1U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
         }
         else
@@ -718,14 +726,17 @@ namespace UnitTests
         ++it;
         if (it->get_data() != m[2U][2U])
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
         }
         else if (it->get_row_index() != 2U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
         }
         else if (it->get_col_index() != 2U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
         }
         else
@@ -737,14 +748,17 @@ namespace UnitTests
         it -= 2;
         if (it->get_data() != m[2U][0U])
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
         }
         else if (it->get_row_index() != 2U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
         }
         else if (it->get_col_index() != 0U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
         }
         else
@@ -756,14 +770,17 @@ namespace UnitTests
         --it;
         if (it->get_data() != m[1U][2U])
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
         }
         else if (it->get_row_index() != 1U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong row index:\n" << StreamColors::RESET;
         }
         else if (it->get_col_index() != 2U)
         {
+            passed = false;
             err << StreamColors::RED << "[ERROR] Iterator calculated wrong column index:\n" << StreamColors::RESET;
         }
         else
@@ -777,6 +794,123 @@ namespace UnitTests
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix iterating\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix iterating\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_views_test(std::ostream& log, std::ostream& err)
+    {
+        bool passed{ true };
+
+        print_test_name(log, "Matrix views");
+
+        constexpr Matrix<3U, 3U, int> m1{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        constexpr Matrix<3U, 2U, int> m2{ 0, 1, 2, 3, 4, 5 };
+        constexpr Matrix<2U, 3U, int> m3{ 0, 1, 2, 3, 4, 5 };
+        
+        auto const check_matrices_row_views
+        {
+            [&passed, &log, &err](auto const& m) noexcept
+            {
+                log << "Matrix " << m.NUMBER_OF_ROWS << "x" << m.NUMBER_OF_COLS << ":\n";
+
+                for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+                {
+                    auto const v{ m.get_row(i) };
+                    if (*v.get_type() != TypeOfMatrixView::ROW)
+                    {
+                        passed = false;
+                        err << StreamColors::RED << "[ERROR] View row has not type ROW\n" << StreamColors::RESET;
+                    }
+                    else if (*v.get_index() != i)
+                    {
+                        passed = false;
+                        err << StreamColors::RED << "[ERROR] View row has wrong index\n" << StreamColors::RESET;
+                    }
+                    else if (v.NUMBER_OF_ELEMENTS != m.NUMBER_OF_COLS)
+                    {
+                        passed = false;
+                        err << StreamColors::RED << "[ERROR] View row has wrong number of elements\n" << StreamColors::RESET;
+                    }
+
+                    for (std::size_t j{ 0U }; j != m.NUMBER_OF_COLS && passed; ++j)
+                    {
+                        if (m[i][j] != v[j])
+                        {
+                            passed = false;
+                            err << StreamColors::RED << "[ERROR] View has wrong value\n" << StreamColors::RESET;
+                        }
+                        else
+                        {
+                            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+                        }
+                        log << "[" << *v.get_index() << "][" << j << "]:" << v[j] << " && " << m[i][j] << "\n";
+                    }
+                }
+            }
+        };
+        auto const check_matrices_col_views
+        {
+            [&passed, &log, &err](auto const& m) noexcept
+            {
+                log << "Matrix " << m.NUMBER_OF_ROWS << "x" << m.NUMBER_OF_COLS << ":\n";
+
+                for (std::size_t i{ 0U }; i != m.NUMBER_OF_COLS; ++i)
+                {
+                    auto const v{ m.get_col(i) };
+                    if (*v.get_type() != TypeOfMatrixView::COLUMN)
+                    {
+                        passed = false;
+                        err << StreamColors::RED << "[ERROR] View column has not type COLUMN\n" << StreamColors::RESET;
+                    }
+                    else if (*v.get_index() != i)
+                    {
+                        passed = false;
+                        err << StreamColors::RED << "[ERROR] View column has wrong index\n" << StreamColors::RESET;
+                    }
+                    else if (v.NUMBER_OF_ELEMENTS != m.NUMBER_OF_ROWS)
+                    {
+                        passed = false;
+                        err << StreamColors::RED << "[ERROR] View column has wrong number of elements\n" << StreamColors::RESET;
+                    }
+
+                    for (std::size_t j{ 0U }; j != m.NUMBER_OF_ROWS && passed; ++j)
+                    {
+                        if (m[j][i] != v[j])
+                        {
+                            passed = false;
+                            err << StreamColors::RED << "[ERROR] View has wrong value\n" << StreamColors::RESET;
+                        }
+                        else
+                        {
+                            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+                        }
+                        log << "[" << i << "][" << *v.get_index() << "]:" << v[j] << " && " << m[j][i] << "\n";
+                    }
+                }
+            }
+        };
+
+        log << "Row views beg:\n";
+
+        check_matrices_row_views(m1);
+        check_matrices_row_views(m2);
+        check_matrices_row_views(m3);
+
+        log << "Row views end\n";
+
+
+        log << "Column views beg:\n";
+
+        check_matrices_col_views(m1);
+        check_matrices_col_views(m2);
+        check_matrices_col_views(m3);
+
+        log << "Column views end\n";
+
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix views\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix views\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }

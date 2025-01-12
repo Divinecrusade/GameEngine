@@ -13,7 +13,6 @@ namespace GameEngine::Geometry::Matrices
     {
     public:
 
-
         constexpr CellOfMatrix() = default;
         constexpr CellOfMatrix(T const* init_data, std::size_t init_row, std::size_t init_col) noexcept
         :
@@ -44,7 +43,7 @@ namespace GameEngine::Geometry::Matrices
             return col;
         }
 
-        constexpr std::pair<std::size_t, std::size_t> get_indecies() const noexcept
+        constexpr std::pair<std::size_t, std::size_t> get_indices() const noexcept
         {
             return std::make_pair(get_row_index(), get_col_index());
         }

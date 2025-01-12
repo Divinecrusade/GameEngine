@@ -129,6 +129,9 @@
     <ClInclude Include="CellOfMatrix.hpp">
       <Filter>Файлы заголовков\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="ViewOfMatrix.hpp">
+      <Filter>Файлы заголовков\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">

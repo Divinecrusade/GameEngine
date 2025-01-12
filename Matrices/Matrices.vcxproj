@@ -140,7 +140,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\GameEngine\CellOfMatrix.hpp" />
     <ClInclude Include="..\GameEngine\Matrix.hpp" />
+    <ClInclude Include="..\GameEngine\ViewOfMatrix.hpp" />
     <ClInclude Include="UnitTests.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -2,14 +2,12 @@
 
 
 #include "CellOfMatrix.hpp"
+#include "ViewOfMatrix.hpp"
 
-#include <array>
-#include <concepts>
 #include <ranges>
 #include <algorithm>
 #include <stdexcept>
 #include <span>
-#include <cassert>
 #include <iterator>
 
 
@@ -261,16 +259,6 @@ namespace GameEngine::Geometry::Matrices
             return data;
         }
 
-        void swap_cols(std::size_t lhs, std::size_t rhs)
-        {
-            assert(("Requested column's index must be lesser than number of matrix columns", lhs < NUMBER_OF_COLS));
-            assert(("Requested column's index must be lesser than number of matrix columns", rhs < NUMBER_OF_COLS));
-
-            for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS * NUMBER_OF_COLS; i += NUMBER_OF_COLS)
-            {
-                std::swap(data[lhs + i], data[rhs + i]);
-            }
-        }
         void swap_rows(std::size_t lhs, std::size_t rhs)
         {
             assert(("Requested row's index must be lesser than number of matrix rows", lhs < NUMBER_OF_ROWS));
@@ -283,6 +271,42 @@ namespace GameEngine::Geometry::Matrices
             {
                 std::swap(data[lhs + i], data[rhs + i]);
             }
+        }
+        void swap_cols(std::size_t lhs, std::size_t rhs)
+        {
+            assert(("Requested column's index must be lesser than number of matrix columns", lhs < NUMBER_OF_COLS));
+            assert(("Requested column's index must be lesser than number of matrix columns", rhs < NUMBER_OF_COLS));
+
+            for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS * NUMBER_OF_COLS; i += NUMBER_OF_COLS)
+            {
+                std::swap(data[lhs + i], data[rhs + i]);
+            }
+        }
+
+        constexpr auto get_row(std::size_t i) const noexcept
+        {
+            assert(("Requested row's index must not exceed the number of matrix's rows", i < M));
+            return get_row_impl(i, std::make_index_sequence<NUMBER_OF_COLS>{});
+        }   
+
+        constexpr auto get_col(std::size_t i) const noexcept
+        {
+            assert(("Requested column's index must not exceed the number of matrix's columns", i < N));
+            return get_col_impl(i, std::make_index_sequence<NUMBER_OF_ROWS>{});
+        }
+
+    private:
+
+        template<std::size_t... Indices>
+        constexpr auto get_row_impl(std::size_t i, std::index_sequence<Indices...>) const noexcept
+        {
+            return ViewOfMatrix<N, T>{ TypeOfMatrixView::ROW, i, &data[i * NUMBER_OF_COLS + Indices]... };
+        }
+
+        template<std::size_t... Indices>
+        constexpr auto get_col_impl(std::size_t i, std::index_sequence<Indices...>) const noexcept
+        {
+            return ViewOfMatrix<M, T>{ TypeOfMatrixView::COLUMN, i, &data[i + Indices * NUMBER_OF_COLS]... };
         }
 
     private:
