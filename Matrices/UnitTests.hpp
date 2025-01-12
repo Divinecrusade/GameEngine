@@ -969,6 +969,29 @@ namespace UnitTests
         log << "Range based loop (column) end\n";
 
 
+        m = Matrix<3U, 3U, int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        log << "Construction from view begin\n";
+        log << "Using matrix:\n";
+
+        print_matrix(m, log);
+
+        auto v{ m.get_col(0U) };
+        auto const r0{ get_vector_row(v) };
+        auto const c0{ get_vector_col(v) };
+
+        check_matrix_and_range(log, err, passed, c0, v);
+        check_matrix_and_range(log, err, passed, r0, v);
+
+        v = m.get_row(1U);
+        auto const r1{ get_vector_row(v) };
+        auto const c1{ get_vector_col(v) };
+
+        check_matrix_and_range(log, err, passed, c1, v);
+        check_matrix_and_range(log, err, passed, r1, v);
+
+        log << "Construction from view end\n";
+        
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 

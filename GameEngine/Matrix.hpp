@@ -312,4 +312,24 @@ namespace GameEngine::Geometry::Matrices
 
         std::array<T, NUMBER_OF_ROWS * NUMBER_OF_COLS> data{ };
     };
+
+    template<std::size_t S, typename T>
+    auto get_vector_row(ViewOfMatrix<S, T> const& init_data) noexcept
+    {
+        std::array<T, S> tmp{ };
+        
+        std::ranges::copy(init_data, tmp.begin());
+
+        return Matrix<1U, S, T>{ std::move(tmp) };
+    }
+
+    template<std::size_t S, typename T>
+    auto get_vector_col(ViewOfMatrix<S, T> const& init_data) noexcept
+    {
+        std::array<T, S> tmp{ };
+
+        std::ranges::copy(init_data, tmp.begin());
+
+        return Matrix<S, 1U, T>{ std::move(tmp) };
+    }
 }
