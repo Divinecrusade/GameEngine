@@ -815,13 +815,13 @@ namespace UnitTests
 
         print_test_name(log, TEST_NAME);
 
-        constexpr Matrix<3U, 3U, int> m1{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        Matrix<3U, 3U, int> m1{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         constexpr Matrix<3U, 2U, int> m2{ 0, 1, 2, 3, 4, 5 };
         constexpr Matrix<2U, 3U, int> m3{ 0, 1, 2, 3, 4, 5 };
         
         auto const check_matrices_row_views
         {
-            [&passed, &log, &err](auto const& m) noexcept
+            [&passed, &log, &err](auto const& m)
             {
                 log << "Matrix " << m.NUMBER_OF_ROWS << "x" << m.NUMBER_OF_COLS << ":\n";
 
@@ -838,7 +838,7 @@ namespace UnitTests
                         passed = false;
                         err << StreamColors::RED << "[ERROR] View row has wrong index\n" << StreamColors::RESET;
                     }
-                    else if (v.NUMBER_OF_ELEMENTS != m.NUMBER_OF_COLS)
+                    if constexpr (v.NUMBER_OF_ELEMENTS != m.NUMBER_OF_COLS)
                     {
                         passed = false;
                         err << StreamColors::RED << "[ERROR] View row has wrong number of elements\n" << StreamColors::RESET;
@@ -862,7 +862,7 @@ namespace UnitTests
         };
         auto const check_matrices_col_views
         {
-            [&passed, &log, &err](auto const& m) noexcept
+            [&passed, &log, &err](auto const& m)
             {
                 log << "Matrix " << m.NUMBER_OF_ROWS << "x" << m.NUMBER_OF_COLS << ":\n";
 
@@ -879,7 +879,7 @@ namespace UnitTests
                         passed = false;
                         err << StreamColors::RED << "[ERROR] View column has wrong index\n" << StreamColors::RESET;
                     }
-                    else if (v.NUMBER_OF_ELEMENTS != m.NUMBER_OF_ROWS)
+                    if constexpr (v.NUMBER_OF_ELEMENTS != m.NUMBER_OF_ROWS)
                     {
                         passed = false;
                         err << StreamColors::RED << "[ERROR] View column has wrong number of elements\n" << StreamColors::RESET;

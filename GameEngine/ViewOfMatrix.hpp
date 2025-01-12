@@ -189,11 +189,11 @@ namespace GameEngine::Geometry::Matrices
         }
 
 
-        const_iterator begin() const noexcept
+        constexpr const_iterator begin() const noexcept
         {
             return const_iterator{ data.data() };
         }
-        const_iterator end()   const noexcept
+        constexpr const_iterator end()   const noexcept
         {
             return const_iterator{ data.data() + N };
         }

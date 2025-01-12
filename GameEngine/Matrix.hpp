@@ -203,15 +203,15 @@ namespace GameEngine::Geometry::Matrices
         constexpr Matrix() = default;
 
         template<typename... Args>
-        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && std::is_move_constructible_v<T>
+        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...) && std::is_move_constructible_v<T>)
         constexpr explicit Matrix(Args&&... init_data) noexcept
         : 
         data{ { std::forward<Args>(init_data)... } } 
         { }
 
         template<typename... Args>
-        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...)) && !std::is_move_constructible_v<T>
-        constexpr explicit Matrix(Args&&... init_data) noexcept(std::is_nothrow_copy_constructible<T>)
+        requires (sizeof...(Args) == M * N && (std::is_same_v<Args, T> && ...) && !std::is_move_constructible_v<T>)
+        constexpr explicit Matrix(Args&&... init_data) noexcept(std::is_nothrow_copy_constructible_v<T>)
         :
         data{ { std::forward<Args>(init_data)... } }
         { }
@@ -245,7 +245,7 @@ namespace GameEngine::Geometry::Matrices
             std::ranges::copy(init_data, data.begin());
         }
 
-        std::span<T const, N> operator[](std::size_t row) const
+        std::span<T const, N> operator[](std::size_t row) const noexcept
         {
             assert(("Requested row's index must be lesser than number of matrix rows", row < NUMBER_OF_ROWS));
 
@@ -258,7 +258,7 @@ namespace GameEngine::Geometry::Matrices
             return data;
         }
 
-        void swap_rows(std::size_t lhs, std::size_t rhs)
+        void swap_rows(std::size_t lhs, std::size_t rhs) noexcept
         {
             assert(("Requested row's index must be lesser than number of matrix rows", lhs < NUMBER_OF_ROWS));
             assert(("Requested row's index must be lesser than number of matrix rows", rhs < NUMBER_OF_ROWS));
@@ -271,7 +271,7 @@ namespace GameEngine::Geometry::Matrices
                 std::swap(data[lhs + i], data[rhs + i]);
             }
         }
-        void swap_cols(std::size_t lhs, std::size_t rhs)
+        void swap_cols(std::size_t lhs, std::size_t rhs) noexcept
         {
             assert(("Requested column's index must be lesser than number of matrix columns", lhs < NUMBER_OF_COLS));
             assert(("Requested column's index must be lesser than number of matrix columns", rhs < NUMBER_OF_COLS));
