@@ -416,9 +416,10 @@ namespace UnitTests
     
     static bool is_pass_type_constraints_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix type constraints" };
         bool passed{ true };
 
-        print_test_name(log, "Matrix type constraints");
+        print_test_name(log, TEST_NAME);
 
         check_invalid_type<3U, 3U, void>(log, err, passed);
         check_invalid_type<3U, 3U, std::nullptr_t>(log, err, passed);
@@ -435,17 +436,18 @@ namespace UnitTests
         check_valid_type<3U, 3U, int>(log, err, passed);
         check_valid_type<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix type constraints\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix type constraints\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_default_constructor_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix default constructor" };
         bool passed{ true };
 
-        print_test_name(log, "Matrix default constructor");
+        print_test_name(log, TEST_NAME);
 
         check_default_constructor<3U, 3U, int>(log, err, passed);
         check_default_constructor<3U, 3U, double>(log, err, passed);
@@ -455,17 +457,18 @@ namespace UnitTests
         check_default_constructor<3U, 3U, long double>(log, err, passed);
         check_default_constructor<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix constructor\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix constructor\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_copy_constructor_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix copy constructor" };
         bool passed{ true };
 
-        print_test_name(log, "Matrix copy constructor");
+        print_test_name(log, TEST_NAME);
         check_copy_constructor<3U, 3U, int>(log, err, passed);
         check_copy_constructor<3U, 3U, double>(log, err, passed);
         check_copy_constructor<3U, 3U, float>(log, err, passed);
@@ -475,17 +478,18 @@ namespace UnitTests
         check_copy_constructor<3U, 3U, long double>(log, err, passed);
         check_copy_constructor<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy constructor\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_copy_operator_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix copy operator" };
         bool passed{ true };
 
-        print_test_name(log, "Matrix copy operator");
+        print_test_name(log, TEST_NAME);
 
         check_copy_operator<3U, 3U, int>(log, err, passed);
         check_copy_operator<3U, 3U, double>(log, err, passed);
@@ -495,17 +499,18 @@ namespace UnitTests
         check_copy_operator<3U, 3U, long double>(log, err, passed);
         check_copy_operator<3U, 3U, DummyExceptArithmetic>(log, err, passed);
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix copy operator\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix copy operator\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_parameter_constructor_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix parameter constructor" };
         bool passed{ true };
 
-        print_test_name(log, "Matrix parameter constructor");
+        print_test_name(log, TEST_NAME);
 
         check_parameter_constructor_with_pack<1U, 1U, double>(log, err, passed, 2., 3.);
         check_parameter_constructor_with_pack<1U, 0U, double>(log, err, passed, 2., 3.);
@@ -574,15 +579,18 @@ namespace UnitTests
             log << "Flattern checks end\n";
         }
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix parameter constructor\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_swapping_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Columns and rows swapping" };
         bool passed{ true };
+
+        print_test_name(log, TEST_NAME);
 
         {
             constexpr std::array row0{ 1, 2, 3 };
@@ -631,17 +639,20 @@ namespace UnitTests
             check_col_and_range(log, err, passed, m, rhs, std::vector<int>{7, 1, 4});
         }
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix columns and rows swapping\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix columns and rows swapping\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_iterator_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix iterating" };
         bool passed{ true };
 
         Matrix<3U, 3U, int> m{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        print_test_name(log, TEST_NAME);
 
         log << "Iterator based loop beg:\n";
         for (auto it{ m.begin() }; it != m.end(); ++it)
@@ -791,18 +802,18 @@ namespace UnitTests
 
         log << "Iterator arithmetic end\n";
 
-
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix iterating\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix iterating\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
 
     static bool is_pass_views_test(std::ostream& log, std::ostream& err)
     {
+        static constexpr std::string_view TEST_NAME{ "Matrix views" };
         bool passed{ true };
 
-        print_test_name(log, "Matrix views");
+        print_test_name(log, TEST_NAME);
 
         constexpr Matrix<3U, 3U, int> m1{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         constexpr Matrix<3U, 2U, int> m2{ 0, 1, 2, 3, 4, 5 };
@@ -909,8 +920,8 @@ namespace UnitTests
         log << "Column views end\n";
 
 
-        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] Matrix views\n" << UnitTests::StreamColors::RESET;
-        else        err << UnitTests::StreamColors::RED   << "[FAIL]    Matrix views\n" << UnitTests::StreamColors::RESET;
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }
