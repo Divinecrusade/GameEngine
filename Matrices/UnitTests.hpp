@@ -654,7 +654,7 @@ namespace UnitTests
 
         print_test_name(log, TEST_NAME);
 
-        log << "Iterator based loop beg:\n";
+        log << "Iterator based loop begin\n";
         for (auto it{ m.begin() }; it != m.end(); ++it)
         {
             if (m[it->get_row_index()][it->get_col_index()] != it->get_data())
@@ -670,7 +670,7 @@ namespace UnitTests
         }
         log << "Iterator based loop end\n";
 
-        log << "Range based loop beg:\n";
+        log << "Range based loop begin\n";
         for (auto const& el : m)
         {
             if (m[el.get_row_index()][el.get_col_index()] != el.get_data())
@@ -688,7 +688,7 @@ namespace UnitTests
 
         print_matrix(m, log);
 
-        log << "Iterator arithmetic beg:\n";
+        log << "Iterator arithmetic begin\n";
 
         if ((m.begin() + 3)->get_data() != m[1U][0U])
         {
@@ -902,22 +902,71 @@ namespace UnitTests
             }
         };
 
-        log << "Row views beg:\n";
-
+        log << "Row views begin\n";
         check_matrices_row_views(m1);
         check_matrices_row_views(m2);
         check_matrices_row_views(m3);
-
         log << "Row views end\n";
 
-
-        log << "Column views beg:\n";
-
+        log << "Column views begin\n";
         check_matrices_col_views(m1);
         check_matrices_col_views(m2);
         check_matrices_col_views(m3);
-
         log << "Column views end\n";
+
+        auto m{ m1 };
+
+        log << "Range based loop (row) begin\n";
+
+        log << "Using matrix:\n";
+        print_matrix(m, log);
+
+        for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+        {
+            std::size_t j{ 0U };
+            for (auto const& el : m.get_row(i))
+            {
+                if (m[i][j] != el)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Range-iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+                }
+                log << " [" << i << "][" << j << "]:" << el << " && " << m[i][j] << "\n";
+                ++j;
+            }
+        }
+        log << "Range based loop (row) end\n";
+
+        m = std::move(m1);
+
+        log << "Range based loop (column) begin\n";
+
+        log << "Using matrix:\n";
+        print_matrix(m, log);
+
+        for (std::size_t j{ 0U }; j != m.NUMBER_OF_COLS; ++j)
+        {
+            std::size_t i{ 0U };
+            for (auto const& el : m.get_col(j))
+            {
+                if (m[i][j] != el)
+                {
+                    passed = false;
+                    err << StreamColors::RED << "[ERROR] Range-iterator value and bracket square operator value not equal:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+                }
+                log << " [" << i << "][" << j << "]:" << el << " && " << m[i][j] << "\n";
+                ++i;
+            }
+        }
+        log << "Range based loop (column) end\n";
 
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;

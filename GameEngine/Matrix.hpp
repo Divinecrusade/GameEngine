@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include <span>
-#include <iterator>
 
 
 namespace GameEngine::Geometry::Matrices
