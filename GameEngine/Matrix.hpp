@@ -308,10 +308,35 @@ namespace GameEngine::Geometry::Matrices
             return ViewOfMatrix<M, T>{ TypeOfMatrixView::COLUMN, i, &data[i + Indices * NUMBER_OF_COLS]... };
         }
 
+    public:
+
+        friend bool operator==(Matrix const& lhs, Matrix const& rhs) noexcept
+        {
+            return lhs.data == rhs.data;
+        }
+        friend bool operator!=(Matrix const& lhs, Matrix const& rhs) noexcept
+        {
+            return !(lhs == rhs);
+        }
+
     private:
 
         std::array<T, NUMBER_OF_ROWS * NUMBER_OF_COLS> data{ };
     };
+
+    template<std::size_t M1, std::size_t N1, std::size_t M2, std::size_t N2, typename T>
+    requires (M1 != M2 || N1 != N2)
+    constexpr bool operator==(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs)
+    {
+        return false;
+    }
+
+    template<std::size_t M1, std::size_t N1, std::size_t M2, std::size_t N2, typename T>
+    requires (M1 != M2 || N1 != N2)
+    constexpr bool operator!=(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs)
+    {
+        return true;
+    }
 
     template<std::size_t S, typename T>
     auto get_vector_row(ViewOfMatrix<S, T> const& init_data) noexcept
@@ -331,5 +356,18 @@ namespace GameEngine::Geometry::Matrices
         std::ranges::copy(init_data, tmp.begin());
 
         return Matrix<S, 1U, T>{ std::move(tmp) };
+    }
+
+    template<std::size_t M, typename T>
+    constexpr Matrix<M, M, T> get_identity() noexcept
+    {
+        std::array<T, M* M> data{ };
+
+        for (std::size_t i = 0; i < M; ++i)
+        {
+            data[i * M + i] = T{ 1 };
+        }
+
+        return Matrix<M, M, T>{ std::move(data) };
     }
 }

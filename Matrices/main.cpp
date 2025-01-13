@@ -13,6 +13,7 @@ int main()
     std::ignore = UnitTests::is_pass_swapping_test(std::clog, std::cerr);
     std::ignore = UnitTests::is_pass_iterator_test(std::clog, std::cerr);
     std::ignore = UnitTests::is_pass_views_test(std::clog, std::cerr);
+    std::ignore = UnitTests::is_pass_math_operations_test(std::clog, std::cerr);
 
     return EXIT_SUCCESS;
 }

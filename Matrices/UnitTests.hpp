@@ -991,7 +991,71 @@ namespace UnitTests
         check_matrix_and_range(log, err, passed, r1, v);
 
         log << "Construction from view end\n";
-        
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+
+        return passed;
+    }
+
+    static bool is_pass_math_operations_test(std::ostream& log, std::ostream& err)
+    {
+        static constexpr std::string_view TEST_NAME{ "Math operations" };
+        bool passed{ true };
+
+        print_test_name(log, TEST_NAME);
+
+        constexpr auto       auto_identity{ get_identity<3U, int>() };
+        constexpr std::array manual_identity{ 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+
+        log << "Identity matrix:\n";
+        print_matrix(auto_identity, log);
+
+        check_matrix_and_range(log, err, passed, auto_identity, manual_identity);
+
+        log << "Matrices comparing begin\n";
+
+        constexpr Matrix<3U, 3U, int> m{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        log << "Matrix m:\n";
+        print_matrix(m, log);
+
+        if (m != m)
+        {
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrix is not equal to itself:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m == m\n";
+
+        if (m == auto_identity)
+        {
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrices are equal:\n" << StreamColors::RESET;
+            print_matrix(m, log);
+            print_matrix(auto_identity, log);
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m != identity\n";
+
+        constexpr Matrix<3U, 2U> m1{ };
+        constexpr Matrix<2U, 3U> m2{ };
+
+        if constexpr (m1 == m2)
+        {
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrices with different sizes are equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m1<3, 2> != m2<2, 3>\n";
+
+        log << "Matrices comparing end\n";
+
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
