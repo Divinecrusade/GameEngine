@@ -39,6 +39,9 @@ namespace UnitTests
             DummyExceptArithmetic operator-(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
             DummyExceptArithmetic operator*(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
             DummyExceptArithmetic operator/(DummyExceptArithmetic const&) const { return DummyExceptArithmetic{}; }
+
+            friend bool operator==(DummyExceptArithmetic const&, DummyExceptArithmetic const&) { return true; }
+            friend bool operator!=(DummyExceptArithmetic const&, DummyExceptArithmetic const&) { return false; }
         };
         static_assert(arithmetic_like<DummyExceptArithmetic>);
 

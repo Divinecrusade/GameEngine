@@ -21,6 +21,8 @@ namespace GameEngine::Geometry::Matrices
         std::declval<T const&>() * std::declval<T const&>();
         std::declval<T const&>() / std::declval<T const&>();
         std::declval<T&>() = std::declval<T const&>();
+        std::declval<T const&>() == std::declval<T const&>();
+        std::declval<T const&>() != std::declval<T const&>();
     } && std::is_default_constructible_v<T> == true;
     static_assert(arithmetic_like<double>);
     static_assert(arithmetic_like<float>);
@@ -333,7 +335,7 @@ namespace GameEngine::Geometry::Matrices
             return !(lhs == rhs);
         }
 
-        friend constexpr Matrix operator+(Matrix const& lhs, Matrix const& rhs) noexcept
+        friend constexpr Matrix operator+(Matrix const& lhs, Matrix const& rhs) noexcept(noexcept(std::declval<T const&>() + std::declval<T const&>()))
         {
             std::array<T, M * N> sum_result{ };
 
@@ -341,7 +343,7 @@ namespace GameEngine::Geometry::Matrices
 
             return Matrix{ std::move(sum_result) };
         }
-        friend constexpr Matrix operator-(Matrix const& lhs, Matrix const& rhs) noexcept
+        friend constexpr Matrix operator-(Matrix const& lhs, Matrix const& rhs) noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()))
         {
             std::array<T, M* N> sub_result{ };
 
@@ -349,7 +351,7 @@ namespace GameEngine::Geometry::Matrices
 
             return Matrix{ std::move(sub_result) };
         }
-        friend constexpr Matrix operator*(Matrix const& lhs, T const& rhs) noexcept
+        friend constexpr Matrix operator*(Matrix const& lhs, T const& rhs) noexcept(noexcept(std::declval<T const&>() * std::declval<T const&>()))
         {
             std::array<T, M * N> mul_result{ };
 
@@ -357,11 +359,11 @@ namespace GameEngine::Geometry::Matrices
 
             return Matrix{ std::move(mul_result) };
         }
-        friend constexpr Matrix operator*(T const& lhs, Matrix const& rhs) noexcept
+        friend constexpr Matrix operator*(T const& lhs, Matrix const& rhs) noexcept(noexcept(std::declval<T const&>() * std::declval<T const&>()))
         {
             return rhs * lhs;
         }
-        friend constexpr Matrix operator/(Matrix const& lhs, T const& rhs) noexcept
+        friend constexpr Matrix operator/(Matrix const& lhs, T const& rhs) noexcept(noexcept(std::declval<T const&>() / std::declval<T const&>()))
         {
             std::array<T, M* N> mul_result{ };
 
@@ -370,22 +372,22 @@ namespace GameEngine::Geometry::Matrices
             return Matrix{ std::move(mul_result) };
         }
 
-        Matrix& operator+=(Matrix const& rhs) noexcept
+        Matrix& operator+=(Matrix const& rhs) noexcept(noexcept(std::declval<T const&>() + std::declval<T const&>()))
         {
             std::ranges::transform(data, rhs.data, data.begin(), std::plus<T>{});
             return *this;
         }
-        Matrix& operator-=(Matrix const& rhs) noexcept
+        Matrix& operator-=(Matrix const& rhs) noexcept(noexcept(std::declval<T const&>() - std::declval<T const&>()))
         {
             std::ranges::transform(data, rhs.data, data.begin(), std::minus<T>{});
             return *this;
         }
-        Matrix& operator*=(T const& rhs) noexcept
+        Matrix& operator*=(T const& rhs) noexcept(noexcept(std::declval<T const&>() * std::declval<T const&>()))
         {
             std::ranges::transform(data, data.begin(), [&rhs](auto const& val) noexcept { return rhs * val; });
             return *this;
         }
-        Matrix& operator/=(T const& rhs) noexcept
+        Matrix& operator/=(T const& rhs) noexcept(noexcept(std::declval<T const&>() / std::declval<T const&>()))
         {
             std::ranges::transform(data, data.begin(), [&rhs](auto const& val) noexcept { return val / rhs; });
             return *this;
@@ -398,14 +400,14 @@ namespace GameEngine::Geometry::Matrices
 
     template<std::size_t M1, std::size_t N1, std::size_t M2, std::size_t N2, typename T>
     requires (M1 != M2 || N1 != N2)
-    constexpr bool operator==(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs)
+    constexpr bool operator==(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs) noexcept
     {
         return false;
     }
 
     template<std::size_t M1, std::size_t N1, std::size_t M2, std::size_t N2, typename T>
     requires (M1 != M2 || N1 != N2)
-    constexpr bool operator!=(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs)
+    constexpr bool operator!=(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs) noexcept
     {
         return true;
     }
