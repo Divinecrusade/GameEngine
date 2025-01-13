@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <span>
+#include <functional>
 
 
 namespace GameEngine::Geometry::Matrices
@@ -323,13 +324,41 @@ namespace GameEngine::Geometry::Matrices
 
     public:
 
-        friend bool operator==(Matrix const& lhs, Matrix const& rhs) noexcept
+        friend constexpr bool operator==(Matrix const& lhs, Matrix const& rhs) noexcept
         {
             return lhs.data == rhs.data;
         }
-        friend bool operator!=(Matrix const& lhs, Matrix const& rhs) noexcept
+        friend constexpr bool operator!=(Matrix const& lhs, Matrix const& rhs) noexcept
         {
             return !(lhs == rhs);
+        }
+
+        friend constexpr Matrix operator+(Matrix const& lhs, Matrix const& rhs) noexcept
+        {
+            std::array<T, M * N> sum_result{ };
+
+            std::ranges::transform(lhs.data, rhs.data, sum_result.begin(), std::plus<T>{});
+
+            return Matrix{ std::move(sum_result) };
+        }
+        friend constexpr Matrix operator-(Matrix const& lhs, Matrix const& rhs) noexcept
+        {
+            std::array<T, M* N> sub_result{ };
+
+            std::ranges::transform(lhs.data, rhs.data, sub_result.begin(), std::minus<T>{});
+
+            return Matrix{ std::move(sub_result) };
+        }
+
+        Matrix& operator+=(Matrix const& rhs) noexcept
+        {
+            std::ranges::transform(data, rhs.data, data.begin(), std::plus<T>{});
+            return *this;
+        }
+        Matrix& operator-=(Matrix const& rhs) noexcept
+        {
+            std::ranges::transform(data, rhs.data, data.begin(), std::minus<T>{});
+            return *this;
         }
 
     private:

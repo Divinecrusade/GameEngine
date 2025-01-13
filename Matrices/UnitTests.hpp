@@ -1114,6 +1114,56 @@ namespace UnitTests
 
         log << "Matrices transpose end\n";
 
+        constexpr auto m5{ m + m };
+        log << "m:\n";
+        print_matrix(m, log);
+
+        log << "m + m:\n";
+        print_matrix(m5, log);
+
+        constexpr std::array check_sum{ 0 * 2, 1 * 2, 2 * 2, 3 * 2, 4 * 2, 5 * 2, 6 * 2, 7 * 2, 8 * 2 };
+        check_matrix_and_range(log, err, passed, m5, check_sum);
+
+        constexpr auto m6{ m - m };
+
+        log << "m - m:\n";
+        print_matrix(m6, log);
+
+        constexpr std::array check_sub{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        check_matrix_and_range(log, err, passed, m6, check_sub);
+
+        auto M{ m };
+        log << "M = m\nM += m:\n";
+        M += m;
+        print_matrix(M, log);
+
+        if (M != (m + m))
+        {
+            passed = false;
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrices are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m + m == m += m\n";
+
+        M = m;
+        log << "M = m\nM -= m:\n";
+        M -= m;
+        print_matrix(M, log);
+
+        if (M != (m - m))
+        {
+            passed = false;
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrices are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m - m == m -= m\n";
+
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
