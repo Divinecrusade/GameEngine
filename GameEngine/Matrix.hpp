@@ -294,6 +294,19 @@ namespace GameEngine::Geometry::Matrices
             return get_col_impl(i, std::make_index_sequence<NUMBER_OF_ROWS>{});
         }
 
+        constexpr Matrix<N, M, T> get_transponsed() const noexcept
+        {
+            std::array<T, N* M> tmp_data{ };
+
+            for (std::size_t i{ 0U }; i != N; ++i)
+            for (std::size_t j{ 0U }; j != M; ++j)
+            {
+                tmp_data[i * M + j] = data[j * N + i];
+            }
+
+            return Matrix<N, M, T>{ std::move(tmp_data) };
+        }
+
     private:
 
         template<std::size_t... Indices>

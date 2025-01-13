@@ -1021,6 +1021,7 @@ namespace UnitTests
 
         if (m != m)
         {
+            passed = false;
             err << UnitTests::StreamColors::RED << "[ERROR] Matrix is not equal to itself:\n" << StreamColors::RESET;
         }
         else
@@ -1031,6 +1032,7 @@ namespace UnitTests
 
         if (m == auto_identity)
         {
+            passed = false;
             err << UnitTests::StreamColors::RED << "[ERROR] Matrices are equal:\n" << StreamColors::RESET;
             print_matrix(m, log);
             print_matrix(auto_identity, log);
@@ -1046,6 +1048,7 @@ namespace UnitTests
 
         if constexpr (m1 == m2)
         {
+            passed = false;
             err << UnitTests::StreamColors::RED << "[ERROR] Matrices with different sizes are equal:\n" << StreamColors::RESET;
         }
         else
@@ -1055,6 +1058,61 @@ namespace UnitTests
         log << "m1<3, 2> != m2<2, 3>\n";
 
         log << "Matrices comparing end\n";
+
+        log << "Matrices transpose begin\n";
+
+        log << "m:\n";
+        print_matrix(m, log);
+
+        constexpr auto m_t{ m.get_transponsed() };
+
+        log << "mT:\n";
+        print_matrix(m_t, log);
+
+        for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+        {
+            auto const v{ m.get_row(i) };
+            auto const v_t{ m_t.get_col(i) };
+            for (std::size_t j{ 0U }; j != v_t.NUMBER_OF_ELEMENTS; ++j)
+            {
+                if (v[j] != v_t[j])
+                {
+                    passed = false;
+                    err << UnitTests::StreamColors::RED << "[ERROR] Wrong transposed matrix value:\n" << StreamColors::RESET;
+                }
+                else
+                {
+                    log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+                }
+                log << " m[" << i << "][" << j << "] = " << v[j] << " && " << "m_t[" << j << "][" << i << "] = " << v_t[j] << "\n";
+            }
+        }
+
+        constexpr Matrix<3U, 2U, int> m3{ 0, 1, 2, 3, 4, 5 };
+        constexpr auto m3_t{ m3.get_transponsed() };
+        constexpr std::array control3{ 0, 2, 4, 1, 3, 5 };
+
+        log << "m:\n";
+        print_matrix(m3, log);
+
+        log << "mT:\n";
+        print_matrix(m3_t, log);
+
+        check_matrix_and_range(log, err, passed, m3_t, control3);
+
+        constexpr Matrix<2U, 3U, int> m4{ 0, 1, 2, 3, 4, 5 };
+        constexpr auto m4_t{ m4.get_transponsed() };
+        constexpr std::array control4{ 0, 3, 1, 4, 2, 5 };
+
+        log << "m:\n";
+        print_matrix(m4, log);
+
+        log << "mT:\n";
+        print_matrix(m4_t, log);
+
+        check_matrix_and_range(log, err, passed, m4_t, control4);
+
+        log << "Matrices transpose end\n";
 
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
