@@ -1164,6 +1164,60 @@ namespace UnitTests
         }
         log << "m - m == m -= m\n";
 
+        constexpr int  k { 3 };
+        constexpr auto m7{ m * k };
+        log << "m:\n";
+        print_matrix(m, log);
+
+        log << "m * " << k <<":\n";
+        print_matrix(m7, log);
+
+        constexpr std::array check_mul{ 0 * k, 1 * k, 2 * k, 3 * k, 4 * k, 5 * k, 6 * k, 7 * k, 8 * k };
+        check_matrix_and_range(log, err, passed, m7, check_mul);
+
+        M = m;
+        log << "M = m\nM *= " << k << ":\n";
+        M *= k;
+        print_matrix(M, log);
+
+        if (M != (k * m))
+        {
+            passed = false;
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrices are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m * " << k << " == m *= " << k << "\n";
+
+        constexpr int  d{ 3 };
+        const auto m8{ m / d };
+        log << "m:\n";
+        print_matrix(m, log);
+
+        log << "m / " << d << ":\n";
+        print_matrix(m8, log);
+
+        constexpr std::array check_div{ 0 / d, 1 / d, 2 / d, 3 / d, 4 / d, 5 / d, 6 / d, 7 / d, 8 / d };
+        check_matrix_and_range(log, err, passed, m8, check_div);
+
+        M = m;
+        log << "M = m\nM /= " << d << ":\n";
+        M /= d;
+        print_matrix(M, log);
+
+        if (M != (m / d))
+        {
+            passed = false;
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrices are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m / " << d << " == m /= " << d << "\n";
+
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 

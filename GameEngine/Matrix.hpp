@@ -349,6 +349,26 @@ namespace GameEngine::Geometry::Matrices
 
             return Matrix{ std::move(sub_result) };
         }
+        friend constexpr Matrix operator*(Matrix const& lhs, T const& rhs) noexcept
+        {
+            std::array<T, M * N> mul_result{ };
+
+            std::ranges::transform(lhs.data, mul_result.begin(), [&rhs](auto const& val) noexcept { return rhs * val; });
+
+            return Matrix{ std::move(mul_result) };
+        }
+        friend constexpr Matrix operator*(T const& lhs, Matrix const& rhs) noexcept
+        {
+            return rhs * lhs;
+        }
+        friend constexpr Matrix operator/(Matrix const& lhs, T const& rhs) noexcept
+        {
+            std::array<T, M* N> mul_result{ };
+
+            std::ranges::transform(lhs.data, mul_result.begin(), [&rhs](auto const& val) noexcept { return val / rhs; });
+
+            return Matrix{ std::move(mul_result) };
+        }
 
         Matrix& operator+=(Matrix const& rhs) noexcept
         {
@@ -358,6 +378,16 @@ namespace GameEngine::Geometry::Matrices
         Matrix& operator-=(Matrix const& rhs) noexcept
         {
             std::ranges::transform(data, rhs.data, data.begin(), std::minus<T>{});
+            return *this;
+        }
+        Matrix& operator*=(T const& rhs) noexcept
+        {
+            std::ranges::transform(data, data.begin(), [&rhs](auto const& val) noexcept { return rhs * val; });
+            return *this;
+        }
+        Matrix& operator/=(T const& rhs) noexcept
+        {
+            std::ranges::transform(data, data.begin(), [&rhs](auto const& val) noexcept { return val / rhs; });
             return *this;
         }
 
