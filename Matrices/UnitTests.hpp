@@ -315,13 +315,13 @@ namespace UnitTests
         };
 
         template<std::size_t M, std::size_t N, typename T>
-        static void print_matrix(Matrix<M, N, T> const& m, std::ostream& out)
+        static void print_matrix(Matrix<M, N, T> const& m, std::ostream& out, std::size_t setl = 8)
         {
             for (std::size_t i{ 0U }; i != M; ++i)
             {
                 for (std::size_t j{ 0U }; j != N; ++j)
                 {
-                    out << std::setw(8) << m[i][j];
+                    out << std::setw(setl) << m[i][j];
                 }
                 out << '\n';
             }
@@ -1352,7 +1352,7 @@ namespace UnitTests
         print_matrix(m, log);
 
         log << "Let sum (row 2) * " << k << " with row 1\n";
-        m.add_rows(2U, 1U, k);
+        m.sum_rows(2U, 1U, k);
         print_matrix(m, log);
 
         auto const row{ m.get_row(1U) };
@@ -1373,7 +1373,7 @@ namespace UnitTests
         constexpr std::array<int, 3U> control_2{ 0 + 1 * -k, 27 + 32 * -k, 6 + 7 * -k };
 
         log << "Let sum (col 1) * " << -k << " with col 0\n";
-        m.add_cols(1U, 0U, -k);
+        m.sum_cols(1U, 0U, -k);
         print_matrix(m, log);
 
         auto const col{ m.get_col(0U) };
@@ -1398,7 +1398,7 @@ namespace UnitTests
         constexpr Matrix<3U> m3{ 22., 16., 43., 12., 15., 67., -33., 62., 10. };
         constexpr double d3{ -72107. };
 
-        log << "Determinants calculations begin\n";
+        log << "Determinant calculation begin\n";
 
         print_matrix(m1, log);
         auto d{ get_determinant(m1) };
@@ -1439,7 +1439,59 @@ namespace UnitTests
         }
         log << d << " == " << d3 << "\n";
 
-        log << "Determinants calculations end\n";
+        log << "Determinant calculation end\n";
+
+        log << "Inverse matrix calculation begin\n";
+
+        log << "m:\n";
+        print_matrix(m1, log);
+        auto const m1_inv{ get_inversed(m1) };
+        constexpr Matrix<3U> control_inv_1{ 2. / 7., 4. / 7., -13. / 7., 2. / 7., -3. / 7., 8. / 7., -3. / 7., 1. / 7., 2. / 7. };
+        if (m1_inv != control_inv_1)
+        {
+            passed = false;
+            err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+            print_matrix(control_inv_1, log, 16);
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+        }
+        log << "m_inv:\n";
+        print_matrix(m1_inv, log, 16);
+
+        log << "m:\n";
+        print_matrix(m3, log);
+        auto const m3_inv{ get_inversed(m3) };
+        constexpr Matrix<3U> control_inv_3{ 572. / 10301., -358. / 10301., -61. / 10301., 333. / 10301., -1639. / 72107., 958. / 72107., -177. / 10301., 1892. / 72107., -138. / 72107. };
+        if (m3_inv != control_inv_3)
+        {
+            passed = false;
+            err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+            print_matrix(control_inv_3, log, 16);
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK]" << StreamColors::RESET;
+        }
+        log << "m_inv:\n";
+        print_matrix(m3_inv, log, 16);
+
+        if (m1_inv * m1 != get_identity<3U>())
+        {
+            passed = false;
+            err << StreamColors::RED << "[ERROR] Matrix multiplied to its inverse version is not equal to identity:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m_inv * m == identity\n";
+
+        log << "Inverse matrix calculation end\n";
+
+        if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
+        else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
         return passed;
     }

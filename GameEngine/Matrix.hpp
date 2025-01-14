@@ -291,7 +291,6 @@ namespace GameEngine::Geometry::Matrices
             assert(("Requested row's index must not exceed the number of matrix's rows", i < M));
             return get_row_impl(i, std::make_index_sequence<NUMBER_OF_COLS>{});
         }   
-
         constexpr auto get_col(std::size_t i) const noexcept
         {
             assert(("Requested column's index must not exceed the number of matrix's columns", i < N));
@@ -311,7 +310,7 @@ namespace GameEngine::Geometry::Matrices
             return Matrix<N, M, T>{ std::move(tmp_data) };
         }
 
-        Matrix& add_rows(std::size_t from, std::size_t to, T const& from_k)
+        Matrix& sum_rows(std::size_t from, std::size_t to, T const& from_k) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()) && noexcept(std::declval<T const&>() + std::declval<T const&>()) && std::is_nothrow_assignable_v<T, T>)
         {
             assert(("Index of requested row must not exceed the size of matrix", from < NUMBER_OF_ROWS));
             assert(("Index of requested row must not exceed the size of matrix", to < NUMBER_OF_ROWS));
@@ -319,13 +318,12 @@ namespace GameEngine::Geometry::Matrices
             
             for (std::size_t i{ 0U }; i != NUMBER_OF_COLS; ++i)
             {
-                data[to * NUMBER_OF_COLS + i] += data[from * NUMBER_OF_COLS + i] * from_k;
+                data[to * NUMBER_OF_COLS + i] = data[to * NUMBER_OF_COLS + i] + data[from * NUMBER_OF_COLS + i] * from_k;
             }
 
             return *this;
         }
-
-        Matrix& add_cols(std::size_t from, std::size_t to, T const& from_k)
+        Matrix& sum_cols(std::size_t from, std::size_t to, T const& from_k) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()) && noexcept(std::declval<T const&>() + std::declval<T const&>()) && std::is_nothrow_assignable_v<T, T>)
         {
             assert(("Index of requested column must not exceed the size of matrix", from < NUMBER_OF_COLS));
             assert(("Index of requested column must not exceed the size of matrix", to < NUMBER_OF_COLS));
@@ -333,7 +331,28 @@ namespace GameEngine::Geometry::Matrices
 
             for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS; ++i)
             {
-                data[i * NUMBER_OF_COLS + to] += data[i * NUMBER_OF_COLS + from] * from_k;
+                data[i * NUMBER_OF_COLS + to] = data[i * NUMBER_OF_COLS + to] + data[i * NUMBER_OF_COLS + from] * from_k;
+            }
+
+            return *this;
+        }
+
+        Matrix& mul_row(std::size_t i, T const& k) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()) && std::is_nothrow_assignable_v<T, T>)
+        {
+            assert(("Index of requested row must not exceed the size of matrix", i < NUMBER_OF_ROWS));
+            for (std::size_t j{ 0U }; j != NUMBER_OF_COLS; ++j)
+            {
+                data[i * NUMBER_OF_COLS + j] = data[i * NUMBER_OF_COLS + j] * k;
+            }
+
+            return *this;
+        }
+        Matrix& mul_col(std::size_t j, T const& k) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()) && std::is_nothrow_assignable_v<T, T>)
+        {
+            assert(("Index of requested column must not exceed the size of matrix", j < NUMBER_OF_COLS));
+            for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS; ++i)
+            {
+                data[i * NUMBER_OF_COLS + j] = data[i * NUMBER_OF_COLS + j] * k;
             }
 
             return *this;
@@ -357,8 +376,22 @@ namespace GameEngine::Geometry::Matrices
 
         friend constexpr bool operator==(Matrix const& lhs, Matrix const& rhs) noexcept
         {
-            return lhs.data == rhs.data;
+            if constexpr (std::floating_point<T>)
+            {
+                for (std::size_t i{ 0U }; i != lhs.data.size(); ++i)
+                {
+                    if (!Auxiliry::is_equal_with_precision(lhs.data[i], rhs.data[i]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return lhs.data == rhs.data;
+            }
         }
+
         friend constexpr bool operator!=(Matrix const& lhs, Matrix const& rhs) noexcept
         {
             return !(lhs == rhs);
@@ -483,6 +516,57 @@ namespace GameEngine::Geometry::Matrices
         return Matrix<S, 1U, T>{ std::move(tmp) };
     }
 
+    template<std::size_t M, std::size_t N, std::size_t K, typename T>
+    Matrix<M, N + K, T> expand_by_row(Matrix<M, N, T> const& lhs, Matrix<M, K, T> const& rhs)
+    {
+        std::array<T, M * (N + K)> concat_result{ };
+
+        auto const lhs_data{ lhs.flattern() };
+        auto const rhs_data{ rhs.flattern() };
+
+        for (std::size_t i{ 0U }; i != M; ++i)
+        for (std::size_t j{ 0U }; j != N + K; ++j)
+        {
+            concat_result[i * (N + K) + j] = (j >= N ? rhs_data[i * K + (j - N)] : lhs_data[i * N + j]);
+        }
+
+        return Matrix<M, N + K, T>{ std::move(concat_result) };
+    }
+
+    template<std::size_t M, std::size_t N, std::size_t K, typename T>
+    Matrix<M + K, N, T> expand_by_col(Matrix<M, N, T> const& lhs, Matrix<K, N, T> const& rhs)
+    {
+        std::array<T, (M + K) * N> concat_result{ };
+
+        auto const lhs_data{ lhs.flattern() };
+        auto const rhs_data{ rhs.flattern() };
+
+        for (std::size_t i{ 0U }; i != M + K; ++i)
+        for (std::size_t j{ 0U }; j != N; ++j)
+        {
+            concat_result[i * N + j] = (i >= M ? rhs_data[(i - M) * N + j] : lhs_data[i * N + j]);
+        }
+
+        return Matrix<M + K, N, T>{ std::move(concat_result) };
+    }
+
+    template<std::size_t I1, std::size_t J1, std::size_t I2, std::size_t J2, std::size_t M, std::size_t N, typename T>
+    requires (I1 <= I2 && J1 <= J2 && I2 < M && J2 < N)
+    Matrix<I2 - I1 + 1U, J2 - J1 + 1U, T> get_from(Matrix<M, N, T> const& m)
+    {
+        std::array<T, (I2 - I1 + 1U) * (J2 - J1 + 1U)> split_result{ };
+
+        auto const m_data{ m.flattern() };
+
+        for (std::size_t i{ 0U }; i != (I2 - I1 + 1U); ++i)
+        for (std::size_t j{ 0U }; j != (J2 - J1 + 1U); ++j)
+        {
+            split_result[i * (J2 - J1 + 1U) + j] = m_data[(I1 + i) * N + (J1 + j)];
+        }
+
+        return Matrix<I2 - I1 + 1U, J2 - J1 + 1U, T>{ std::move(split_result) };
+    }
+    
     template<std::size_t M, typename T = double>
     constexpr Matrix<M, M, T> get_identity() noexcept
     {
@@ -518,7 +602,9 @@ namespace GameEngine::Geometry::Matrices
             {
                 std::size_t i{ };
                 for (i = I + 1U; i != m.NUMBER_OF_ROWS; ++i)
+                {
                     if (m[i][I] != ZERO) break;
+                }
 
                 if (i == m.NUMBER_OF_ROWS) throw std::runtime_error{ "Matrix is singular" };
 
@@ -529,7 +615,7 @@ namespace GameEngine::Geometry::Matrices
 
             for (std::size_t i{ I + 1U }; i != m.NUMBER_OF_ROWS; ++i)
             {
-                m.add_rows(I, i, MINUS * (m[i][I] / m[I][I]));
+                m.sum_rows(I, i, MINUS * (m[i][I] / m[I][I]));
             }
         }
 
@@ -555,7 +641,9 @@ namespace GameEngine::Geometry::Matrices
             {
                 std::size_t i{ };
                 for (i = I + 1U; i != m.NUMBER_OF_ROWS; ++i)
+                {
                     if (!Auxiliry::is_equal_with_precision(m[i][I], ZERO)) break;
+                }
 
                 if (i == m.NUMBER_OF_ROWS) throw std::runtime_error{ "Matrix is singular" };
 
@@ -566,7 +654,7 @@ namespace GameEngine::Geometry::Matrices
 
             for (std::size_t i{ I + 1U }; i != m.NUMBER_OF_ROWS; ++i)
             {
-                m.add_rows(I, i, MINUS *(m[i][I] / m[I][I]));
+                m.sum_rows(I, i, MINUS *(m[i][I] / m[I][I]));
             }
         }
 
@@ -574,5 +662,93 @@ namespace GameEngine::Geometry::Matrices
             D = D * m[i][i];
 
         return D;
+    }
+
+    template<std::size_t M, typename T>
+    requires (!std::floating_point<T>)
+    Matrix<M, M, T> get_inversed(Matrix<M, M, T> const& m)
+    {
+        static constexpr T ZERO{ 0 };
+        static constexpr T ONE{ 1 };
+        static constexpr T MINUS{ -1 };
+
+        auto expanded{ expand_by_row(m, get_identity<M, T>()) };
+
+        for (std::size_t I{ 0U }; I != m.NUMBER_OF_ROWS - 1U; ++I)
+        {
+            if (expanded[I][I] == ZERO)
+            {
+                std::size_t i{ };
+                for (i = I + 1U; i != m.NUMBER_OF_ROWS; ++i)
+                {
+                    if (expanded[i][I] != ZERO) break;
+                }
+
+                if (i == expanded.NUMBER_OF_ROWS) throw std::runtime_error{ "Matrix is singular" };
+
+                expanded.swap_rows(I, i);
+            }
+
+            expanded.mul_row(I, ONE / expanded[I][I]);
+
+            for (std::size_t i{ I + 1U }; i != m.NUMBER_OF_ROWS; ++i)
+            {
+                expanded.sum_rows(I, i, MINUS * (expanded[i][I] / expanded[I][I]));
+            }
+        }
+
+        expanded.mul_row(M - 1U, ONE / expanded[M - 1U][M - 1U]);
+
+        for (std::size_t I{ m.NUMBER_OF_ROWS - 1U }; I != 0U; --I)
+        for (std::size_t i{ I }; i != 0U; --i)
+        {
+            expanded.sum_rows(I, i - 1U, MINUS * (expanded[i - 1U][I] / expanded[I][I]));
+        }
+
+        return get_from<0U, M, M - 1U, M + M - 1U>(expanded);
+    }
+
+    template<std::size_t M, typename T>
+    requires (std::floating_point<T>)
+    Matrix<M, M, T> get_inversed(Matrix<M, M, T> const& m)
+    {
+        static constexpr T ZERO{ 0 };
+        static constexpr T ONE{ 1 };
+        static constexpr T MINUS{ -1 };
+
+        auto expanded{ expand_by_row(m, get_identity<M, T>()) };
+
+        for (std::size_t I{ 0U }; I != m.NUMBER_OF_ROWS - 1U; ++I)
+        {
+            if (Auxiliry::is_equal_with_precision(expanded[I][I], ZERO))
+            {
+                std::size_t i{ };
+                for (i = I + 1U; i != m.NUMBER_OF_ROWS; ++i)
+                {
+                    if (Auxiliry::is_equal_with_precision(expanded[i][I], ZERO)) break;
+                }
+
+                if (i == expanded.NUMBER_OF_ROWS) throw std::runtime_error{ "Matrix is singular" };
+
+                expanded.swap_rows(I, i);
+            }
+
+            expanded.mul_row(I, ONE / expanded[I][I]);
+
+            for (std::size_t i{ I + 1U }; i != m.NUMBER_OF_ROWS; ++i)
+            {
+                expanded.sum_rows(I, i, MINUS * (expanded[i][I] / expanded[I][I]));
+            }
+        }
+
+        expanded.mul_row(M - 1U, ONE / expanded[M - 1U][M - 1U]);
+
+        for (std::size_t I{ m.NUMBER_OF_ROWS - 1U }; I != 0U; --I)
+        for (std::size_t i{ I }; i != 0U; --i)
+        {
+            expanded.sum_rows(I, i - 1U, MINUS * (expanded[i - 1U][I] / expanded[I][I]));
+        }
+    
+        return get_from<0U, M, M - 1U, M + M - 1U>(expanded);
     }
 }
