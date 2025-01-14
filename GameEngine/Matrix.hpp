@@ -310,6 +310,34 @@ namespace GameEngine::Geometry::Matrices
             return Matrix<N, M, T>{ std::move(tmp_data) };
         }
 
+        Matrix& add_rows(std::size_t from, std::size_t to, T const& from_k)
+        {
+            assert(("Index of requested row must not exceed the size of matrix", from < NUMBER_OF_ROWS));
+            assert(("Index of requested row must not exceed the size of matrix", to < NUMBER_OF_ROWS));
+            assert(("It is forbidden to add row with itself", from != to));
+            
+            for (std::size_t i{ 0U }; i != NUMBER_OF_COLS; ++i)
+            {
+                data[to * NUMBER_OF_COLS + i] += data[from * NUMBER_OF_COLS + i] * from_k;
+            }
+
+            return *this;
+        }
+
+        Matrix& add_cols(std::size_t from, std::size_t to, T const& from_k)
+        {
+            assert(("Index of requested column must not exceed the size of matrix", from < NUMBER_OF_COLS));
+            assert(("Index of requested column must not exceed the size of matrix", to < NUMBER_OF_COLS));
+            assert(("It is forbidden to add column with itself", from != to));
+
+            for (std::size_t i{ 0U }; i != NUMBER_OF_ROWS; ++i)
+            {
+                data[i * NUMBER_OF_COLS + to] += data[i * NUMBER_OF_COLS + from] * from_k;
+            }
+
+            return *this;
+        }
+
     private:
 
         template<std::size_t... Indices>

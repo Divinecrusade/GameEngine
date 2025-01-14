@@ -1331,4 +1331,66 @@ namespace UnitTests
 
         return passed;
     }
+
+    static bool is_pass_transformations_test(std::ostream& log, std::ostream& err)
+    {
+        static constexpr std::string_view TEST_NAME{ "Matrix transformations" };
+        bool passed{ true };
+
+        print_test_name(log, TEST_NAME);
+
+        Matrix<3U, 3U, int> m
+        {
+            0, 1, 2, 
+            3, 4, 5, 
+            6, 7, 8 
+        };
+        constexpr int k{ 4 };
+        constexpr std::array<int, 3U> control_1{ 3 + 6 * k, 4 + 7 * k, 5 + 8 * k };
+
+        log << "m:\n";
+        print_matrix(m, log);
+
+        log << "Let sum (row 2) * " << k << " with row 1\n";
+        m.add_rows(2U, 1U, k);
+        print_matrix(m, log);
+
+        auto const row{ m.get_row(1U) };
+        for (std::size_t i{ 0U }; i != m.NUMBER_OF_COLS; ++i)
+        {
+            if (row[i] != control_1[i])
+            {
+                passed = false;
+                err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+            }
+            log << row[i] << " == " << control_1[i] << "\n";
+        }
+
+        constexpr std::array<int, 3U> control_2{ 0 + 1 * -k, 27 + 32 * -k, 6 + 7 * -k };
+
+        log << "Let sum (col 1) * " << -k << " with col 0\n";
+        m.add_cols(1U, 0U, -k);
+        print_matrix(m, log);
+
+        auto const col{ m.get_col(0U) };
+        for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+        {
+            if (col[i] != control_2[i])
+            {
+                passed = false;
+                err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+            }
+            log << col[i] << " == " << control_2[i] << "\n";
+        }
+
+        return passed;
+    }
 }

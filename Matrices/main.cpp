@@ -17,6 +17,7 @@ int main()
     ++n_tests, n_failed += !UnitTests::is_pass_iterator_test(std::clog, std::cerr);
     ++n_tests, n_failed += !UnitTests::is_pass_views_test(std::clog, std::cerr);
     ++n_tests, n_failed += !UnitTests::is_pass_math_operations_test(std::clog, std::cerr);
+    ++n_tests, n_failed += !UnitTests::is_pass_transformations_test(std::clog, std::cerr);
 
     std::clog << UnitTests::SEPARATOR << "\n";
     std::clog << "TESTS COMPLETED\n";
