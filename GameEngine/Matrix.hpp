@@ -372,6 +372,7 @@ namespace GameEngine::Geometry::Matrices
             return Matrix{ std::move(mul_result) };
         }
 
+
         Matrix& operator+=(Matrix const& rhs) noexcept(noexcept(std::declval<T const&>() + std::declval<T const&>()))
         {
             std::ranges::transform(data, rhs.data, data.begin(), std::plus<T>{});
@@ -390,6 +391,11 @@ namespace GameEngine::Geometry::Matrices
         Matrix& operator/=(T const& rhs) noexcept(noexcept(std::declval<T const&>() / std::declval<T const&>()))
         {
             std::ranges::transform(data, data.begin(), [&rhs](auto const& val) noexcept { return val / rhs; });
+            return *this;
+        }
+        Matrix& operator*=(Matrix<N, M, T> const& rhs)
+        {
+            *this = (*this * rhs);
             return *this;
         }
 
@@ -412,6 +418,23 @@ namespace GameEngine::Geometry::Matrices
         return true;
     }
 
+
+    template<std::size_t M, std::size_t N, std::size_t K, typename T>
+    Matrix<M, K, T> operator*(Matrix<M, N, T> const& lhs, Matrix<N, K, T> const& rhs) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()))
+    {
+        std::array<T, M* K> mul_result{ };
+
+        auto const lhs_data{ lhs.flattern() };
+        auto const rhs_data{ rhs.flattern() };
+
+        for (std::size_t left_row{ 0U }; left_row != M; ++left_row)
+        for (std::size_t right_col{ 0U }; right_col != K; ++right_col)
+        for (std::size_t i{ 0U }; i != N; ++i)
+            mul_result[left_row * K + right_col] += lhs_data[left_row * N + i] * rhs_data[i * K + right_col];
+
+        return Matrix<M, K, T>{ std::move(mul_result) };
+    }
+
     template<std::size_t S, typename T>
     auto get_vector_row(ViewOfMatrix<S, T> const& init_data) noexcept
     {
@@ -432,7 +455,7 @@ namespace GameEngine::Geometry::Matrices
         return Matrix<S, 1U, T>{ std::move(tmp) };
     }
 
-    template<std::size_t M, typename T>
+    template<std::size_t M, typename T = double>
     constexpr Matrix<M, M, T> get_identity() noexcept
     {
         std::array<T, M* M> data{ };

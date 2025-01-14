@@ -1221,6 +1221,111 @@ namespace UnitTests
         }
         log << "m / " << d << " == m /= " << d << "\n";
 
+        log << "Matrices multiplication begin:\n";
+
+        log << "m:\n";
+        print_matrix(m, log);
+        if (m != m * get_identity<3U, int>())
+        {
+            passed = false;
+            err << UnitTests::StreamColors::RED << "[ERROR] Matrix multiplicated on identity not equal to itself:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << "m * identity == m\n";
+
+        {
+            const Matrix<3U, 3U, int> M1{ 3, 4, -2, 1, 5, 8, -2, 4, 5 };
+            const Matrix<3U, 3U, int> M2{ 6, 2, 1, 3, 9, -2, 2, 0, 2 };
+        
+            const auto M3{ M1 * M2 };
+            const Matrix<3U, 3U, int> M3_control{ 26, 42, -9, 37, 47, 7, 10, 32, 0 };
+
+            log << "m1:\n";
+            print_matrix(M1, log);
+
+            log << "m2:\n";
+            print_matrix(M2, log);
+
+            log << "m3:\n";
+            print_matrix(M3, log);
+
+            log << "m3_control:\n";
+            print_matrix(M3_control, log);
+
+            if (M3 != M3_control)
+            {
+                passed = false;
+                err << UnitTests::StreamColors::RED << "[ERROR] Matrices multiplication wrong answer\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] m3 == m3_control\n" << StreamColors::RESET;
+            }
+        }
+        {
+            const Matrix<2U, 3U, int> M1{ 3, 4, -2, 1, 8, -2 };
+            const Matrix<3U, 2U, int> M2{ 6, 3, 9, -2, 2, 2 };
+            
+            const auto M3{ M1 * M2 };
+            const Matrix<2U, 2U, int> M3_control{ 50, -3, 74, -17 };
+
+            log << "m1:\n";
+            print_matrix(M1, log);
+
+            log << "m2:\n";
+            print_matrix(M2, log);
+
+            log << "m3:\n";
+            print_matrix(M3, log);
+
+            log << "m3_control:\n";
+            print_matrix(M3_control, log);
+
+            if (M3 != M3_control)
+            {
+                passed = false;
+                err << UnitTests::StreamColors::RED << "[ERROR] Matrices multiplication wrong answer\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] m3 == m3_control\n" << StreamColors::RESET;
+            }
+        }
+        {
+            const Matrix<1U, 3U, int> M1{ -2, 1, 8 };
+            const Matrix<3U, 3U, int> M2{ -2, 3, 4, 6, 3, 9, -2, 0, 1 };
+
+            const auto M3{ M1 * M2 };
+            const Matrix<1U, 3U, int> M3_control{ -6, -3, 9 };
+
+            log << "m1:\n";
+            print_matrix(M1, log);
+
+            log << "m2:\n";
+            print_matrix(M2, log);
+
+            log << "m3:\n";
+            print_matrix(M3, log);
+
+            log << "m3_control:\n";
+            print_matrix(M3_control, log);
+
+            if (M3 != M3_control)
+            {
+                passed = false;
+                err << UnitTests::StreamColors::RED << "[ERROR] Matrices multiplication wrong answer\n" << StreamColors::RESET;
+            }
+            else
+            {
+                log << StreamColors::GREEN << "[OK] m3 == m3_control\n" << StreamColors::RESET;
+            }
+        }
+
+        log << "Matrices multiplication end\n";
+
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 
