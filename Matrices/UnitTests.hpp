@@ -15,7 +15,7 @@ namespace UnitTests
 
     namespace
     {
-        static constexpr std::string_view SEPRATOR{ "|--------------------------------------------------------------------------|" };
+        static constexpr std::string_view SEPARATOR{ "|--------------------------------------------------------------------------|" };
 
         inline namespace StreamColors
         {
@@ -54,9 +54,9 @@ namespace UnitTests
 
         static void print_test_name(std::ostream& log, std::string_view name)
         {
-            log << SEPRATOR << "\n";
-            log << "|" << std::setfill('-') << std::left << std::setw(SEPRATOR.length() - 2) << name << std::setfill(' ') << "|\n";
-            log << SEPRATOR << "\n";
+            log << SEPARATOR << "\n";
+            log << "|" << std::setfill('-') << std::left << std::setw(SEPARATOR.length() - 2) << name << std::setfill(' ') << "|\n";
+            log << SEPARATOR << "\n";
         }
 
         template<std::size_t M, std::size_t N, typename T>
