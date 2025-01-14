@@ -3,6 +3,7 @@
 
 #include "CellOfMatrix.hpp"
 #include "ViewOfMatrix.hpp"
+#include "Auxiliry.hpp"
 
 #include <ranges>
 #include <algorithm>
@@ -297,7 +298,7 @@ namespace GameEngine::Geometry::Matrices
             return get_col_impl(i, std::make_index_sequence<NUMBER_OF_ROWS>{});
         }
 
-        constexpr Matrix<N, M, T> get_transponsed() const noexcept
+        constexpr Matrix<N, M, T> get_transponsed() const noexcept(std::is_nothrow_assignable_v<T, T>)
         {
             std::array<T, N* M> tmp_data{ };
 
@@ -457,7 +458,7 @@ namespace GameEngine::Geometry::Matrices
         for (std::size_t left_row{ 0U }; left_row != M; ++left_row)
         for (std::size_t right_col{ 0U }; right_col != K; ++right_col)
         for (std::size_t i{ 0U }; i != N; ++i)
-            mul_result[left_row * K + right_col] += lhs_data[left_row * N + i] * rhs_data[i * K + right_col];
+            mul_result[left_row * K + right_col] = mul_result[left_row * K + right_col] + lhs_data[left_row * N + i] * rhs_data[i * K + right_col];
 
         return Matrix<M, K, T>{ std::move(mul_result) };
     }
@@ -493,5 +494,85 @@ namespace GameEngine::Geometry::Matrices
         }
 
         return Matrix<M, M, T>{ std::move(data) };
+    }
+
+    template<std::size_t M, std::size_t N, typename T>
+    constexpr Matrix<N, M, T> get_transponsed(Matrix<M, N, T> const& m) noexcept(std::is_nothrow_assignable_v<T, T>)
+    {
+        return m.get_transponsed();
+    }
+
+    template<std::size_t M, typename T>
+    requires (!std::floating_point<T>)
+    T get_determinant(Matrix<M, M, T> m)
+    {
+        static constexpr T ZERO{ 0 };
+        static constexpr T ONE{ 1 };
+        static constexpr T MINUS{ -1 };
+
+        T D{ ONE };
+        
+        for (std::size_t I{ 0U }; I != m.NUMBER_OF_ROWS - 1U; ++I)
+        {
+            if (m[I][I] == ZERO)
+            {
+                std::size_t i{ };
+                for (i = I + 1U; i != m.NUMBER_OF_ROWS; ++i)
+                    if (m[i][I] != ZERO) break;
+
+                if (i == m.NUMBER_OF_ROWS) throw std::runtime_error{ "Matrix is singular" };
+
+                m.swap_rows(I, i);
+
+                D = D * MINUS;
+            }
+
+            for (std::size_t i{ I + 1U }; i != m.NUMBER_OF_ROWS; ++i)
+            {
+                m.add_rows(I, i, MINUS * (m[i][I] / m[I][I]));
+            }
+        }
+
+        for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+            D = D * m[i][i];
+
+        return D;
+    }
+
+    template<std::size_t M, typename T>
+    requires (std::floating_point<T>)
+    T get_determinant(Matrix<M, M, T> m)
+    {
+        static constexpr T ZERO { 0 };
+        static constexpr T ONE  { 1 };
+        static constexpr T MINUS{ -1 };
+
+        T D{ ONE };
+
+        for (std::size_t I{ 0U }; I != m.NUMBER_OF_ROWS - 1U; ++I)
+        {
+            if (Auxiliry::is_equal_with_precision(m[I][I], ZERO))
+            {
+                std::size_t i{ };
+                for (i = I + 1U; i != m.NUMBER_OF_ROWS; ++i)
+                    if (!Auxiliry::is_equal_with_precision(m[i][I], ZERO)) break;
+
+                if (i == m.NUMBER_OF_ROWS) throw std::runtime_error{ "Matrix is singular" };
+
+                m.swap_rows(I, i);
+
+                D = D * MINUS;
+            }
+
+            for (std::size_t i{ I + 1U }; i != m.NUMBER_OF_ROWS; ++i)
+            {
+                m.add_rows(I, i, MINUS *(m[i][I] / m[I][I]));
+            }
+        }
+
+        for (std::size_t i{ 0U }; i != m.NUMBER_OF_ROWS; ++i)
+            D = D * m[i][i];
+
+        return D;
     }
 }

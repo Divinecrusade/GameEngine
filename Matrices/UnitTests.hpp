@@ -1391,6 +1391,56 @@ namespace UnitTests
             log << col[i] << " == " << control_2[i] << "\n";
         }
 
+        constexpr Matrix<3U> m1{ 2., 3., 1., 4., 5., 6., 1., 2., 2. };
+        constexpr double d1{ -7. };
+        constexpr Matrix<3U> m2{ -2., 1., 6., 2., 4., 2., 3., 6., 1. };
+        constexpr double d2{ 20. };
+        constexpr Matrix<3U> m3{ 22., 16., 43., 12., 15., 67., -33., 62., 10. };
+        constexpr double d3{ -72107. };
+
+        log << "Determinants calculations begin\n";
+
+        print_matrix(m1, log);
+        auto d{ get_determinant(m1) };
+        if (!GameEngine::Geometry::Auxiliry::is_equal_with_precision(d, d1))
+        {
+            passed = false;
+            err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << d << " == " << d1 << "\n";
+
+        print_matrix(m2, log);
+        d = get_determinant(m2);
+        if (!GameEngine::Geometry::Auxiliry::is_equal_with_precision(d, d2))
+        {
+            passed = false;
+            err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << d << " == " << d2 << "\n";
+
+        print_matrix(m3, log);
+        d = get_determinant(m3);
+        if (!GameEngine::Geometry::Auxiliry::is_equal_with_precision(d, d3))
+        {
+            passed = false;
+            err << StreamColors::RED << "[ERROR] Control and calculated values are not equal:\n" << StreamColors::RESET;
+        }
+        else
+        {
+            log << StreamColors::GREEN << "[OK] " << StreamColors::RESET;
+        }
+        log << d << " == " << d3 << "\n";
+
+        log << "Determinants calculations end\n";
+
         return passed;
     }
 }
