@@ -418,9 +418,8 @@ namespace GameEngine::Geometry::Matrices
         return true;
     }
 
-
     template<std::size_t M, std::size_t N, std::size_t K, typename T>
-    Matrix<M, K, T> operator*(Matrix<M, N, T> const& lhs, Matrix<N, K, T> const& rhs) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()))
+    Matrix<M, K, T> operator*(Matrix<M, N, T> const& lhs, Matrix<N, K, T> const& rhs) noexcept(noexcept(std::declval<T const&>()* std::declval<T const&>()) && noexcept(std::declval<T const&>() + std::declval<T const&>()))
     {
         std::array<T, M* K> mul_result{ };
 
