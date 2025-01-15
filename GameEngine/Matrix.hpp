@@ -78,9 +78,9 @@ namespace GameEngine::Geometry::Matrices
 
             friend constexpr const_iterator Matrix::begin() const noexcept;
             friend constexpr const_iterator Matrix::end()   const noexcept;
-            const_iterator(T const* data, T const* base) noexcept
+            const_iterator(T const* init_data, T const* base) noexcept
             :
-            data{ data, (data - base) / N, (data - base) % N }
+            data{ init_data, (init_data - base) / N, (init_data - base) % N }
             { }
 
         public:
@@ -385,6 +385,7 @@ namespace GameEngine::Geometry::Matrices
                         return false;
                     }
                 }
+                return true;
             }
             else
             {
@@ -468,14 +469,14 @@ namespace GameEngine::Geometry::Matrices
 
     template<std::size_t M1, std::size_t N1, std::size_t M2, std::size_t N2, typename T>
     requires (M1 != M2 || N1 != N2)
-    constexpr bool operator==(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs) noexcept
+    constexpr bool operator==(Matrix<M1, N1, T> const&, Matrix<M2, N2, T> const&) noexcept
     {
         return false;
     }
 
     template<std::size_t M1, std::size_t N1, std::size_t M2, std::size_t N2, typename T>
     requires (M1 != M2 || N1 != N2)
-    constexpr bool operator!=(Matrix<M1, N1, T> const& lhs, Matrix<M2, N2, T> const& rhs) noexcept
+    constexpr bool operator!=(Matrix<M1, N1, T> const&, Matrix<M2, N2, T> const&) noexcept
     {
         return true;
     }
@@ -517,7 +518,7 @@ namespace GameEngine::Geometry::Matrices
     }
 
     template<std::size_t M, std::size_t N, std::size_t K, typename T>
-    Matrix<M, N + K, T> expand_by_row(Matrix<M, N, T> const& lhs, Matrix<M, K, T> const& rhs)
+    Matrix<M, N + K, T> expand_by_row(Matrix<M, N, T> const& lhs, Matrix<M, K, T> const& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
     {
         std::array<T, M * (N + K)> concat_result{ };
 
@@ -534,7 +535,7 @@ namespace GameEngine::Geometry::Matrices
     }
 
     template<std::size_t M, std::size_t N, std::size_t K, typename T>
-    Matrix<M + K, N, T> expand_by_col(Matrix<M, N, T> const& lhs, Matrix<K, N, T> const& rhs)
+    Matrix<M + K, N, T> expand_by_col(Matrix<M, N, T> const& lhs, Matrix<K, N, T> const& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
     {
         std::array<T, (M + K) * N> concat_result{ };
 
@@ -552,7 +553,7 @@ namespace GameEngine::Geometry::Matrices
 
     template<std::size_t I1, std::size_t J1, std::size_t I2, std::size_t J2, std::size_t M, std::size_t N, typename T>
     requires (I1 <= I2 && J1 <= J2 && I2 < M && J2 < N)
-    Matrix<I2 - I1 + 1U, J2 - J1 + 1U, T> get_from(Matrix<M, N, T> const& m)
+    Matrix<I2 - I1 + 1U, J2 - J1 + 1U, T> get_from(Matrix<M, N, T> const& m) noexcept(std::is_nothrow_assignable_v<T, T>)
     {
         std::array<T, (I2 - I1 + 1U) * (J2 - J1 + 1U)> split_result{ };
 
@@ -774,6 +775,7 @@ namespace GameEngine::Geometry::Matrices
 
         return Matrix<M - 1U, N, T>{ std::move(tmp_data) };
     }
+    
     template<std::size_t M, std::size_t N, typename T>
     Matrix<M, N - 1U, T> remove_col(Matrix<M, N, T> const& m, std::size_t J) noexcept(std::is_nothrow_assignable_v<T, T>)
     {
@@ -794,6 +796,7 @@ namespace GameEngine::Geometry::Matrices
 
         return Matrix<M, N - 1U, T>{ std::move(tmp_data) };
     }
+    
     template<std::size_t M, std::size_t N, typename T>
     Matrix<M - 1U, N - 1U, T> remove_row_and_col(Matrix<M, N, T> const& m, std::size_t I, std::size_t J) noexcept(std::is_nothrow_assignable_v<T, T>)
     {
