@@ -1490,6 +1490,57 @@ namespace UnitTests
 
         log << "Inverse matrix calculation end\n";
 
+
+         m = Matrix<3U, 3U, int>
+             {
+                 0, 1, 2,
+                 3, 4, 5,
+                 6, 7, 8
+             };
+
+        std::size_t i{ 1U };
+        log << "Remove column " << i << " from matrix:\n";
+        print_matrix(m, log);
+
+        {
+            auto const _m{ remove_col(m, i) };
+            constexpr std::array control{ 0, 2, 3, 5, 6, 8 };
+
+            log << "Result:\n";
+            print_matrix(_m, log);
+
+            check_matrix_and_range(log, err, passed, _m, control);
+        }
+
+        i = 2U;
+        log << "Remove row " << i << " from matrix:\n";
+        print_matrix(m, log);
+
+        {
+            auto const _m{ remove_row(m, i) };
+            constexpr std::array control{ 0, 1, 2, 3, 4, 5 };
+
+            log << "Result:\n";
+            print_matrix(_m, log);
+
+            check_matrix_and_range(log, err, passed, _m, control);
+        }
+
+        i = 0U;
+        std::size_t j{ 0U };
+        log << "Remove row " << i << " and column " << j << " from matrix:\n";
+        print_matrix(m, log);
+
+        {
+            auto const _m{ remove_row_and_col(m, i, j) };
+            constexpr std::array control{ 4, 5, 7, 8 };
+
+            log << "Result:\n";
+            print_matrix(_m, log);
+
+            check_matrix_and_range(log, err, passed, _m, control);
+        }
+
         if (passed) log << UnitTests::StreamColors::GREEN << "[SUCCESS] " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
         else        err << UnitTests::StreamColors::RED   << "[FAIL]    " << TEST_NAME << "\n" << UnitTests::StreamColors::RESET;
 

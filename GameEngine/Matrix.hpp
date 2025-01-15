@@ -751,4 +751,72 @@ namespace GameEngine::Geometry::Matrices
     
         return get_from<0U, M, M - 1U, M + M - 1U>(expanded);
     }
+
+    template<std::size_t M, std::size_t N, typename T>
+    Matrix<M - 1U, N, T> remove_row(Matrix<M, N, T> const& m, std::size_t I) noexcept(std::is_nothrow_assignable_v<T, T>)
+    {
+        assert(("Requested row's index must not exceed the number of matrix's rows", I < M));
+        std::array<T, (M - 1U)* N> tmp_data{ };
+
+        auto const data{ m.flattern() };
+        auto it{ tmp_data.begin() };
+        for (std::size_t i{ 0U }; i != M; ++i)
+        {
+            if (i == I) continue;
+
+            for (std::size_t j{ 0U }; j != N; ++j)
+            {
+                *it = data[i * N + j];
+
+                ++it;
+            }
+        }
+
+        return Matrix<M - 1U, N, T>{ std::move(tmp_data) };
+    }
+    template<std::size_t M, std::size_t N, typename T>
+    Matrix<M, N - 1U, T> remove_col(Matrix<M, N, T> const& m, std::size_t J) noexcept(std::is_nothrow_assignable_v<T, T>)
+    {
+        assert(("Requested column's index must not exceed the number of matrix's columns", J < N));
+        std::array<T, M* (N - 1U)> tmp_data{ };
+
+        auto const data{ m.flattern() };
+        auto it{ tmp_data.begin() };
+        for (std::size_t i{ 0U }; i != M; ++i)
+            for (std::size_t j{ 0U }; j != N; ++j)
+            {
+                if (j == J) continue;
+
+                *it = data[i * N + j];
+
+                ++it;
+            }
+
+        return Matrix<M, N - 1U, T>{ std::move(tmp_data) };
+    }
+    template<std::size_t M, std::size_t N, typename T>
+    Matrix<M - 1U, N - 1U, T> remove_row_and_col(Matrix<M, N, T> const& m, std::size_t I, std::size_t J) noexcept(std::is_nothrow_assignable_v<T, T>)
+    {
+        assert(("Requested row's index must not exceed the number of matrix's rows", I < M));
+        assert(("Requested column's index must not exceed the number of matrix's columns", J < N));
+        std::array<T, (M - 1U)* (N - 1U)> tmp_data{ };
+
+        auto const data{ m.flattern() };
+        auto it{ tmp_data.begin() };
+        for (std::size_t i{ 0U }; i != M; ++i)
+        {
+            if (i == I) continue;
+
+            for (std::size_t j{ 0U }; j != N; ++j)
+            {
+                if (j == J) continue;
+
+                *it = data[i * N + j];
+
+                ++it;
+            }
+        }
+
+        return Matrix<M - 1U, N - 1U, T>{ std::move(tmp_data) };
+    }
 }
