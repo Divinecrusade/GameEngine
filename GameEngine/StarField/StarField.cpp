@@ -8,7 +8,7 @@ Game{ StarField::get_window(hInstance, nCmdShow), get_graphics() }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)
 {
-    static GameEngine::MainWindow wnd{ hInstance, nCmdShow, GAME_TITLE };
+    static GameEngine::MainWindow wnd{ hInstance, nCmdShow, GAME_TITLE, WINDOW_RESIZABLE, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_POS.x, WINDOW_POS.y };
     return wnd;
 }
 
