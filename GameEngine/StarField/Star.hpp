@@ -15,6 +15,10 @@ public:
 
 public:
 
+    static constexpr int STROKE_WIDTH{ 2 };
+
+private:
+
     static constexpr float OUTER_RADIUS_MODIFIER{ 2.f };
     
 public:
