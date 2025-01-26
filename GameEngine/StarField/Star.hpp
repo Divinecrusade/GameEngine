@@ -1,25 +1,33 @@
 #pragma once
 
-#include <Vector2D.hpp>
 #include <KeyColor.hpp>
-#include <vector>
-#include <cassert>
+#include <IModel.hpp>
+
 #include <numbers>
 #include <cmath>
 
 
-class Star
+class Star : GameEngine::Interfaces::IModel
 {
-private:
+public:
 
     using Vec2f = GameEngine::Geometry::Vector2D<float>;
 
 public:
 
-    Star(Vec2f const& center, float outer_radius, int flares_count, GameEngine::Colour init_border_colour);
+    static constexpr float OUTER_RADIUS_MODIFIER{ 2.f };
+    
+public:
+
+    Star(Vec2f const& init_pos, float init_outer_radius, int init_flares_count, GameEngine::Colour init_border_colour) noexcept;
+
+    GameEngine::Shape get_shape() const override;
+    GameEngine::Colour get_colour() const noexcept;
 
 private:
 
-    std::vector<Vec2f> model{ };
+    Vec2f pos{ };
+    float outer_radius{ };
+    int flares_count{ };
     GameEngine::Colour border_colour{ };
 };
