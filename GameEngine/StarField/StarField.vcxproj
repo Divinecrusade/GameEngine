@@ -141,10 +141,12 @@
     <ClCompile Include="..\GraphicsDirect2D.cpp" />
     <ClCompile Include="..\MainWindow\MainWindow.cpp" />
     <ClCompile Include="..\Surface.cpp" />
+    <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarField.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Star.hpp" />
     <ClInclude Include="StarField.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
