@@ -179,11 +179,13 @@
     <ClInclude Include="IDrawable.hpp" />
     <ClInclude Include="IFramableGraphics2D.hpp" />
     <ClInclude Include="IGraphics2D.hpp" />
+    <ClInclude Include="IModel.hpp" />
     <ClInclude Include="IWindow.hpp" />
     <ClInclude Include="KeyColor.hpp" />
     <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="Mouse.hpp" />
     <ClInclude Include="Rectangle2D.hpp" />
+    <ClInclude Include="Shape.hpp" />
     <ClInclude Include="Surface.hpp" />
     <ClInclude Include="SurfaceView.hpp" />
     <ClInclude Include="Vector2D.hpp" />
@@ -202,6 +204,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="MainWindow\MainWindow.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>

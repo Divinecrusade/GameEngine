@@ -132,6 +132,12 @@
     <ClInclude Include="ViewOfMatrix.hpp">
       <Filter>Файлы заголовков\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Shape.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="IModel.hpp">
+      <Filter>Файлы заголовков\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">
@@ -156,6 +162,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="AnimationFrames.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
