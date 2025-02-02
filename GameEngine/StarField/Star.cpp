@@ -1,12 +1,13 @@
 #include "Star.hpp"
 
 
-Star::Star(Vec2f const& init_pos, float init_outer_radius, int init_flares_count, GameEngine::Colour init_border_colour) noexcept
+Star::Star(Vec2f const& init_pos, float init_outer_radius, int init_flares_count, GameEngine::Colour init_border_colour, float init_rotation_speed) noexcept
 :
 pos{ init_pos },
 outer_radius{ init_outer_radius },
 flares_count{ init_flares_count },
-border_colour{ init_border_colour }
+border_colour{ init_border_colour },
+rotation_speed{ init_rotation_speed }
 {
     assert(flares_count > 1);
 }
@@ -41,7 +42,9 @@ GameEngine::Shape Star::get_shape() const
 
     for (auto& vertex : shape_vertices)
     {
-        vertex += pos;
+        GameEngine::Geometry::Transformations2D::apply(vertex, 
+        GameEngine::Geometry::Transformations2D::get_rotation(cur_rotation_angle) *
+        GameEngine::Geometry::Transformations2D::get_translation(pos.x, pos.y));
     }
 
     return GameEngine::Shape{ shape_vertices };
@@ -50,4 +53,13 @@ GameEngine::Shape Star::get_shape() const
 GameEngine::Colour Star::get_colour() const noexcept
 {
     return border_colour;
+}
+
+void Star::update(float dt)
+{
+    cur_rotation_angle += rotation_speed * dt;
+    while (GameEngine::Geometry::Auxiliry::is_equal_with_precision(static_cast<double>(cur_rotation_angle), std::numbers::pi * 2.))
+    {
+        cur_rotation_angle -= static_cast<float>(std::numbers::pi * 2.);
+    }
 }

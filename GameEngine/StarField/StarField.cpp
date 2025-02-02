@@ -9,9 +9,9 @@ ct{ Rec2i{ Vec2i{ 0, 0 }, gfx.get_screen_width(), gfx.get_screen_height() } }
 
 void StarField::render()
 {
-    Star const test1{ { 0.f, 0.f }, 100.f, 5, GameEngine::Colours::RED };
-    Star const test2{ { 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW };
-    Star const test3{ { -100.f, -100.f }, 25.f, 5, GameEngine::Colours::GREEN };
+    Star const test1{ { 0.f, 0.f }, 100.f, 5, GameEngine::Colours::RED, 0.f };
+    Star const test2{ { 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW, 0.f };
+    Star const test3{ { -100.f, -100.f }, 25.f, 5, GameEngine::Colours::GREEN, 0.f };
     gfx.draw_polygon(ct.transform(test1.get_shape()), test1.STROKE_WIDTH, test1.get_colour());
     gfx.draw_polygon(ct.transform(test2.get_shape()), test2.STROKE_WIDTH, test2.get_colour());
     gfx.draw_polygon(ct.transform(test3.get_shape()), test3.STROKE_WIDTH, test3.get_colour());
