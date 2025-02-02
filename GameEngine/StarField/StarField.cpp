@@ -5,16 +5,27 @@ StarField::StarField(HINSTANCE hInstance, int nCmdShow)
 :
 Game{ StarField::get_window(hInstance, nCmdShow), get_graphics() },
 ct{ Rec2i{ Vec2i{ 0, 0 }, gfx.get_screen_width(), gfx.get_screen_height() } }
-{ }
+{ 
+    stars.emplace_back(Vec2f{ 0.f, 0.f }, 100.f, 5, GameEngine::Colours::RED, 0.25f);
+    stars.emplace_back(Vec2f{ 100.f, -100.f }, 50.f, 3, GameEngine::Colours::YELLOW, 0.5f);
+    stars.emplace_back(Vec2f{ -100.f, -100.f }, 25.f, 2, GameEngine::Colours::GREEN, 1.f);
+}
+
+void StarField::update()
+{
+    float const dt{ ft.mark() };
+    for (auto& star : stars)
+    {
+        star.update(dt);
+    }
+}
 
 void StarField::render()
 {
-    Star const test1{ { 0.f, 0.f }, 100.f, 5, GameEngine::Colours::RED, 0.f };
-    Star const test2{ { 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW, 0.f };
-    Star const test3{ { -100.f, -100.f }, 25.f, 5, GameEngine::Colours::GREEN, 0.f };
-    gfx.draw_polygon(ct.transform(test1.get_shape()), test1.STROKE_WIDTH, test1.get_colour());
-    gfx.draw_polygon(ct.transform(test2.get_shape()), test2.STROKE_WIDTH, test2.get_colour());
-    gfx.draw_polygon(ct.transform(test3.get_shape()), test3.STROKE_WIDTH, test3.get_colour());
+    for (auto& star : stars)
+    {
+        gfx.draw_polygon(ct.transform(star.get_shape()), star.STROKE_WIDTH, star.get_colour());
+    }
 }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)

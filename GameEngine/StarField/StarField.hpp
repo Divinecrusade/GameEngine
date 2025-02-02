@@ -5,6 +5,7 @@
 #include <GraphicsDirect2D.hpp>
 #include <WorldTransformer.hpp>
 #include <CoordinateTransformer.hpp>
+#include <FrameTimer.hpp>
 
 #include "Star.hpp"
 
@@ -14,6 +15,7 @@ class StarField : public GameEngine::Game
 public:
 
     using Vec2i = GameEngine::Geometry::Vector2D<int>;
+    using Vec2f = GameEngine::Geometry::Vector2D<float>;
     using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
 
 public:
@@ -32,6 +34,7 @@ public:
 
     StarField(HINSTANCE hInstance, int nCmdShow);
 
+    void update() override;
     void render() override;
 
 private:
@@ -43,4 +46,7 @@ private:
 
     GameEngine::CoordinateTransformer ct;
     GameEngine::WorldTransformer wt{ };
+    GameEngine::FrameTimer ft{ };
+
+    std::vector<Star> stars{ };
 };
