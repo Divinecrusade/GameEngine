@@ -26,6 +26,7 @@ void StarField::render()
     {
         gfx.draw_polygon(ct.transform(star.get_shape()), star.STROKE_WIDTH, star.get_colour());
     }
+    gfx.draw_ellipse({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2}, 100, 100, 2, GameEngine::Colours::RED);
 }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)

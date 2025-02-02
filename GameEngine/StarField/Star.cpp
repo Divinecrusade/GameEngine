@@ -16,7 +16,7 @@ GameEngine::Shape Star::get_shape() const
 {
     std::vector<Vec2f> shape_vertices{ };
     shape_vertices.reserve(flares_count);
-    shape_vertices.emplace_back(outer_radius, 0.f);
+    shape_vertices.emplace_back(outer_radius / 2.f, 0.f);
 
     float const delta_phi{ static_cast<float>(std::numbers::pi) / static_cast<float>(flares_count) };
     for (int i{ 1 }; i != flares_count * 2; ++i)
