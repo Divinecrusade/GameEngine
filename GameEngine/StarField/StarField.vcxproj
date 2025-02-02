@@ -136,12 +136,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\CoordinateTransformer.cpp" />
     <ClCompile Include="..\Direct2DFactory.cpp" />
     <ClCompile Include="..\Game.cpp" />
     <ClCompile Include="..\GraphicsDirect2D.cpp" />
     <ClCompile Include="..\MainWindow\MainWindow.cpp" />
     <ClCompile Include="..\Shape.cpp" />
     <ClCompile Include="..\Surface.cpp" />
+    <ClCompile Include="..\WorldTransformer.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarField.cpp" />
     <ClCompile Include="WinMain.cpp" />

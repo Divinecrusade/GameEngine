@@ -163,6 +163,7 @@
     <ClInclude Include="Auxiliry.hpp" />
     <ClInclude Include="CellOfMatrix.hpp" />
     <ClInclude Include="ContiguousIterator.hpp" />
+    <ClInclude Include="CoordinateTransformer.hpp" />
     <ClInclude Include="Direct2dException.hpp" />
     <ClInclude Include="Direct2DFactory.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -192,10 +193,12 @@
     <ClInclude Include="ViewOfMatrix.hpp" />
     <ClInclude Include="WinApiException.hpp" />
     <ClInclude Include="WinKey.hpp" />
+    <ClInclude Include="WorldTransformer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrames.cpp" />
+    <ClCompile Include="CoordinateTransformer.cpp" />
     <ClCompile Include="Direct2DFactory.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -207,6 +210,7 @@
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="WorldTransformer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

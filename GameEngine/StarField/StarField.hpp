@@ -3,6 +3,10 @@
 #include <Game.hpp>
 #include <MainWindow/MainWindow.hpp>
 #include <GraphicsDirect2D.hpp>
+#include <WorldTransformer.hpp>
+#include <CoordinateTransformer.hpp>
+
+#include "Star.hpp"
 
 
 class StarField : public GameEngine::Game
@@ -28,6 +32,8 @@ public:
 
     StarField(HINSTANCE hInstance, int nCmdShow);
 
+    void render() override;
+
 private:
 
     static GameEngine::Interfaces::IWindow& get_window(HINSTANCE hInstance = NULL, int nCmdShow = 0);
@@ -35,4 +41,6 @@ private:
 
 private:
 
+    GameEngine::CoordinateTransformer ct;
+    GameEngine::WorldTransformer wt{ };
 };

@@ -48,6 +48,12 @@
     <ClCompile Include="..\Shape.cpp">
       <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\CoordinateTransformer.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WorldTransformer.cpp">
+      <Filter>Исходные файлы\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StarField.hpp">

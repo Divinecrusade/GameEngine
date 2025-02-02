@@ -14,7 +14,15 @@ namespace GameEngine
 
     public:
 
+        Shape() = delete;
+        Shape(Shape const&) = delete;
+        Shape(Shape&&)      = default;
         Shape(std::vector<Vec2f> init_vertices) noexcept;
+
+        Shape& operator=(Shape const&) = delete;
+        Shape& operator=(Shape&&)      = delete;
+
+        ~Shape() = default;
 
         std::vector<Vec2f> const& get_vertices() const noexcept;
 
