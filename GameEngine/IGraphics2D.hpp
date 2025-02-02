@@ -34,9 +34,7 @@ namespace GameEngine::Interfaces
         virtual void draw_sprite_excluding_color(Geometry::Vector2D<int> const& left_top_pos, SurfaceView sprite, Colour chroma, Geometry::Rectangle2D<int> const& clipping_area) = 0;
        
         virtual void draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c) = 0;
-        virtual void draw_polygon(std::vector<Geometry::Vector2D<float>> const& points, int stroke_width, Colour c) = 0;
         virtual void fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c) = 0;
-        virtual void fill_polygon(std::vector<Geometry::Vector2D<float>> const& points, Colour c) = 0;
 
         virtual void draw_text(std::wstring_view text, Colour c, DWriteFontNames font, int font_size, int font_weight, Geometry::Rectangle2D<int> const& clipping_area, DWriteFontStyles style = DWriteFontStyles::NORMAL, DWriteFontStretch stretch = DWriteFontStretch::NORMAL, DWriteTextHorizontalAlignment align1 = DWriteTextHorizontalAlignment::LEFT, DWriteTextVerticalAlignment align2 = DWriteTextVerticalAlignment::TOP) = 0;
     };

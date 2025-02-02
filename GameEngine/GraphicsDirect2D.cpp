@@ -275,55 +275,10 @@ namespace GameEngine
         d2d_factory.get_render_target().DrawGeometry(&d2d_factory.get_geometry(), &brush, get_dips_from_pixels(stroke_width));
     }
 
-    void GraphicsDirect2D::draw_polygon(std::vector<Geometry::Vector2D<float>> const& points, int stroke_width, Colour c)
-    {
-        assert(!points.empty());
-        assert(std::ranges::find_if(points, [width = get_screen_width(), height = get_screen_height()](auto const& val) { return !(val.x >= 0.f && val.x <= static_cast<float>(width) && val.y >= 0.f && val.y <= static_cast<float>(height)); }) == points.end());
-        assert(stroke_width > 0);
-
-        d2d_factory.open_sink();
-        ID2D1GeometrySink& sink{ d2d_factory.get_sink() };
-
-        auto it{ points.cbegin() };
-        sink.BeginFigure(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)), D2D1_FIGURE_BEGIN_FILLED);
-
-        for (; it != points.cend(); ++it)
-        {
-            sink.AddLine(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)));
-        }
-        sink.EndFigure(D2D1_FIGURE_END_CLOSED);
-        d2d_factory.close_sink();
-
-        ID2D1SolidColorBrush& brush{ d2d_factory.get_brush(c) };
-        d2d_factory.get_render_target().DrawGeometry(&d2d_factory.get_geometry(), &brush, get_dips_from_pixels(stroke_width));
-    }
-
     void GraphicsDirect2D::fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c)
     {
         assert(!points.empty());
         assert(std::ranges::find_if(points, [width = get_screen_width(), height = get_screen_height()](auto const& val) { return !(val.x >= 0 && val.x <= width && val.y >= 0 && val.y <= height); }) == points.end());
-
-        d2d_factory.open_sink();
-        ID2D1GeometrySink& sink{ d2d_factory.get_sink() };
-
-        auto it{ points.cbegin() };
-        sink.BeginFigure(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)), D2D1_FIGURE_BEGIN_FILLED);
-
-        for (; it != points.cend(); ++it)
-        {
-            sink.AddLine(D2D1::Point2F(get_dips_from_pixels((*it).x), get_dips_from_pixels((*it).y)));
-        }
-        sink.EndFigure(D2D1_FIGURE_END_CLOSED);
-        d2d_factory.close_sink();
-
-        ID2D1SolidColorBrush& brush{ d2d_factory.get_brush(c) };
-        d2d_factory.get_render_target().FillGeometry(&d2d_factory.get_geometry(), &brush);
-    }
-
-    void GraphicsDirect2D::fill_polygon(std::vector<Geometry::Vector2D<float>> const& points, Colour c)
-    {
-        assert(!points.empty());
-        assert(std::ranges::find_if(points, [width = get_screen_width(), height = get_screen_height()](auto const& val) { return !(val.x >= 0.f && val.x <= static_cast<float>(width) && val.y >= 0.f && val.y <= static_cast<float>(height)); }) == points.end());
 
         d2d_factory.open_sink();
         ID2D1GeometrySink& sink{ d2d_factory.get_sink() };
