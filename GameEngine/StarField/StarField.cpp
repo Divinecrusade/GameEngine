@@ -6,9 +6,9 @@ StarField::StarField(HINSTANCE hInstance, int nCmdShow)
 Game{ StarField::get_window(hInstance, nCmdShow), get_graphics() },
 ct{ Rec2i{ Vec2i{ 0, 0 }, gfx.get_screen_width(), gfx.get_screen_height() } }
 { 
-    stars.emplace_back(Vec2f{ 0.f, 0.f }, 100.f, 6, GameEngine::Colours::RED, 0.25f, 0.5f);
-    stars.emplace_back(Vec2f{ 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW, 0.5f, 0.75f);
-    stars.emplace_back(Vec2f{ -100.f, -100.f }, 25.f, 4, GameEngine::Colours::GREEN, 1.f, 0.9f);
+    stars.emplace_back(Vec2f{ 0.f, 0.f }, 100.f, 6, GameEngine::Colours::RED, 0.25f, 0.5f, 1.0f, static_cast<float>(std::numbers::pi / 2.));
+    stars.emplace_back(Vec2f{ 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW, 0.5f, 0.75f, 1.2f, static_cast<float>(std::numbers::pi * 3. / 2.));
+    stars.emplace_back(Vec2f{ -100.f, -100.f }, 25.f, 4, GameEngine::Colours::GREEN, 1.f, 0.9f, 1.8f, static_cast<float>(std::numbers::pi));
 }
 
 void StarField::update()
