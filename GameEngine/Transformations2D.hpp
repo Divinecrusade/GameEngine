@@ -48,4 +48,14 @@ namespace GameEngine::Geometry::Transformations2D
             dx, dy, 1.f
         };
     }
+
+    inline Mat2f get_scaling(float mx, float my) noexcept
+    {
+        return std::array
+        {
+            mx, 0.f, 0.f,
+            0.f, my, 0.f,
+            0.f, 0.f, 1.f
+        };
+    }
 }
