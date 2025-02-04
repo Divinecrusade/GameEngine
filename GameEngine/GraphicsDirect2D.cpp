@@ -255,7 +255,6 @@ namespace GameEngine
     void GraphicsDirect2D::draw_polygon(std::vector<Geometry::Vector2D<int>> const& points, int stroke_width, Colour c)
     {
         assert(!points.empty());
-        assert(std::ranges::find_if(points, [width = get_screen_width(), height = get_screen_height()](auto const& val) { return !(val.x >= 0 && val.x <= width && val.y >= 0 && val.y <= height); }) == points.end());
         assert(stroke_width > 0);
 
         d2d_factory.open_sink();
@@ -278,7 +277,6 @@ namespace GameEngine
     void GraphicsDirect2D::fill_polygon(std::vector<Geometry::Vector2D<int>> const& points, Colour c)
     {
         assert(!points.empty());
-        assert(std::ranges::find_if(points, [width = get_screen_width(), height = get_screen_height()](auto const& val) { return !(val.x >= 0 && val.x <= width && val.y >= 0 && val.y <= height); }) == points.end());
 
         d2d_factory.open_sink();
         ID2D1GeometrySink& sink{ d2d_factory.get_sink() };
