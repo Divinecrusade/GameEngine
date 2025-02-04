@@ -17,6 +17,7 @@ public:
     using Vec2i = GameEngine::Geometry::Vector2D<int>;
     using Vec2f = GameEngine::Geometry::Vector2D<float>;
     using Rec2i = GameEngine::Geometry::Rectangle2D<int>;
+    using Rec2f = GameEngine::Geometry::Rectangle2D<float>;
 
 public:
 
@@ -49,4 +50,5 @@ private:
     GameEngine::FrameTimer ft{ };
 
     std::vector<Star> stars{ };
+    Rec2f cur_camera{ -WINDOW_WIDTH / 2.f, WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f, -WINDOW_HEIGHT / 2.f };
 };

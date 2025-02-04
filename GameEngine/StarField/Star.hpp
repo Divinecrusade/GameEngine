@@ -3,16 +3,18 @@
 #include <KeyColor.hpp>
 #include <IModel.hpp>
 #include <Transformations2D.hpp>
+#include <Collidable.hpp>
 
 #include <numbers>
 #include <cmath>
 
 
-class Star : GameEngine::Interfaces::IModel
+class Star : public GameEngine::Interfaces::IModel
 {
 public:
 
     using Vec2f = GameEngine::Geometry::Vector2D<float>;
+    using Rec2f = GameEngine::Geometry::Rectangle2D<float>;
 
 public:
 
@@ -34,8 +36,9 @@ public:
     Star& operator=(Star const&) = delete;
     Star& operator=(Star &&)     = delete;
 
-    ~Star() = default;
+    virtual ~Star() = default;
 
+    Rec2f get_square() const;
 
     GameEngine::Shape get_shape()   const override;
     GameEngine::Colour get_colour() const noexcept;

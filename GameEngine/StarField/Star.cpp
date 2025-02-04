@@ -106,3 +106,8 @@ void Star::update(float dt)
         static_cast<uint8_t>(std::min(static_cast<int>(base_colour[GameEngine::Colour::ComponentIndex::B]) + offset, 255))
     };
 }
+
+Star::Rec2f Star::get_square() const
+{
+    return Rec2f::get_from_center(pos, outer_radius, outer_radius);
+}

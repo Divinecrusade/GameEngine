@@ -22,11 +22,17 @@ void StarField::update()
 
 void StarField::render()
 {
-    for (auto& star : stars)
+    for (auto& star : stars | std::views::filter
+        (
+            [camera = cur_camera](auto const& model)
+            { 
+                return camera.is_colided_with(model.get_square());
+            }
+        )
+    )
     {
         gfx.draw_polygon(ct.transform(star.get_shape()), star.STROKE_WIDTH, star.get_colour());
     }
-    gfx.draw_ellipse({ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2}, 100, 100, 2, GameEngine::Colours::RED);
 }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)
