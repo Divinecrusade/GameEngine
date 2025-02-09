@@ -18,6 +18,23 @@ void StarField::update()
     {
         star.update(dt);
     }
+
+    if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT))
+    {
+        move_camera_by({ -CAMERA_MOVE_SPEED, 0.f });
+    }
+    else if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
+    {
+        move_camera_by({ CAMERA_MOVE_SPEED, 0.f });
+    }
+    else if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_DOWN))
+    {
+        move_camera_by({ 0.f, -CAMERA_MOVE_SPEED });
+    }
+    else if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_UP))
+    {
+        move_camera_by({ 0.f, CAMERA_MOVE_SPEED });
+    }
 }
 
 void StarField::render()
@@ -26,13 +43,23 @@ void StarField::render()
         (
             [camera = cur_camera](auto const& model)
             { 
-                return camera.is_colided_with(model.get_square());
+                auto const model_hitbox{ model.get_square() };
+                return camera.is_colided_with(model_hitbox) || camera.contains(model_hitbox);
             }
         )
     )
     {
-        gfx.draw_polygon(ct.transform(star.get_shape()), star.STROKE_WIDTH, star.get_colour());
+        gfx.draw_polygon(ct.transform(wt.transform(star.get_shape())), star.STROKE_WIDTH, star.get_colour());
     }
+}
+
+void StarField::move_camera_by(Vec2f delta_pos) noexcept
+{
+    wt.translate(delta_pos * -1.f);
+    cur_camera.left   += delta_pos.x;
+    cur_camera.right  += delta_pos.x;
+    cur_camera.bottom += delta_pos.y;
+    cur_camera.top    += delta_pos.y;
 }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)
