@@ -30,7 +30,10 @@ public:
     static constexpr int   WINDOW_HEIGHT{ WINDOW_WIDTH * 2 / 3 };
     static constexpr bool  WINDOW_RESIZABLE{ false };
     static constexpr Vec2i WINDOW_POS{ SCREEN_WIDTH / 2 - WINDOW_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - WINDOW_HEIGHT / 2 - 100 };
+    
     static constexpr float CAMERA_MOVE_SPEED{ 5.f };
+    static constexpr float CAMERA_ZOOM_FACTOR{ 1.1f };
+    static constexpr float CAMERA_UNZOOM_FACTOR{ 1.f / CAMERA_ZOOM_FACTOR };
 
 public:
 
@@ -42,6 +45,8 @@ public:
 private:
 
     void move_camera_by(Vec2f delta_pos) noexcept;
+    void zoom_camera() noexcept;
+    void unzoom_camera() noexcept;
 
 private:
 
