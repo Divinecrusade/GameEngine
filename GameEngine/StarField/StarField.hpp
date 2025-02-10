@@ -36,7 +36,8 @@ public:
     static constexpr float CAMERA_ZOOM_DELTA { 1.f / 40.f };
     static constexpr float CAMERA_MIN_ZOOM   { CAMERA_ZOOM_DELTA * 4.f };
     static constexpr float CAMERA_MAX_ZOOM   { 5.f };
-    static constexpr Rec2f CAMERA_AREA{ -WINDOW_WIDTH / 2.f, WINDOW_WIDTH / 2.f, -WINDOW_HEIGHT / 2.f, WINDOW_HEIGHT / 2.f };
+    static constexpr GameEngine::Camera::radian CAMERA_ROTATION_DELTA{ static_cast<GameEngine::Camera::radian>(std::numbers::pi / 2.f) };
+    static constexpr Rec2f CAMERA_AREA{ -WINDOW_WIDTH / 4.f, WINDOW_WIDTH / 4.f, -WINDOW_HEIGHT / 4.f, WINDOW_HEIGHT / 4.f };
 
 public:
 

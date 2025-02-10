@@ -9,8 +9,10 @@ namespace GameEngine::Geometry::Transformations2D
     using Vec2f = Vector2D<float>;
     using Mat2f = Matrices::Matrix<3U, 3U, float>;
     using MatVec2D = Matrices::Matrix<1U, 3U, float>;
+    using radian = float;
 
     static constexpr float k{ 1.f };
+
 
     inline MatVec2D to_matrix_form(Vec2f const& v) noexcept
     {
@@ -29,7 +31,7 @@ namespace GameEngine::Geometry::Transformations2D
         lhs = to_vector_form(to_matrix_form(lhs) * rhs);
     }
 
-    inline Mat2f get_rotation(float phi, float r = 1.f) noexcept
+    inline Mat2f get_rotation(radian phi, float r = 1.f) noexcept
     {
         return std::array
         { 
