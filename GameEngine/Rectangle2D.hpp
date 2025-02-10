@@ -33,6 +33,10 @@ namespace GameEngine::Geometry
         {
             return Rectangle2D{ center - Vector2D<T>{ width_half, height_half }, center + Vector2D<T>{ width_half, height_half } };
         }
+        [[maybe_unused]] static Rectangle2D get_from_center_with_normal_y_axis(Vector2D<T> const& center, T const& width_half, T const& height_half) noexcept(noexcept(T(std::declval<T const&>())))
+        {
+            return Rectangle2D{ center.x - width_half, center.x + width_half, center.y - height_half, center.y + height_half };
+        }
         [[maybe_unused]] constexpr Rectangle2D(Rectangle2D&&) noexcept = default;
 
         [[maybe_unused]] constexpr Rectangle2D& operator=(Rectangle2D const&) noexcept(noexcept(std::declval<T&>() = std::declval<T const&>())) = default;
@@ -88,10 +92,10 @@ namespace GameEngine::Geometry
             return left <= point.x && right >= point.x &&
                    top <= point.y && bottom >= point.y;
         }
-        [[maybe_unused]] static constexpr bool contains(Vector2D<T> const& point, Rectangle2D<T> const& area) noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
+        [[maybe_unused]] constexpr bool contains_with_normal_y_axis(Vector2D<T> const& point) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {
-            return area.left <= point.x && area.right >= point.x &&
-                   area.bottom <= point.y && area.top >= point.y;
+            return left <= point.x && right >= point.x &&
+                   bottom <= point.y && top >= point.y;
         }
         [[maybe_unused]] constexpr bool contains(Rectangle2D const& rect) const noexcept(noexcept(std::declval<T const&>() >= std::declval<T const&>()) && noexcept(std::declval<T const&>() <= std::declval<T const&>()))
         {

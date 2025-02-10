@@ -37,10 +37,10 @@ namespace GameEngine
         {
             vertex -= accumulated_translation;
             vertex *= accumulated_scaling;
-            if (Rec2f::contains(vertex, camera_area)) return true;
-            //if (!Rec2f::contains(vertex, camera_area)) return false;
+            //if (camera_area.contains_with_normal_y_axis(vertex)) return true;
+            if (!camera_area.contains_with_normal_y_axis(vertex)) return false;
         }
-        return false;
-        //return true;
+        //return false;
+        return true;
     }
 }
