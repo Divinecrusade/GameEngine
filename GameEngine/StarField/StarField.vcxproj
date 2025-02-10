@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\CoordinateTransformer.cpp" />
     <ClCompile Include="..\Direct2DFactory.cpp" />
     <ClCompile Include="..\Game.cpp" />

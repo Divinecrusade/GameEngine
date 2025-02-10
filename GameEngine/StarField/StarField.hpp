@@ -6,6 +6,7 @@
 #include <WorldTransformer.hpp>
 #include <CoordinateTransformer.hpp>
 #include <FrameTimer.hpp>
+#include <Camera.hpp>
 
 #include "Star.hpp"
 
@@ -31,9 +32,11 @@ public:
     static constexpr bool  WINDOW_RESIZABLE{ false };
     static constexpr Vec2i WINDOW_POS{ SCREEN_WIDTH / 2 - WINDOW_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - WINDOW_HEIGHT / 2 - 100 };
     
-    static constexpr float CAMERA_MOVE_SPEED{ 5.f };
-    static constexpr float CAMERA_ZOOM_FACTOR{ 1.1f };
-    static constexpr float CAMERA_UNZOOM_FACTOR{ 1.f / CAMERA_ZOOM_FACTOR };
+    static constexpr float CAMERA_MOVE_SPEED { 5.f };
+    static constexpr float CAMERA_ZOOM_DELTA { 1.f / 40.f };
+    static constexpr float CAMERA_MIN_ZOOM   { CAMERA_ZOOM_DELTA * 4.f };
+    static constexpr float CAMERA_MAX_ZOOM   { 5.f };
+    static constexpr Rec2f CAMERA_AREA{ -WINDOW_WIDTH / 2.f, WINDOW_WIDTH / 2.f, -WINDOW_HEIGHT / 2.f, WINDOW_HEIGHT / 2.f };
 
 public:
 
@@ -41,12 +44,6 @@ public:
 
     void update() override;
     void render() override;
-
-private:
-
-    void move_camera_by(Vec2f delta_pos) noexcept;
-    void zoom_camera() noexcept;
-    void unzoom_camera() noexcept;
 
 private:
 
@@ -60,5 +57,5 @@ private:
     GameEngine::FrameTimer ft{ };
 
     std::vector<Star> stars{ };
-    Rec2f cur_camera{ -WINDOW_WIDTH / 2.f, WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f, -WINDOW_HEIGHT / 2.f };
+    GameEngine::Camera cam;
 };

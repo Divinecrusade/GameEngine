@@ -161,6 +161,7 @@
     <ClInclude Include="AnimationFrames.hpp" />
     <ClInclude Include="AnimationFramesView.hpp" />
     <ClInclude Include="Auxiliry.hpp" />
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="CellOfMatrix.hpp" />
     <ClInclude Include="ContiguousIterator.hpp" />
     <ClInclude Include="CoordinateTransformer.hpp" />
@@ -199,6 +200,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationFrames.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CoordinateTransformer.cpp" />
     <ClCompile Include="Direct2DFactory.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

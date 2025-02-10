@@ -54,6 +54,9 @@
     <ClCompile Include="..\WorldTransformer.cpp">
       <Filter>Исходные файлы\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\Camera.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StarField.hpp">

@@ -4,7 +4,8 @@
 StarField::StarField(HINSTANCE hInstance, int nCmdShow)
 :
 Game{ StarField::get_window(hInstance, nCmdShow), get_graphics() },
-ct{ Rec2i{ Vec2i{ 0, 0 }, gfx.get_screen_width(), gfx.get_screen_height() } }
+ct{ Rec2i{ Vec2i{ 0, 0 }, gfx.get_screen_width(), gfx.get_screen_height() } },
+cam{ CAMERA_AREA, wt, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM }
 { 
     stars.emplace_back(Vec2f{ 0.f, 0.f }, 100.f, 6, GameEngine::Colours::RED, 0.25f, 0.5f, 1.0f, static_cast<float>(std::numbers::pi / 2.));
     stars.emplace_back(Vec2f{ 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW, 0.5f, 0.75f, 1.2f, static_cast<float>(std::numbers::pi * 3. / 2.));
@@ -21,72 +22,42 @@ void StarField::update()
 
     if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_LEFT))
     {
-        move_camera_by({ -CAMERA_MOVE_SPEED, 0.f });
+        cam.move_by({ -CAMERA_MOVE_SPEED, 0.f });
     }
     if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_RIGHT))
     {
-        move_camera_by({ CAMERA_MOVE_SPEED, 0.f });
+        cam.move_by({ CAMERA_MOVE_SPEED, 0.f });
     }
     if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_DOWN))
     {
-        move_camera_by({ 0.f, -CAMERA_MOVE_SPEED });
+        cam.move_by({ 0.f, -CAMERA_MOVE_SPEED });
     }
     if (get_wnd().is_fun_key_pressed(GameEngine::WinKey::ARROW_UP))
     {
-        move_camera_by({ 0.f, CAMERA_MOVE_SPEED });
+        cam.move_by({ 0.f, CAMERA_MOVE_SPEED });
     }
 
     if (get_wnd().is_non_fun_key_pressed('Z'))
     {
-        zoom_camera();
+        cam.set_zoom(cam.get_zoom() + CAMERA_ZOOM_DELTA);
     }
     else if (get_wnd().is_non_fun_key_pressed('X'))
     {
-        unzoom_camera();
+        cam.set_zoom(cam.get_zoom() - CAMERA_ZOOM_DELTA);
     }
+
 }
 
 void StarField::render()
 {
-    for (auto& star : stars | std::views::filter
-        (
-            [camera = cur_camera](auto const& model)
-            { 
-                auto const model_hitbox{ model.get_square() };
-                return camera.contains(model_hitbox);
-            }
-        )
-    )
+    for (auto& star : stars)
     {
-        gfx.draw_polygon(ct.transform(wt.transform(star.get_shape())), star.STROKE_WIDTH, star.get_colour());
+        GameEngine::Shape model{ star.get_shape() };
+        if (cam.contains(model))
+        {
+            gfx.draw_polygon(ct.transform(wt.transform(std::move(model))), star.STROKE_WIDTH, star.get_colour());
+        }
     }
-}
-
-void StarField::move_camera_by(Vec2f delta_pos) noexcept
-{
-    wt.translate(delta_pos * -1.f);
-    cur_camera.left   += delta_pos.x;
-    cur_camera.right  += delta_pos.x;
-    cur_camera.bottom += delta_pos.y;
-    cur_camera.top    += delta_pos.y;
-}
-
-void StarField::zoom_camera() noexcept
-{
-    wt.scale(CAMERA_ZOOM_FACTOR);
-    cur_camera.left   *= CAMERA_ZOOM_FACTOR;
-    cur_camera.right  *= CAMERA_ZOOM_FACTOR;
-    cur_camera.bottom *= CAMERA_ZOOM_FACTOR;
-    cur_camera.top    *= CAMERA_ZOOM_FACTOR;
-}
-
-void StarField::unzoom_camera() noexcept
-{
-    wt.scale(CAMERA_UNZOOM_FACTOR);
-    cur_camera.left   *= CAMERA_UNZOOM_FACTOR;
-    cur_camera.right  *= CAMERA_UNZOOM_FACTOR;
-    cur_camera.bottom *= CAMERA_UNZOOM_FACTOR;
-    cur_camera.top    *= CAMERA_UNZOOM_FACTOR;
 }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)

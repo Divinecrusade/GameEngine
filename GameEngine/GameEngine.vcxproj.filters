@@ -147,6 +147,9 @@
     <ClInclude Include="Transformations2D.hpp">
       <Filter>Файлы заголовков\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow\MainWindow.cpp">
@@ -180,6 +183,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="CoordinateTransformer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

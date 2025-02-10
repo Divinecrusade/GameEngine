@@ -19,4 +19,3 @@ namespace GameEngine
         accumulated_scaling *= ratio;
     }
 }
-
