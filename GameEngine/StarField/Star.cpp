@@ -107,6 +107,16 @@ void Star::update(float dt)
     };
 }
 
+Star::Vec2f Star::get_pos() const noexcept
+{
+    return pos;
+}
+
+float Star::get_outer_radius() const noexcept
+{
+    return outer_radius;
+}
+
 Star::Rec2f Star::get_square() const
 {
     return Rec2f::get_from_center(pos, outer_radius, outer_radius);

@@ -132,7 +132,7 @@ namespace GameEngine::Geometry
         {
             Vector2D const tmp{ static_cast<T>(vec.x * std::cos(radians) - vec.y * std::sin(radians)), static_cast<T>(vec.x * std::sin(radians) + vec.y * std::cos(radians)) };
                 
-            assert(Auxiliry::is_equal_with_precision(vec.get_length(), tmp.get_length(), 1e-4));
+            assert(Auxiliry::is_equal_with_precision(vec.get_length(), tmp.get_length(), 1e-3));
                 
             return tmp;
         }

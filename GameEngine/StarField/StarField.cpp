@@ -7,9 +7,46 @@ Game{ StarField::get_window(hInstance, nCmdShow), get_graphics() },
 ct{ Rec2i{ Vec2i{ 0, 0 }, gfx.get_screen_width(), gfx.get_screen_height() } },
 cam{ CAMERA_AREA, wt, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM }
 { 
-    stars.emplace_back(Vec2f{ 0.f, 0.f }, 100.f, 6, GameEngine::Colours::RED, 0.25f, 0.5f, 1.0f, static_cast<float>(std::numbers::pi / 2.));
-    stars.emplace_back(Vec2f{ 100.f, -100.f }, 50.f, 5, GameEngine::Colours::YELLOW, 0.5f, 0.75f, 1.2f, static_cast<float>(std::numbers::pi * 3. / 2.));
-    stars.emplace_back(Vec2f{ -100.f, -100.f }, 25.f, 4, GameEngine::Colours::GREEN, 1.f, 0.9f, 1.8f, static_cast<float>(std::numbers::pi));
+    std::mt19937 rng{ std::random_device{}() };
+    std::uniform_real_distribution<float> x_dist{ -WORLD_WIDTH / 2.0f, WORLD_WIDTH / 2.0f };
+    std::uniform_real_distribution<float> y_dist{ -WORLD_HEIGHT / 2.0f, WORLD_HEIGHT / 2.0f };
+    std::normal_distribution<float> radius_dist { STAR_MEAN_RADIUS, STAR_DEV_RADIUS };
+    std::normal_distribution<float> flare_dist  { STAR_MEAN_FLARES_COUNT, STAR_DEV_FLARES_COUNT };
+
+    constexpr std::array<GameEngine::Colour, 6U> colours_pull
+    { 
+        GameEngine::Colours::RED,
+        GameEngine::Colours::WHITE,
+        GameEngine::Colours::BLUE, 
+        GameEngine::Colours::CYAN,
+        GameEngine::Colours::MAGENTA,
+        GameEngine::Colours::GREEN 
+    };
+    std::uniform_int_distribution<std::size_t> colour_sampler{ 0U, colours_pull.size() - 1U };
+
+    std::normal_distribution<float>       colour_frequency_dist{ STAR_MEAN_COLOUR_FREQUENCY, STAR_DEV_COLOUR_FREQUENCY };
+    std::uniform_real_distribution<float> colour_phase_dist    { 0.0f, 2.f * static_cast<float>(std::numbers::pi) };
+    std::normal_distribution<float>       radius_factor_dist   { STAR_MEAN_RADIUS_FACTOR, STAR_DEV_RADIUS_FACTOR };
+    std::uniform_real_distribution<float> rotation_speed_dist  { STAR_MIN_ROTATION_SPEED, STAR_MAX_ROTATION_SPEED };
+
+    while (stars.size() != STARS_TOTAL_COUNT)
+    {
+        const float radius{ std::clamp(radius_dist(rng), STAR_MIN_RADIUS, STAR_MAX_RADIUS) };
+        const Vec2f pos{ x_dist(rng), y_dist(rng) };
+        if (std::ranges::any_of(stars, [pos](auto const& star)
+            { return (star.get_pos() - pos).get_length() < STAR_MAX_RADIUS * std::sqrtf(3.f); }))
+        {
+            continue;
+        }
+
+        const GameEngine::Colour c{ colours_pull[colour_sampler(rng)] };
+        const int flares_count{ std::clamp((int)flare_dist(rng), STAR_MIN_FLARES_COUNT, STAR_MAX_FLARES_COUNT) };
+        const float colour_freq{ std::clamp(colour_frequency_dist(rng), STAR_MIN_COLOUR_FREQUENCY, STAR_MAX_COLOUR_FREQUENCY) };
+        const float colour_phase{ colour_phase_dist(rng) };
+        float const radius_factor{ std::clamp(radius_factor_dist(rng), STAR_MIN_RADIUS_FACTOR, STAR_MAX_RADIUS_FACTOR) };
+        float const rotation_speed{ std::clamp(rotation_speed_dist(rng), STAR_MIN_ROTATION_SPEED, STAR_MAX_ROTATION_SPEED) };
+        stars.emplace_back(pos, radius, flares_count, c, rotation_speed, radius_factor, colour_freq, colour_phase);
+    }
 }
 
 void StarField::update()
@@ -66,10 +103,6 @@ void StarField::render()
             gfx.draw_polygon(ct.transform(wt.transform(std::move(model))), star.STROKE_WIDTH, star.get_colour());
         }
     }
-
-    GameEngine::Shape tmp{ std::vector<Vec2f>{ {cam.get_area().left, cam.get_area().top}, {cam.get_area().right, cam.get_area().bottom} }};
-    auto verts{ ct.transform(std::move(tmp)) };
-    gfx.draw_rectangle({ verts.front().x, verts.back().x, verts.back().y, verts.front().y}, 1, GameEngine::Colours::RED);
 }
 
 GameEngine::Interfaces::IWindow& StarField::get_window(HINSTANCE hInstance, int nCmdShow)

@@ -13,7 +13,14 @@ namespace GameEngine
 
     void WorldTransformer::translate(Vec2f const& delta_translation) noexcept
     {
-        accumulated_translation += delta_translation;
+        auto const compensated_translation
+        { 
+            Geometry::Transformations2D::to_vector_form
+            (
+                Geometry::Transformations2D::to_matrix_form(delta_translation) * Geometry::Transformations2D::get_rotation(-accumulated_rotation)
+            )
+        };
+        accumulated_translation += compensated_translation;
     }
 
     void WorldTransformer::scale(float ratio) noexcept

@@ -22,7 +22,15 @@ namespace GameEngine
     void Camera::move(Vec2f delta_pos) noexcept
     {
         wt.translate(delta_pos * -1.f);
-        accumulated_translation += delta_pos;
+
+        auto const compensated_translation
+        {
+            Geometry::Transformations2D::to_vector_form
+            (
+                Geometry::Transformations2D::to_matrix_form(delta_pos) * Geometry::Transformations2D::get_rotation(-accumulated_rotation)
+            )
+        };
+        accumulated_translation += compensated_translation;
     }
 
     float Camera::get_zoom() const noexcept
@@ -52,10 +60,8 @@ namespace GameEngine
             vertex -= accumulated_translation;
             vertex *= accumulated_scaling;
             vertex.rotate(-accumulated_rotation);
-            //if (camera_area.contains_with_normal_y_axis(vertex)) return true;
-            if (!camera_area.contains_with_normal_y_axis(vertex)) return false;
+            if (camera_area.contains_with_normal_y_axis(vertex)) return true;
         }
-        //return false;
-        return true;
+        return false;
     }
 }

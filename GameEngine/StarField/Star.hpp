@@ -45,6 +45,9 @@ public:
 
     void update(float dt);
 
+    Vec2f get_pos() const noexcept;
+    float get_outer_radius() const noexcept;
+
 private:
 
     Vec2f const pos;
