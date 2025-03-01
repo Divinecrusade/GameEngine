@@ -1,6 +1,6 @@
 # Game Engine
 
-## [RUS] Краткое описание
+## Краткое описание
 
 Данный репозиторий содержит решение (solution) Microsoft Visual Studio 2022, выполняющее две роли:
 
@@ -17,19 +17,15 @@
 	<li> Starfield - простое приложение с случайно генерируемым звёздным полем и управляемой камерой</li>
 </ol>
 
-## [ENG] Brief
+## Функционал
 
-The repository contains Microsoft Visual Studio 2022 solution and implements two things:
-
-<ol>
-	<li> DirectX (Direct2D/DirectWrite) adaptor</li>
-	<li> Small class library for games</li>
-</ol>
-
-It is written on C++20 and serves educational purpose. Therefore the project is standalone game engine that can be used as tiny framework for graphical application (mostly 2D-games). Examples also represented in this scope:
-
-<ol>
-	<li> Arkanoid - variation of famous game with ball-brick-breaking</li>
-	<li> PaintItGit - step-by-step field colouring with version control system</li>
-	<li> Starfield - simple application with random generated field of stars and movable</li>
-</ol>
+Здесь можно найти реализацию:
+- окон на WinAPI (класс GameEngine::MainWindow в проекте MainWindow) с отслеживанием нажатых клавиш и положения мыши
+- матриц (класс GameEngine::Geometry::Matrices::Matrix в проекте GameEngine), способных вычисляться во время компиляции
+- основных аффинных преобразований с использованием матриц
+- математического вектора (класс GameEngine::Geometry::Vector2D в проекте GameEngine) для двумерного пространства
+- игрового 3-х этапного (Proccess Input -> Update -> Render) игрового цикла (класс GameEngine::Game)
+- механизма синхронизации скорости генерации кадров и обновления состояния игры (класс GameEngine::FrameTimer в проекте GameEngine)
+- отрисовки графических примитивов, текста, битмап с возможностью задания "прозрачных" пикселей (класс GameEngine::GraphicsDirect2D в проекте GameEngine)
+- автоматического выделения и освобождения ресурсов, предоставляемых Direct2D (класс GameEngine::Direct2DFactory в проекте GameEngine)
+- исключений для обработки ошибок в WinAPI (класс GameEngine::WinApiException в проекте GameEngine) и DirectX (класс GameEngine::Direct2dException в проекте GameEngine)
