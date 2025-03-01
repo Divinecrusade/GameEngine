@@ -20,12 +20,14 @@
 ## Функционал
 
 Здесь можно найти реализацию:
-- окон на WinAPI (класс GameEngine::MainWindow в проекте MainWindow) с отслеживанием нажатых клавиш и положения мыши
-- матриц (класс GameEngine::Geometry::Matrices::Matrix в проекте GameEngine), способных вычисляться во время компиляции
+- окон на WinAPI (класс <code>GameEngine::MainWindow</code> в проекте MainWindow) с отслеживанием нажатых клавиш и положения мыши
+- матриц (класс <code>GameEngine::Geometry::Matrices::Matrix</code> в проекте GameEngine), способных вычисляться во время компиляции
 - основных аффинных преобразований с использованием матриц
-- математического вектора (класс GameEngine::Geometry::Vector2D в проекте GameEngine) для двумерного пространства
-- игрового 3-х этапного (Proccess Input -> Update -> Render) игрового цикла (класс GameEngine::Game)
-- механизма синхронизации скорости генерации кадров и обновления состояния игры (класс GameEngine::FrameTimer в проекте GameEngine)
-- отрисовки графических примитивов, текста, битмап с возможностью задания "прозрачных" пикселей (класс GameEngine::GraphicsDirect2D в проекте GameEngine)
-- автоматического выделения и освобождения ресурсов, предоставляемых Direct2D (класс GameEngine::Direct2DFactory в проекте GameEngine)
-- исключений для обработки ошибок в WinAPI (класс GameEngine::WinApiException в проекте GameEngine) и DirectX (класс GameEngine::Direct2dException в проекте GameEngine)
+- математического вектора (класс <code>GameEngine::Geometry::Vector2D</code> в проекте GameEngine) для двумерного пространства
+- игрового 3-х этапного (Proccess Input -> Update -> Render) игрового цикла (класс <code>GameEngine::Game</code>)
+- механизма синхронизации скорости генерации кадров и обновления состояния игры (класс <code>GameEngine::FrameTimer</code> в проекте GameEngine)
+- отрисовки графических примитивов, текста, битмап с возможностью задания "прозрачных" пикселей (класс <code>GameEngine::GraphicsDirect2D</code> в проекте GameEngine)
+- автоматического выделения и освобождения ресурсов, предоставляемых Direct2D (класс <code>GameEngine::Direct2DFactory</code> в проекте GameEngine)
+- исключений для обработки ошибок в WinAPI (класс <code>GameEngine::WinApiException</code> в проекте GameEngine) и DirectX (класс <code>GameEngine::Direct2dException</code> в проекте GameEngine)
+
+
