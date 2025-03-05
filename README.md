@@ -17,7 +17,7 @@
 	<li> Starfield - простое приложение с случайно генерируемым звёздным полем и управляемой камерой</li>
 </ol>
 
-## Функционал
+### Функционал
 
 Здесь можно найти реализацию:
 - окон на WinAPI (класс <code>GameEngine::MainWindow</code> в проекте MainWindow) с отслеживанием нажатых клавиш и положения мыши
@@ -30,7 +30,7 @@
 - автоматического выделения и освобождения ресурсов, предоставляемых Direct2D (класс <code>GameEngine::Direct2DFactory</code> в проекте GameEngine)
 - исключений для обработки ошибок в WinAPI (класс <code>GameEngine::WinApiException</code> в проекте GameEngine) и DirectX (класс <code>GameEngine::Direct2dException</code> в проекте GameEngine)
 
-## Установка и внедрение в другие проекты
+### Установка и внедрение в другие проекты
 
 Если установлен Microsoft Visual Studio 2022, то достаточно скачать содержимое репозитория и открыть файл решения GameEngine.sln.
 При этом необязательными проектами являются Matrices, Arkanoid, PaintItGit, Starfield, MainWindow. Все перечисленные подпроекты являются зависимыми от проекта GameEngine и включены в общее решение, поэтому отдельно их собрать не получится.
@@ -39,3 +39,54 @@
 
 Все файлы представляют собой исходный код, связанный между собой директивой <code>#include</code>, поэтому их можно свобдно использовать в других программах при условии соблюдения <code>#include</code> зависимостей.
 
+
+### Примеры использования
+
+Строго говоря, присутсвующие в решение проекты сами по себе являются примерами использования данного игрового движка. Однако для быстрого ознакомления стоит коснуться базовых аспектов работы с компонентами репозитория и дать некоторые комментарии к типовому коду.
+
+После клонирования репозитория можно удалить все проекты, кроме GameEngine и MainWindow. Чтобы не нарушать пути в директивах <code>#include</code> между компонентами можно в рамках решения GameEngine создать новый проект Windows-приложения и добавить в него (ПКМ по фильтру "Исходные файлы"->"Добавить"->"Существующий элемент...") все .cpp файлы (или по мере надобности). Репозиторий не являются библиотекой шаблонов, хотя некоторые компоненты действительно описаны в шаблонах, поэтому компиляция необходима.
+
+Итак, чтобы создать свою игру следует наследовать класс GameEngine::Game, например:
+
+```C++
+class TestGame : public GameEngine::Game
+{
+	TestGame(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics)
+	:
+	Game{ window, graphics }
+	{ }
+}
+```
+
+Для интерфейса <code>GameEngine::Interfaces::IWindow</code> в проекте MainWindow предусмотрена простая реализация <code>GameEngine::MainWindow</code>, а для <code>GameEngine::Interfaces::IFramableGraphics2D</code> можно взять <code>GameEngine::GraphicsDirect2D</code>. В итоге, инциализация объекта класса <code>TestGame</code> может выглядеть так:
+
+```C++
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
+{
+    MainWindow m_wnd{ hInstance, nCmdShow, L"Test App" };
+    GraphicsDirect2D graphics{ m_wnd.get_window_handler() };
+    TestGame theGame{ m_wnd, graphics };
+    theGame.start();
+
+    return EXIT_SUCCESS;
+}
+```
+
+В результате будет отображено чёрное окно. Вся логика игры заключена в 3-х методах класса <code>GameEngine::Game</code>:
+<ul>
+	<li><code>virtual void process()</code> - этот метод предназначен для обработки очереди сообщений. В общем случае, его можно не переопределять</li>
+	<li><code>virtual void update()</code> - переопределение этого метода должно содержать логику изменения состояния игры</li>
+	<li><code>virtual void render()</code> - отрисовка мира и моделей</li>
+</ul>
+
+В методе <code>update</code> следует располагать всю логику обработки и изменения мира (состояния игры), а отрисовку (вывод на окно) - в методе <code>render</code>. Метод <code>process</code> в общем случае переопределять не нужно, однако если используется свой обработчик событий окна, клавиатуры мыши и т.д., то рекомендуются следующий подход:
+
+```C++
+void TestGame::process()
+{
+	Game::process();
+	// остальной код...
+}
+```
+
+Вызов метода <code>GameEngine::Game::start</code> запускает бесконечный игровой цикл, который будет завершен автоматически при закрытии окна или вызова метода <code>GameEngine::Game::stop</code>. Более подробные примеры использования игрового движка представлены в проектах Arkanoid, PaintItGit, StarField.
