@@ -51,6 +51,8 @@
 ```C++
 class TestGame : public GameEngine::Game
 {
+public:
+
 	TestGame(GameEngine::Interfaces::IWindow& window, GameEngine::Interfaces::IFramableGraphics2D& graphics)
 	:
 	Game{ window, graphics }
