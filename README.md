@@ -65,8 +65,8 @@ public:
 ```C++
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
-    MainWindow m_wnd{ hInstance, nCmdShow, L"Test App" };
-    GraphicsDirect2D graphics{ m_wnd.get_window_handler() };
+    GameEngine::MainWindow m_wnd{ hInstance, nCmdShow, L"Test App" };
+    GameEngine::GraphicsDirect2D graphics{ m_wnd.get_window_handler() };
     TestGame theGame{ m_wnd, graphics };
     theGame.start();
 
